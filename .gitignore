@@ -1,0 +1,34 @@
+# ==========================================================
+# .gitignore — archivos que Git NUNCA debe subir
+# ==========================================================
+
+# --- Credenciales y secretos (¡nunca al repositorio!) ---
+# Claves de cuenta de servicio de Firebase / Google Cloud
+*serviceAccount*.json
+*service-account*.json
+*-firebase-adminsdk-*.json
+credenciales/
+# Variables de entorno locales
+.env
+.env.*
+
+# --- Salida de Python (se puede regenerar con los scripts) ---
+python/salida/
+
+# --- Archivos temporales de Python ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# --- Archivos locales de Firebase CLI ---
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# --- Basura del sistema operativo y editores ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
