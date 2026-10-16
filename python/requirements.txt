@@ -1,0 +1,8 @@
+# Paquetes de Python para la Fase 6 (análisis de encuesta y datos demo).
+# Instalar con:  pip install -r requirements.txt
+# ">=" significa "esta versión o una más nueva".
+
+pandas>=2.0          # leer y limpiar la encuesta (tablas)
+plotly>=5.18         # gráficos de barras interactivos guardados como HTML
+faker>=24.0          # nombres ficticios (opcional: si falta, se usa una lista propia)
+firebase-admin>=6.5  # subir los perfiles demo a Firestore (solo cargar_demo.py)

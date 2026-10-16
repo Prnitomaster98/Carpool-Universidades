@@ -1,0 +1,13 @@
+Marca temporal,Zona de origen,Medio de transporte,Entrada lunes,Salida lunes,Entrada martes,Salida martes,Entrada miércoles,Salida miércoles,Entrada jueves,Salida jueves,Entrada viernes,Salida viernes,Minutos de espera tolerables,¿La usarías? (1-5),¿Qué te frenaría?
+2026/10/20 8:12:03 p. m.,Zona Sur,Carro propio,7:00,13:00,7:00,13:00,7:00,15:00,7:00,13:00,7:00,12:00,15,4,No conocer a la otra persona
+2026/10/20 8:20:41 p. m.,zona sur,Me traen mis papás,07:00,1:00 p. m.,9:00,13:00,7:00,13:00,9:00,13:00,07:00,12:00,10,5,Que el conductor llegue tarde
+2026/10/20 8:31:17 p. m.,Centro,Bus / transporte público,7:00:00 a. m.,3:00:00 p. m.,7:00:00 a. m.,3:00:00 p. m.,7:00:00 a. m.,3:00:00 p. m.,7:00:00 a. m.,3:00:00 p. m.,7:00:00 a. m.,1:00:00 p. m.,20,5,"Seguridad, no saber quién maneja"
+2026/10/20 9:02:55 p. m.,ZONA CENTRO,Carro propio,7:00,15:00,7:00,15:00,,,7:00,15:00,7:00,13:00,10,3,Tener que desviarme de mi ruta
+2026/10/21 7:15:09 a. m.,Zona Norte,Bus / transporte público,7:00,13:00,7:00,13:00,7:00,13:00,7:00,13:00,7:00,13:00,30,5,Nada si hay punto de encuentro seguro
+2026/10/21 7:40:22 a. m.,norte,Uber / taxi,9:00,15:00,9:00,15:00,9:00,15:00,9:00,15:00,,,20,4,El costo de la gasolina
+2026/10/21 12:05:48 p. m.,Zona Sur,Carro propio,7:00,13:00,7:00,13:00,7:00,13:00,7:00,13:00,7:00,12:00,10,4,"Coordinar horarios, que cambien a último momento"
+2026/10/21 12:30:10 p. m.,sur,Me traen mis papás,7:00,13:00,7:00,13:00,7:00,13:00,7:00,13:00,7:00,13:00,20,5,Que mis papás no me den permiso
+2026/10/21 6:44:31 p. m.,Zona Este,Carro propio,9:00,15:00,7:00,13:00,9:00,15:00,7:00,13:00,9:00,13:00,15,3,No conocer a la otra persona
+2026/10/21 7:10:03 p. m.,Este,Bus / transporte público,7:00,13:00,7:00,13:00,7:00,13:00,7:00,13:00,7:00,13:00,30,4,El horario de salida no coincide
+2026/10/22 9:22:47 a. m.,Zona Centro,Uber / taxi,7:00,15:00,7:00,15:00,7:00,15:00,7:00,15:00,7:00,13:00,15,2,Prefiero ir sola
+2026/10/22 10:01:36 a. m.,Zona Oeste,Me traen mis papás,7.30,13.00,7:30,13:00,7:30,13:00,7:30,13:00,7:30,12:00,20,5,Seguridad

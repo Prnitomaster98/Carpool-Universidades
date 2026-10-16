@@ -75,6 +75,7 @@ cd carpool-zonas/python
 pip install -r requirements.txt
 python analisis_encuesta.py
 python generar_demo.py
+python cargar_demo.py      # ensayo: no sube nada (subir: --confirmar)
 ```
 
 Los archivos generados quedan en `python/salida/` (ignorada por Git).
@@ -126,6 +127,6 @@ Las reglas de seguridad se publican con `firebase deploy --only firestore:rules`
 | 3 | Autenticación: firebase-config.js, auth.js, firestore.rules | ⏳ |
 | 4 | Perfil y matching: perfil.js, matching.js, pruebas | ⏳ |
 | 5 | Solicitudes y recomendaciones | ⏳ |
-| 6 | Python: análisis de encuesta y datos demo | ⏳ |
+| 6 | Python: análisis de encuesta y datos demo | ✅ |
 
 Cada fase tiene su explicación en `docs/explicaciones/fase-N.md`.
