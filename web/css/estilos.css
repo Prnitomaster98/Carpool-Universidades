@@ -1,0 +1,264 @@
+/* ==========================================================
+   estilos.css — estilos de toda la app
+   Enfoque "mobile-first": primero escribimos los estilos para
+   celular (pantalla angosta) y después, con @media, los
+   ajustamos para pantallas más anchas.
+   ========================================================== */
+
+/* ---------- 1. Variables de color y tamaño ----------
+   :root es la raíz del documento. Las variables (--nombre) se
+   usan con var(--nombre). Si quieres cambiar un color en toda
+   la app, lo cambias solo aquí. */
+:root {
+  --color-fondo: #f4f6f8;
+  --color-tarjeta: #ffffff;
+  --color-texto: #1f2933;
+  --color-texto-suave: #5f6b7a;
+  --color-primario: #1d4ed8;      /* azul de enlaces y menú */
+  --color-borde: #d9dee5;
+
+  /* Colores del mapa (mapa.js usa los mismos valores) */
+  --color-encuentro: #f97316;     /* naranja: zonas de encuentro */
+  --color-paso: #2563eb;          /* azul: zonas de paso */
+  --color-punto: #b91c1c;         /* rojo: puntos de encuentro */
+
+  /* Etiqueta "Dato de prueba" */
+  --color-demo-fondo: #fef3c7;
+  --color-demo-texto: #92400e;
+
+  --radio: 12px;                  /* esquinas redondeadas */
+  --espacio: 16px;                /* margen base */
+}
+
+/* ---------- 2. Reglas básicas ---------- */
+
+/* box-sizing: border-box hace que el padding y el borde queden
+   DENTRO del ancho declarado. Evita que las cajas "se desborden". */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;               /* 16px evita que el iPhone haga zoom al tocar el <select> */
+  line-height: 1.5;
+  color: var(--color-texto);
+  background: var(--color-fondo);
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+}
+
+a {
+  color: var(--color-primario);
+}
+
+/* ---------- 3. Menú superior ---------- */
+.barra-superior {
+  display: flex;
+  flex-wrap: wrap;               /* si no cabe, el menú baja a otra línea */
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px var(--espacio);
+  background: var(--color-tarjeta);
+  border-bottom: 1px solid var(--color-borde);
+  position: sticky;              /* el menú se queda arriba al bajar */
+  top: 0;
+  z-index: 1000;                 /* por encima del mapa (Leaflet usa z-index hasta ~800) */
+}
+
+.marca {
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--color-texto);
+}
+
+.menu {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;              /* quita las viñetas de la lista */
+}
+
+.menu a {
+  display: block;
+  padding: 8px 12px;             /* área grande para tocar con el dedo */
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.menu a:hover,
+.menu a:focus-visible {
+  background: #e8eefc;
+}
+
+/* La página actual se marca diferente */
+.menu a[aria-current="page"] {
+  background: var(--color-primario);
+  color: #ffffff;
+}
+
+/* ---------- 4. Contenido y tarjetas ---------- */
+.contenido {
+  display: grid;
+  gap: var(--espacio);
+  padding: var(--espacio);
+  max-width: 1280px;
+  margin: 0 auto;                /* centra el contenido en pantallas grandes */
+}
+
+.tarjeta {
+  background: var(--color-tarjeta);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: var(--espacio);
+  min-width: 0;                  /* evita que el mapa estire la columna de la grilla */
+}
+
+.texto-vacio {
+  margin: 0;
+  color: var(--color-texto-suave);
+  font-style: italic;
+}
+
+/* ---------- 5. Mapa ---------- */
+.filtro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.filtro select {
+  flex: 1 1 200px;               /* ocupa el espacio disponible, mínimo ~200px */
+  max-width: 100%;
+  padding: 8px;
+  font-size: 1rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.mensaje-mapa {
+  margin: 0 0 8px;
+  min-height: 1.5em;             /* reserva el espacio para que el mapa no "salte" */
+  color: var(--color-texto-suave);
+  font-size: 0.9rem;
+}
+
+.mensaje-mapa.error {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+/* Leaflet NECESITA que el contenedor tenga altura; sin esto el mapa mide 0px */
+.mapa {
+  height: 60vh;                  /* 60% del alto de la pantalla */
+  min-height: 320px;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--color-borde);
+}
+
+/* Leyenda debajo del mapa */
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+  color: var(--color-texto-suave);
+}
+
+.leyenda li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.muestra {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.muestra-encuentro { background: var(--color-encuentro); opacity: 0.6; }
+.muestra-paso      { background: var(--color-paso);      opacity: 0.6; }
+.muestra-punto     { background: var(--color-punto); border-radius: 50%; }
+
+/* Contenido de los popups (las ventanitas al tocar un marcador).
+   Empezamos con ".leaflet-popup-content" porque Leaflet ya le da márgenes
+   grandes a los <p> del popup; una regla más específica gana sobre la suya. */
+.leaflet-popup-content .popup-titulo {
+  margin: 0 0 4px;
+  font-weight: 700;
+}
+
+.leaflet-popup-content .popup-texto {
+  margin: 0 0 4px;
+}
+
+.leaflet-popup-content .popup-fecha {
+  margin: 0;
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+}
+
+/* ---------- 6. Etiqueta "Dato de prueba" ----------
+   Se usa en TODO dato de ejemplo (esDemo: true). */
+.etiqueta-demo {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;          /* forma de "pastilla" */
+  background: var(--color-demo-fondo);
+  color: var(--color-demo-texto);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- 7. Pantallas medianas (tablet, 768px o más) ---------- */
+@media (min-width: 768px) {
+  .contenido {
+    grid-template-columns: 1fr 1fr;   /* dos columnas iguales */
+  }
+
+  /* El mapa ocupa el ancho completo, debajo de perfil y coincidencias */
+  .tarjeta-mapa {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- 8. Pantallas grandes (computadora, 1024px o más) ---------- */
+@media (min-width: 1024px) {
+  .contenido {
+    /* Columna izquierda angosta (perfil y coincidencias) y mapa grande a la derecha */
+    grid-template-columns: 340px 1fr;
+    grid-template-rows: auto 1fr;
+    align-items: start;
+  }
+
+  #perfil        { grid-column: 1; grid-row: 1; }
+  #coincidencias { grid-column: 1; grid-row: 2; }
+
+  .tarjeta-mapa {
+    grid-column: 2;
+    grid-row: 1 / span 2;              /* el mapa ocupa las dos filas */
+  }
+
+  .mapa {
+    height: 70vh;
+  }
+}

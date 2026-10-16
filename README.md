@@ -122,7 +122,7 @@ Las reglas de seguridad se publican con `firebase deploy --only firestore:rules`
 | Fase | Contenido | Estado |
 |---|---|---|
 | 1 | Esqueleto: carpetas, README, .gitignore, git init | ✅ |
-| 2 | Mapa: HTML base, estilos, mapa.js, zonas.geojson | ⏳ |
+| 2 | Mapa: HTML base, estilos, mapa.js, zonas.geojson | ✅ |
 | 3 | Autenticación: firebase-config.js, auth.js, firestore.rules | ⏳ |
 | 4 | Perfil y matching: perfil.js, matching.js, pruebas | ⏳ |
 | 5 | Solicitudes y recomendaciones | ⏳ |

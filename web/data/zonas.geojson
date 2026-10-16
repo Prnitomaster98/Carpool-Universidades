@@ -1,0 +1,112 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "zona-centro",
+        "nombre": "Zona Centro — ejemplo",
+        "tipo": "encuentro",
+        "esDemo": true
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-90.5120, 14.6300],
+            [-90.5020, 14.6300],
+            [-90.5020, 14.6400],
+            [-90.5120, 14.6400],
+            [-90.5120, 14.6300]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "zona-norte",
+        "nombre": "Zona Norte — ejemplo",
+        "tipo": "paso",
+        "esDemo": true
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-90.5120, 14.6400],
+            [-90.5020, 14.6400],
+            [-90.5000, 14.6480],
+            [-90.5070, 14.6530],
+            [-90.5140, 14.6480],
+            [-90.5120, 14.6400]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "zona-sur",
+        "nombre": "Zona Sur — ejemplo",
+        "tipo": "paso",
+        "esDemo": true
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-90.5140, 14.6220],
+            [-90.5070, 14.6170],
+            [-90.5000, 14.6220],
+            [-90.5020, 14.6300],
+            [-90.5120, 14.6300],
+            [-90.5140, 14.6220]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "zona-este",
+        "nombre": "Zona Este — ejemplo",
+        "tipo": "encuentro",
+        "esDemo": true
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-90.5020, 14.6300],
+            [-90.4900, 14.6300],
+            [-90.4900, 14.6400],
+            [-90.5020, 14.6400],
+            [-90.5020, 14.6300]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "zona-oeste",
+        "nombre": "Zona Oeste — ejemplo",
+        "tipo": "paso",
+        "esDemo": true
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-90.5240, 14.6300],
+            [-90.5120, 14.6300],
+            [-90.5120, 14.6400],
+            [-90.5240, 14.6400],
+            [-90.5240, 14.6300]
+          ]
+        ]
+      }
+    }
+  ]
+}

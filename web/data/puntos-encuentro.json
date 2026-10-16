@@ -1,0 +1,42 @@
+[
+  {
+    "id": "punto-1",
+    "nombre": "Parqueo de centro comercial — ejemplo",
+    "zonaId": "zona-centro",
+    "lat": 14.6345,
+    "lng": -90.5085,
+    "notaSeguridad": "Lugar público, iluminado y con vigilancia. Espera dentro del parqueo, cerca de la entrada principal.",
+    "fechaObservacion": "2026-10-10",
+    "esDemo": true
+  },
+  {
+    "id": "punto-2",
+    "nombre": "Parada de bus techada — ejemplo",
+    "zonaId": "zona-centro",
+    "lat": 14.6375,
+    "lng": -90.5045,
+    "notaSeguridad": "Mucho movimiento de personas en horario escolar. Evitar después de las 19:00.",
+    "fechaObservacion": "2026-10-08",
+    "esDemo": true
+  },
+  {
+    "id": "punto-3",
+    "nombre": "Gasolinera con tienda 24 h — ejemplo",
+    "zonaId": "zona-este",
+    "lat": 14.6330,
+    "lng": -90.4960,
+    "notaSeguridad": "Abierta todo el día, con cámaras y personal. Estacionar en el área de clientes, no en la calle.",
+    "fechaObservacion": "2026-10-12",
+    "esDemo": true
+  },
+  {
+    "id": "punto-4",
+    "nombre": "Entrada de parque público — ejemplo",
+    "zonaId": "zona-este",
+    "lat": 14.6395,
+    "lng": -90.4935,
+    "notaSeguridad": "Solo de día. Hay guardia en la garita de entrada.",
+    "fechaObservacion": "2026-10-05",
+    "esDemo": true
+  }
+]

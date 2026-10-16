@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Codificación de caracteres: permite tildes y ñ -->
+  <meta charset="UTF-8">
+  <!-- Hace que la página use el ancho real del celular (sin esto se ve "en miniatura") -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carpool por zonas — Mi panel</title>
+
+  <!-- Estilos de Leaflet (versión fijada 1.9.4).
+       "integrity" es una huella digital: si alguien cambia el archivo en la CDN,
+       el navegador se niega a usarlo. "crossorigin" es necesario para que esa
+       comprobación funcione con archivos de otro dominio. -->
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin="">
+
+  <!-- Nuestros estilos van DESPUÉS, para poder ajustar los de Leaflet si hace falta -->
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  <!-- ===== Menú superior ===== -->
+  <header class="barra-superior">
+    <a class="marca" href="app.html">🚗 Carpool por zonas</a>
+    <nav aria-label="Menú principal">
+      <ul class="menu">
+        <!-- aria-current="page" le dice a los lectores de pantalla en qué página estás -->
+        <li><a href="app.html" aria-current="page">Mi panel</a></li>
+        <li><a href="recomendaciones.html">Recomendaciones</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="contenido">
+
+    <!-- ===== Sección 1: Mi perfil (se llena en la Fase 4) ===== -->
+    <section id="perfil" class="tarjeta" aria-labelledby="titulo-perfil">
+      <h2 id="titulo-perfil">Mi perfil</h2>
+      <p class="texto-vacio">Aquí vas a elegir tus zonas y tu horario. (Disponible pronto.)</p>
+    </section>
+
+    <!-- ===== Sección 2: Coincidencias (se llena en la Fase 4) ===== -->
+    <section id="coincidencias" class="tarjeta" aria-labelledby="titulo-coincidencias">
+      <h2 id="titulo-coincidencias">Coincidencias</h2>
+      <p class="texto-vacio">Aquí aparecerán los compañeros compatibles contigo. (Disponible pronto.)</p>
+    </section>
+
+    <!-- ===== Sección 3: Mapa ===== -->
+    <section id="mapa-seccion" class="tarjeta tarjeta-mapa" aria-labelledby="titulo-mapa">
+      <h2 id="titulo-mapa">Mapa de zonas y puntos de encuentro</h2>
+
+      <!-- Filtro por zona. Las opciones las agrega mapa.js leyendo zonas.geojson -->
+      <div class="filtro">
+        <label for="filtro-zona">Ver zona:</label>
+        <select id="filtro-zona">
+          <option value="todas">Todas las zonas</option>
+        </select>
+      </div>
+
+      <!-- Mensajes del mapa (errores o "esta zona no tiene puntos").
+           aria-live="polite" hace que un lector de pantalla los lea cuando cambian. -->
+      <p id="mensaje-mapa" class="mensaje-mapa" aria-live="polite"></p>
+
+      <!-- Aquí Leaflet dibuja el mapa. NECESITA una altura en el CSS o no se ve. -->
+      <div id="mapa" class="mapa"></div>
+
+      <!-- Leyenda de colores -->
+      <ul class="leyenda" aria-label="Leyenda del mapa">
+        <li><span class="muestra muestra-encuentro"></span> Zona de encuentro</li>
+        <li><span class="muestra muestra-paso"></span> Zona de paso</li>
+        <li><span class="muestra muestra-punto"></span> Punto de encuentro</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- Leaflet como script clásico: crea la variable global "L" que usa mapa.js -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+
+  <!-- Nuestro código como ES module. type="module" permite usar import/export
+       y hace que el script espere a que el HTML esté listo. -->
+  <script type="module" src="js/mapa.js"></script>
+</body>
+</html>
