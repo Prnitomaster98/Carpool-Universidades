@@ -11,14 +11,14 @@
         <section class="tarjeta tarjeta-login">
             <header class="login-encabezado">
                 <h1 class="login-marca"> Carpool UVG</h1>
-                <p class="login-frase">No se que poner</p>
+                <p class="login-frase">¿Vas para la U?</p>
             </header>
 
             <form id="form-entrar" class="formulario" novalidate>
                 <h2>Ingresar</h2>
 
                 <label for="entrar-correo">Correo Institucional</label>
-                <input type="email" id="entrar-correo" autocomplete="email" placeholder="tunombre@uvg.edu.gt">
+                <input type="email" id="entrar-correo" autocomplete="email" placeholder="tunombre@uvg.edu.gt" required>
 
                 <label for="entrar-clave">Contraseña</label>
                 <input type="password" id="entrar-clave" autocomplete="current-password" required>
@@ -43,7 +43,7 @@
                 <label for="registro-clave">Contraseña (mínimo 6 caracteres)</label>
                 <input id="registro-clave" type="password" autocomplete="new-password" minlength="6" required>
 
-            <p id="error-registro" class="mensaje-error" role="alert">a</p>
+            <p id="error-registro" class="mensaje-error" role="alert"></p>
 
             <button type="submit" class="boton boton-principal">Crear cuenta</button>
         </form>

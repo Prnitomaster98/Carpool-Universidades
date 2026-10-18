@@ -28,11 +28,11 @@
    el HTML y mapa.js los usan. */
 :root {
   --color-fondo-pagina: #189b5e;
-  --color-fondo-tarjetas: #ffffff;
-  --color-texto-principal: #1f2933;
-  --color-texto-secundario: #5f6b7a;
+  --color-fondo-tarjetas: #1b1d1f;
+  --color-texto-principal: #e8ece9;
+  --color-texto-secundario: #a9b4ae;
   --color-enlaces-y-menu: #17750b;      /* azul de enlaces y menú */
-  --color-bordes: #d9dee5;
+  --color-bordes: #2e3236;
 
   /* Colores del mapa (mapa.js usa los mismos valores) */
   --color-zona-encuentro: #f97316;     /* naranja: zonas de encuentro */
@@ -448,4 +448,25 @@ a {
   text-align: center;
   font-size: 0.85rem;
   color: var(--color-texto-secundario);
+}
+
+/* ---------- 12. Sesión en el panel ---------- */
+
+/* Mientras se revisa la sesión, el contenido no se ve.
+   visibility (no display): el espacio se conserva, así el mapa
+   de Leaflet calcula bien su tamaño aunque esté oculto. */
+
+   body.cargando .contenido,
+body.cargando .sesion {
+  visibility: hidden;
+}
+
+.sesion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.saludo {
+  font-weight: 600;
 }

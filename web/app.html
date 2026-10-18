@@ -19,11 +19,11 @@
   <!-- Nuestros estilos van DESPUÉS, para poder ajustar los de Leaflet si hace falta -->
   <link rel="stylesheet" href="css/estilos.css">
 </head>
-<body>
+<body class="cargando">
 
   <!-- ===== Menú superior ===== -->
   <header class="barra-superior">
-    <a class="marca" href="app.html">🚗 Carpool por zonas</a>
+    <a class="marca" href="app.html">Carpool por zonas</a>
     <nav aria-label="Menú principal">
       <ul class="menu">
         <!-- aria-current="page" le dice a los lectores de pantalla en qué página estás -->
@@ -31,6 +31,10 @@
         <li><a href="recomendaciones.html">Recomendaciones</a></li>
       </ul>
     </nav>
+    <div class="sesion">
+      <span id="saludo" class="saludo"></span>
+      <button type="button" id="boton-salir" class="boton-enlace">Cerrar sesión</button>
+    </div>
   </header>
 
   <main class="contenido">
@@ -81,8 +85,7 @@
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
           crossorigin=""></script>
 
-  <!-- Nuestro código como ES module. type="module" permite usar import/export
-       y hace que el script espere a que el HTML esté listo. -->
   <script type="module" src="js/mapa.js"></script>
+  <script type="module" src="js/panel.js"></script>
 </body>
 </html>
