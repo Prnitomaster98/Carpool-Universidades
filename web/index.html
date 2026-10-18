@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de ingreso carpool UVG</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body class = "pagina-login">
+    <main class="contenedor-login">
+        <section class="tarjeta tarjeta-login">
+            <header class="login-encabezado">
+                <h1 class="login-marca"> Carpool UVG</h1>
+                <p class="login-frase">No se que poner</p>
+            </header>
+
+            <form id="form-entrar" class="formulario" novalidate>
+                <h2>Ingresar</h2>
+
+                <label for="entrar-correo">Correo Institucional</label>
+                <input type="email" id="entrar-correo" autocomplete="email" placeholder="tunombre@uvg.edu.gt">
+
+                <label for="entrar-clave">Contraseña</label>
+                <input type="password" id="entrar-clave" autocomplete="current-password" required>
+
+                <p id="error-entrar" class="mensaje-error" role="alert"></p>
+
+                <button type="submit" class="boton boton-principal">Entrar</button>
+            </form>
+
+            <form id="form-registro" class="formulario" novalidate hidden>
+                <h2>Crear cuenta</h2>
+
+                <label for="registro-nombre">Nombre</label>
+                <input id="registro-nombre" type="text" autocomplete="name" required>
+
+                <label for="registro-carrera">Carrera</label>
+                <input id="registro-carrera" type="text" required>
+
+                <label for="registro-correo">Correo UVG</label>
+                <input id="registro-correo" type="email" autocomplete="email" placeholder="tunombre@uvg.edu.gt" required>
+
+                <label for="registro-clave">Contraseña (mínimo 6 caracteres)</label>
+                <input id="registro-clave" type="password" autocomplete="new-password" minlength="6" required>
+
+            <p id="error-registro" class="mensaje-error" role="alert">a</p>
+
+            <button type="submit" class="boton boton-principal">Crear cuenta</button>
+        </form>
+
+        <p class="cambiar-formulario">
+            <span id="texto-cambiar">¿No tienes cuenta?</span>
+            <button type="button" id="boton-cambiar" class="boton-enlace">Regístrate</button>
+        </p>
+    <div id="aviso-verificacion" class="aviso" hidden>
+        <p>Te enviamos un correo de verificación. Ábrelo, haz clic en el enlace y vuelve a entrar.</p>
+        <button type="button" id="boton-reenviar" class="boton boton-secundario">Reenviar verificación</button>
+    </div>
+
+    <p class="nota-privacidad">Epic nunca te pedirá tu contraseña</p>
+
+        </section>
+    </main>
+    
+</body>
+</html>

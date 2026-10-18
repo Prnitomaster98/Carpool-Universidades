@@ -27,11 +27,11 @@
    Los nombres de CLASES (.tarjeta, .mapa...) no se cambiaron porque
    el HTML y mapa.js los usan. */
 :root {
-  --color-fondo-pagina: #f4f6f8;
+  --color-fondo-pagina: #189b5e;
   --color-fondo-tarjetas: #ffffff;
   --color-texto-principal: #1f2933;
   --color-texto-secundario: #5f6b7a;
-  --color-enlaces-y-menu: #1d4ed8;      /* azul de enlaces y menú */
+  --color-enlaces-y-menu: #17750b;      /* azul de enlaces y menú */
   --color-bordes: #d9dee5;
 
   /* Colores del mapa (mapa.js usa los mismos valores) */
@@ -278,4 +278,174 @@ a {
   .mapa {
     height: 70vh;
   }
+}
+
+[hidden]{
+  display:none !important;
+
+}
+
+/* ---------- 10. Formularios y botones (se reusan en toda la app) ---------- */
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;                        
+}
+
+.formulario label {
+  margin-top: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.formulario input {
+  width: 100%;
+  padding: 12px;                   
+  font: inherit;                  
+  color: inherit;
+  background: var(--color-fondo-tarjetas);
+  border: 1px solid var(--color-bordes);
+  border-radius: 8px;
+}
+
+.formulario input::placeholder {color: #8a9590;}
+
+/* :focus = cuando el campo está activo (escribiendo en él) */
+.formulario input:focus {
+  outline: none;
+  border-color: var(--color-enlaces-y-menu);
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2);   
+}
+
+/* Si algo es inválido*/
+.formulario input[aria-invalid="true"] {
+  border-color: #b91c1c;
+}
+
+/* Base de todos los botones */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;      
+  padding: 10px 16px;
+  font: inherit;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;                 /* manita al pasar el mouse */
+}
+
+.boton-principal {
+  width: 100%;
+  margin-top: 12px;
+  background: var(--color-enlaces-y-menu);
+  color: #ffffff;
+}
+
+.boton-principal:hover {
+  filter: brightness(1.1);         /* se aclara un poco al pasar el mouse */
+}
+
+/* disabled = mientras se espera la respuesta de Firebase */
+.boton-principal:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+
+.boton-secundario {
+  background: transparent;
+  color: var(--color-enlaces-y-menu);
+  border: 2px solid currentColor;  
+}
+
+/* Botón que parece enlace  */
+.boton-enlace {
+  padding: 4px;
+  font: inherit;
+  font-weight: 700;
+  color: var(--color-enlaces-y-menu);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Contorno visible con Tab/
+.boton:focus-visible,
+.boton-enlace:focus-visible {
+  outline: 3px solid var(--color-enlaces-y-menu);
+  outline-offset: 2px;
+}
+
+.mensaje-error {
+  min-height: 1.5em;
+  margin: 4px 0 0;
+  color: #b91c1c;
+  font-size: 0.9rem;
+}
+
+/* ---------- 11. Pantalla de login ---------- */
+
+/* Centra la tarjeta en medio de la pantalla, vertical y horizontalmente */
+.pagina-login {
+  min-height: 100vh;              
+  display: flex;
+  align-items: center;            
+  justify-content: center;        
+  padding: var(--espacio-margen-base);
+  background: linear-gradient(160deg, #99ecca 0%, var(--color-fondo-pagina) 60%);
+}
+
+
+.contenedor-login {
+  width: 100%;
+  max-width: 420px;
+}
+
+.tarjeta-login {
+  padding: calc(var(--espacio-margen-base) * 1.5);
+  box-shadow: 0 10px 30px rgba(19, 102, 185, 0.08);  
+}
+
+.login-encabezado {
+  text-align: center;
+  margin-bottom: var(--espacio-margen-base);
+}
+
+.login-marca {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.login-frase {
+  margin: 4px 0 0;
+  color: var(--color-texto-secundario);
+}
+
+.cambiar-formulario {
+  margin: 16px 0 0;
+  text-align: center;
+}
+
+
+.aviso {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--color-fondo-etiqueta-demo);
+  color: var(--color-texto-etiqueta-demo);
+}
+
+.aviso p {
+  margin: 0 0 8px;
+}
+
+.nota-privacidad {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-texto-secundario);
 }
