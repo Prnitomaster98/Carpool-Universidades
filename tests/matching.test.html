@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pruebas de matching.js</title>
+  <style>
+    body { font-family: monospace; background: #111; color: #eee; padding: 1rem; }
+    .ok { color: #4ade80; }
+    .mal { color: #f87171; }
+  </style>
+</head>
+<body>
+  <h1>Pruebas de matching.js</h1>
+  <p>Ábrelo con el servidor: desde carpool-zonas/ corre
+     <code>python -m http.server 8000</code> y entra a
+     <code>http://localhost:8000/tests/matching.test.html</code></p>
+  <pre id="salida"></pre>
+
+  <script type="module">
+    // Las pruebas escriben con console.log. Aquí "interceptamos" console.log
+    // para que además pinte cada línea en la página, en verde o en rojo.
+    const salida = document.getElementById('salida');
+    const logOriginal = console.log;
+    console.log = (texto) => {
+      logOriginal(texto);
+      const linea = document.createElement('div');
+      linea.textContent = texto;
+      if (texto.startsWith('✔')) linea.className = 'ok';
+      if (texto.startsWith('✘')) linea.className = 'mal';
+      salida.append(linea);
+    };
+
+    // Importar el archivo de pruebas lo ejecuta (son las mismas pruebas que en node)
+    await import('./matching.test.mjs');
+  </script>
+</body>
+</html>
