@@ -8,26 +8,43 @@
 /* ---------- 1. Variables de color y tamaño ----------
    :root es la raíz del documento. Las variables (--nombre) se
    usan con var(--nombre). Si quieres cambiar un color en toda
-   la app, lo cambias solo aquí. */
+   la app, lo cambias solo aquí.
+
+   GUÍA DE NOMBRES DE VARIABLES (estilos.css)
+   --color-fondo-pagina          Fondo gris claro de toda la página.
+   --color-fondo-tarjetas        Fondo blanco de las tarjetas y del menú.
+   --color-texto-principal       Color del texto normal.
+   --color-texto-secundario      Texto menos importante (avisos, leyenda).
+   --color-enlaces-y-menu        Azul de los enlaces y del menú.
+   --color-bordes                Líneas que separan tarjetas y elementos.
+   --color-zona-encuentro        Naranja de las zonas de encuentro (igual en mapa.js).
+   --color-zona-paso             Azul de las zonas de paso (igual en mapa.js).
+   --color-punto-encuentro       Rojo de los puntos de encuentro (igual en mapa.js).
+   --color-fondo-etiqueta-demo   Fondo amarillo de la etiqueta "Dato de prueba".
+   --color-texto-etiqueta-demo   Texto de esa etiqueta.
+   --radio-esquinas-redondeadas  Cuánto se redondean las esquinas.
+   --espacio-margen-base         Margen/relleno base; los demás espacios parten de él.
+   Los nombres de CLASES (.tarjeta, .mapa...) no se cambiaron porque
+   el HTML y mapa.js los usan. */
 :root {
-  --color-fondo: #f4f6f8;
-  --color-tarjeta: #ffffff;
-  --color-texto: #1f2933;
-  --color-texto-suave: #5f6b7a;
-  --color-primario: #1d4ed8;      /* azul de enlaces y menú */
-  --color-borde: #d9dee5;
+  --color-fondo-pagina: #f4f6f8;
+  --color-fondo-tarjetas: #ffffff;
+  --color-texto-principal: #1f2933;
+  --color-texto-secundario: #5f6b7a;
+  --color-enlaces-y-menu: #1d4ed8;      /* azul de enlaces y menú */
+  --color-bordes: #d9dee5;
 
   /* Colores del mapa (mapa.js usa los mismos valores) */
-  --color-encuentro: #f97316;     /* naranja: zonas de encuentro */
-  --color-paso: #2563eb;          /* azul: zonas de paso */
-  --color-punto: #b91c1c;         /* rojo: puntos de encuentro */
+  --color-zona-encuentro: #f97316;     /* naranja: zonas de encuentro */
+  --color-zona-paso: #2563eb;          /* azul: zonas de paso */
+  --color-punto-encuentro: #b91c1c;         /* rojo: puntos de encuentro */
 
   /* Etiqueta "Dato de prueba" */
-  --color-demo-fondo: #fef3c7;
-  --color-demo-texto: #92400e;
+  --color-fondo-etiqueta-demo: #fef3c7;
+  --color-texto-etiqueta-demo: #92400e;
 
-  --radio: 12px;                  /* esquinas redondeadas */
-  --espacio: 16px;                /* margen base */
+  --radio-esquinas-redondeadas: 12px;                  /* esquinas redondeadas */
+  --espacio-margen-base: 16px;                /* margen base */
 }
 
 /* ---------- 2. Reglas básicas ---------- */
@@ -45,8 +62,8 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 16px;               /* 16px evita que el iPhone haga zoom al tocar el <select> */
   line-height: 1.5;
-  color: var(--color-texto);
-  background: var(--color-fondo);
+  color: var(--color-texto-principal);
+  background: var(--color-fondo-pagina);
 }
 
 h2 {
@@ -55,7 +72,7 @@ h2 {
 }
 
 a {
-  color: var(--color-primario);
+  color: var(--color-enlaces-y-menu);
 }
 
 /* ---------- 3. Menú superior ---------- */
@@ -65,9 +82,9 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 12px var(--espacio);
-  background: var(--color-tarjeta);
-  border-bottom: 1px solid var(--color-borde);
+  padding: 12px var(--espacio-margen-base);
+  background: var(--color-fondo-tarjetas);
+  border-bottom: 1px solid var(--color-bordes);
   position: sticky;              /* el menú se queda arriba al bajar */
   top: 0;
   z-index: 1000;                 /* por encima del mapa (Leaflet usa z-index hasta ~800) */
@@ -76,7 +93,7 @@ a {
 .marca {
   font-weight: 700;
   text-decoration: none;
-  color: var(--color-texto);
+  color: var(--color-texto-principal);
 }
 
 .menu {
@@ -101,30 +118,30 @@ a {
 
 /* La página actual se marca diferente */
 .menu a[aria-current="page"] {
-  background: var(--color-primario);
+  background: var(--color-enlaces-y-menu);
   color: #ffffff;
 }
 
 /* ---------- 4. Contenido y tarjetas ---------- */
 .contenido {
   display: grid;
-  gap: var(--espacio);
-  padding: var(--espacio);
+  gap: var(--espacio-margen-base);
+  padding: var(--espacio-margen-base);
   max-width: 1280px;
   margin: 0 auto;                /* centra el contenido en pantallas grandes */
 }
 
 .tarjeta {
-  background: var(--color-tarjeta);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio);
-  padding: var(--espacio);
+  background: var(--color-fondo-tarjetas);
+  border: 1px solid var(--color-bordes);
+  border-radius: var(--radio-esquinas-redondeadas);
+  padding: var(--espacio-margen-base);
   min-width: 0;                  /* evita que el mapa estire la columna de la grilla */
 }
 
 .texto-vacio {
   margin: 0;
-  color: var(--color-texto-suave);
+  color: var(--color-texto-secundario);
   font-style: italic;
 }
 
@@ -142,7 +159,7 @@ a {
   max-width: 100%;
   padding: 8px;
   font-size: 1rem;
-  border: 1px solid var(--color-borde);
+  border: 1px solid var(--color-bordes);
   border-radius: 8px;
   background: #ffffff;
 }
@@ -150,7 +167,7 @@ a {
 .mensaje-mapa {
   margin: 0 0 8px;
   min-height: 1.5em;             /* reserva el espacio para que el mapa no "salte" */
-  color: var(--color-texto-suave);
+  color: var(--color-texto-secundario);
   font-size: 0.9rem;
 }
 
@@ -165,7 +182,7 @@ a {
   min-height: 320px;
   width: 100%;
   border-radius: 8px;
-  border: 1px solid var(--color-borde);
+  border: 1px solid var(--color-bordes);
 }
 
 /* Leyenda debajo del mapa */
@@ -177,7 +194,7 @@ a {
   padding: 0;
   list-style: none;
   font-size: 0.9rem;
-  color: var(--color-texto-suave);
+  color: var(--color-texto-secundario);
 }
 
 .leyenda li {
@@ -193,9 +210,9 @@ a {
   border-radius: 4px;
 }
 
-.muestra-encuentro { background: var(--color-encuentro); opacity: 0.6; }
-.muestra-paso      { background: var(--color-paso);      opacity: 0.6; }
-.muestra-punto     { background: var(--color-punto); border-radius: 50%; }
+.muestra-encuentro { background: var(--color-zona-encuentro); opacity: 0.6; }
+.muestra-paso      { background: var(--color-zona-paso);      opacity: 0.6; }
+.muestra-punto     { background: var(--color-punto-encuentro); border-radius: 50%; }
 
 /* Contenido de los popups (las ventanitas al tocar un marcador).
    Empezamos con ".leaflet-popup-content" porque Leaflet ya le da márgenes
@@ -211,7 +228,7 @@ a {
 
 .leaflet-popup-content .popup-fecha {
   margin: 0;
-  color: var(--color-texto-suave);
+  color: var(--color-texto-secundario);
   font-size: 0.85rem;
 }
 
@@ -222,8 +239,8 @@ a {
   margin-top: 6px;
   padding: 2px 8px;
   border-radius: 999px;          /* forma de "pastilla" */
-  background: var(--color-demo-fondo);
-  color: var(--color-demo-texto);
+  background: var(--color-fondo-etiqueta-demo);
+  color: var(--color-texto-etiqueta-demo);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.02em;

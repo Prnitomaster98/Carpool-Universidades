@@ -10,57 +10,132 @@
 //   2. Lee zonas.geojson y dibuja las zonas, con color según su tipo.
 //   3. Lee puntos-encuentro.json y pone un marcador por punto, con popup.
 //   4. Llena el filtro <select> y muestra solo la zona elegida.
-//   5. EXPORTA resaltarPunto(puntoId), que usará la Fase 5.
+//   5. EXPORTA resaltarPunto(idPuntoBuscado), que usará la Fase 5.
+//
+// ==========================================================
+// GUÍA DE NOMBRES DE VARIABLES (mapa.js)
+// ==========================================================
+// En JavaScript se acostumbra escribir los nombres "pegados" con mayúscula
+// en cada palabra nueva (camelCase): nombrePerfilActual. Las constantes de
+// configuración van en MAYÚSCULAS con guion bajo: COLOR_PUNTO_NORMAL.
+//
+// --- Configuración (constantes) ---
+// COORDENADAS_CENTRO_INICIAL_MAPA  [latitud, longitud] donde arranca el mapa
+//                                  (Ciudad de Guatemala).
+// NIVEL_ACERCAMIENTO_INICIAL       Zoom al abrir: 1 = mundo, 19 = una calle.
+// RUTA_ARCHIVO_ZONAS               Dónde está zonas.geojson (relativo a app.html).
+// RUTA_ARCHIVO_PUNTOS_ENCUENTRO    Dónde está puntos-encuentro.json.
+// COLORES_POR_TIPO_DE_ZONA         tipo de zona ("encuentro"/"paso") → color.
+//                                  Deben coincidir con las variables del CSS.
+// COLOR_ZONA_TIPO_DESCONOCIDO      Gris para una zona con un tipo no esperado.
+// COLOR_PUNTO_NORMAL               Rojo de los puntos de encuentro.
+// COLOR_PUNTO_RESALTADO            Morado del punto que marca resaltarPunto().
+//
+// --- Estado del módulo (viven mientras la página está abierta) ---
+// mapaDeZonas                El mapa de Leaflet. Empieza en null hasta que
+//                            iniciarMapa() lo crea; por eso resaltarPunto()
+//                            revisa que exista antes de usarlo.
+// capasPorIdZona             Map: id de zona → capa (polígono) de esa zona.
+//                            Permite mostrar/ocultar una zona al instante.
+// marcadoresPorIdPunto       Map: id de punto → { marcadorPunto, puntoEncuentro }.
+//                            Permite encontrar un punto sin recorrer todo.
+// idPuntoResaltadoActual     Qué punto está morado ahora (o null). Sirve para
+//                            regresarlo a rojo cuando se resalta otro.
+// selectorFiltroZona         El <select id="filtro-zona"> del HTML.
+// parrafoMensajeMapa         El <p id="mensaje-mapa"> donde se escriben avisos.
+//
+// --- Parámetros y variables dentro de las funciones ---
+// textoMensaje / esMensajeDeError   Qué mostrar y si se pinta en rojo.
+// rutaArchivo                Ruta del JSON a descargar.
+// respuestaServidor          Lo que devolvió fetch() (incluye .ok y .status).
+// textoFecha                 Fecha "AAAA-MM-DD" tal como viene en el JSON.
+// numeroAnio / numeroMes / numeroDia   Las partes de esa fecha como números.
+// fechaLocal                 Objeto Date creado en la hora de Guatemala.
+// etiquetaDatoPrueba         El <span> amarillo "Dato de prueba".
+// claseCss / textoParrafo    Clase y texto del <p> que crea crearParrafo().
+// parrafoNuevo               Ese <p> recién creado.
+// puntoEncuentro             Un punto de puntos-encuentro.json (nombre, lat, lng...).
+// contenedorPopup            El <div> que se muestra dentro del popup.
+// propiedadesZona            El bloque "properties" de una zona del GeoJSON.
+// tipoZonaLegible            "Zona de encuentro" o "Zona de paso" (para leer).
+// datosGeoJSONZonas          Todo el contenido de zonas.geojson.
+// capaTodasLasZonas          La capa de Leaflet con todos los polígonos.
+// zonaGeoJSON                Una zona ("feature") del GeoJSON.
+// colorZona                  Color que le toca a esa zona según su tipo.
+// capaZona                   El polígono de Leaflet de una zona.
+// opcionSelector             Una <option> nueva del filtro.
+// listaPuntosEncuentro       Todo el contenido de puntos-encuentro.json.
+// marcadorPunto              El círculo de Leaflet de un punto.
+// idZonaElegida              La zona elegida en el filtro ("todas" = todas).
+// idZona                     El id de una zona mientras se recorren.
+// zonaEsVisible / puntoEsVisible   Si esa zona o ese punto debe verse.
+// cantidadPuntosVisibles     Cuántos puntos quedaron visibles tras filtrar.
+// grupoTodasLasZonas         Todas las capas juntas, para encuadrar la cámara.
+// idPuntoBuscado             El id que recibe resaltarPunto() ("punto-3").
+// registroPuntoEncontrado    Lo que se encontró en marcadoresPorIdPunto (o undefined).
+// hayDatosDePrueba           true si alguna zona o punto tiene esDemo: true.
+// errorDeCarga               El error que ocurrió al descargar los archivos.
+//
+// --- Nombres que NO se cambiaron (y por qué) ---
+// L                          Variable global que crea la librería Leaflet.
+// resaltarPunto              Función EXPORTADA: la Fase 5 la importa con este nombre.
+// lat, lng, zonaId, nombre, notaSeguridad, fechaObservacion, esDemo, tipo, id
+//                            Son campos de los archivos JSON/GeoJSON. Si se
+//                            cambian aquí, hay que cambiarlos también en los datos.
+// radius, color, weight, fillColor, fillOpacity, style, onEachFeature...
+//                            Son opciones de Leaflet: la librería solo entiende
+//                            esos nombres en inglés.
 // ==========================================================
 
 // ---------- 1. Configuración ----------
 
 // Centro del mapa: Ciudad de Guatemala. Leaflet usa el orden [latitud, longitud].
-const CENTRO_INICIAL = [14.6349, -90.5069];
-const ZOOM_INICIAL = 14; // 1 = el mundo entero, 19 = una calle muy de cerca
+const COORDENADAS_CENTRO_INICIAL_MAPA = [14.6349, -90.5069];
+const NIVEL_ACERCAMIENTO_INICIAL = 14; // 1 = el mundo entero, 19 = una calle muy de cerca
 
 // Rutas de los datos. Son relativas a app.html (la página que carga este módulo).
-const RUTA_ZONAS = 'data/zonas.geojson';
-const RUTA_PUNTOS = 'data/puntos-encuentro.json';
+const RUTA_ARCHIVO_ZONAS = 'data/zonas.geojson';
+const RUTA_ARCHIVO_PUNTOS_ENCUENTRO = 'data/puntos-encuentro.json';
 
 // Colores por tipo de zona. Son los mismos que las variables del CSS.
-const COLORES_ZONA = {
+const COLORES_POR_TIPO_DE_ZONA = {
   encuentro: '#f97316', // naranja
   paso: '#2563eb',      // azul
 };
-const COLOR_PUNTO = '#b91c1c';      // rojo
-const COLOR_RESALTADO = '#7c3aed';  // morado, para resaltarPunto()
+const COLOR_ZONA_TIPO_DESCONOCIDO = '#6b7280'; // gris
+const COLOR_PUNTO_NORMAL = '#b91c1c';          // rojo
+const COLOR_PUNTO_RESALTADO = '#7c3aed';       // morado, para resaltarPunto()
 
 // ---------- 2. Variables del módulo ----------
 // Viven mientras la página esté abierta. Las guardamos para que el filtro
 // y resaltarPunto() puedan encontrar las capas después.
 
-let mapa = null;                    // el mapa de Leaflet
-const capasZona = new Map();        // zonaId  -> capa (polígono) de esa zona
-const marcadores = new Map();       // puntoId -> { marcador, punto }
-let puntoResaltadoId = null;        // qué punto está resaltado ahora
+let mapaDeZonas = null;                       // el mapa de Leaflet
+const capasPorIdZona = new Map();             // idZona  -> capa (polígono) de esa zona
+const marcadoresPorIdPunto = new Map();       // idPunto -> { marcadorPunto, puntoEncuentro }
+let idPuntoResaltadoActual = null;            // qué punto está resaltado ahora
 
 // Referencias a elementos del HTML
-const selectZona = document.getElementById('filtro-zona');
-const mensaje = document.getElementById('mensaje-mapa');
+const selectorFiltroZona = document.getElementById('filtro-zona');
+const parrafoMensajeMapa = document.getElementById('mensaje-mapa');
 
 // ---------- 3. Funciones de ayuda ----------
 
-// Muestra un texto debajo del filtro. Si esError es true, se ve en rojo.
-function mostrarMensaje(texto, esError = false) {
-  mensaje.textContent = texto;
-  mensaje.classList.toggle('error', esError);
+// Muestra un texto debajo del filtro. Si esMensajeDeError es true, se ve en rojo.
+function mostrarMensaje(textoMensaje, esMensajeDeError = false) {
+  parrafoMensajeMapa.textContent = textoMensaje;
+  parrafoMensajeMapa.classList.toggle('error', esMensajeDeError);
 }
 
 // Descarga un archivo JSON. fetch() devuelve una "promesa": con await
 // esperamos la respuesta sin congelar la página.
-async function cargarJSON(ruta) {
-  const respuesta = await fetch(ruta);
+async function cargarJSON(rutaArchivo) {
+  const respuestaServidor = await fetch(rutaArchivo);
   // fetch NO da error si el archivo no existe (404); hay que revisarlo a mano.
-  if (!respuesta.ok) {
-    throw new Error(`No se pudo cargar ${ruta} (código ${respuesta.status})`);
+  if (!respuestaServidor.ok) {
+    throw new Error(`No se pudo cargar ${rutaArchivo} (código ${respuestaServidor.status})`);
   }
-  return respuesta.json(); // convierte el texto JSON en objetos de JavaScript
+  return respuestaServidor.json(); // convierte el texto JSON en objetos de JavaScript
 }
 
 // Convierte "2026-10-10" en "10 de octubre de 2026".
@@ -68,141 +143,143 @@ async function cargarJSON(ruta) {
 // Guatemala (UTC-6) eso es todavía el día 9. Por eso separamos año, mes y día
 // y creamos la fecha en hora local.
 function formatearFecha(textoFecha) {
-  const [anio, mes, dia] = textoFecha.split('-').map(Number);
-  const fecha = new Date(anio, mes - 1, dia); // en JavaScript los meses van de 0 a 11
-  return fecha.toLocaleDateString('es-GT', { day: 'numeric', month: 'long', year: 'numeric' });
+  const [numeroAnio, numeroMes, numeroDia] = textoFecha.split('-').map(Number);
+  // en JavaScript los meses van de 0 a 11
+  const fechaLocal = new Date(numeroAnio, numeroMes - 1, numeroDia);
+  return fechaLocal.toLocaleDateString('es-GT', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 // Crea la etiqueta amarilla "Dato de prueba".
 function crearEtiquetaDemo() {
-  const etiqueta = document.createElement('span');
-  etiqueta.className = 'etiqueta-demo';
-  etiqueta.textContent = 'Dato de prueba';
-  return etiqueta;
+  const etiquetaDatoPrueba = document.createElement('span');
+  etiquetaDatoPrueba.className = 'etiqueta-demo';
+  etiquetaDatoPrueba.textContent = 'Dato de prueba';
+  return etiquetaDatoPrueba;
 }
 
 // Crea un <p> con una clase y un texto.
 // Usamos textContent (y NO innerHTML) para que, si un dato trae algo como
 // "<script>", se muestre como texto y nunca se ejecute como código.
-function crearParrafo(clase, texto) {
-  const p = document.createElement('p');
-  p.className = clase;
-  p.textContent = texto;
-  return p;
+function crearParrafo(claseCss, textoParrafo) {
+  const parrafoNuevo = document.createElement('p');
+  parrafoNuevo.className = claseCss;
+  parrafoNuevo.textContent = textoParrafo;
+  return parrafoNuevo;
 }
 
 // Arma el contenido del popup de un punto de encuentro.
-function crearPopupPunto(punto) {
-  const caja = document.createElement('div');
-  caja.append(
-    crearParrafo('popup-titulo', punto.nombre),
-    crearParrafo('popup-texto', `🛡️ ${punto.notaSeguridad}`),
-    crearParrafo('popup-fecha', `Observado el ${formatearFecha(punto.fechaObservacion)}`),
+function crearPopupPunto(puntoEncuentro) {
+  const contenedorPopup = document.createElement('div');
+  contenedorPopup.append(
+    crearParrafo('popup-titulo', puntoEncuentro.nombre),
+    crearParrafo('popup-texto', `🛡️ ${puntoEncuentro.notaSeguridad}`),
+    crearParrafo('popup-fecha', `Observado el ${formatearFecha(puntoEncuentro.fechaObservacion)}`),
   );
-  if (punto.esDemo) {
-    caja.append(crearEtiquetaDemo());
+  if (puntoEncuentro.esDemo) {
+    contenedorPopup.append(crearEtiquetaDemo());
   }
-  return caja;
+  return contenedorPopup;
 }
 
 // Arma el contenido del popup de una zona.
-function crearPopupZona(propiedades) {
-  const caja = document.createElement('div');
-  const tipoLegible = propiedades.tipo === 'encuentro' ? 'Zona de encuentro' : 'Zona de paso';
-  caja.append(
-    crearParrafo('popup-titulo', propiedades.nombre),
-    crearParrafo('popup-texto', tipoLegible),
+function crearPopupZona(propiedadesZona) {
+  const contenedorPopup = document.createElement('div');
+  const tipoZonaLegible = propiedadesZona.tipo === 'encuentro' ? 'Zona de encuentro' : 'Zona de paso';
+  contenedorPopup.append(
+    crearParrafo('popup-titulo', propiedadesZona.nombre),
+    crearParrafo('popup-texto', tipoZonaLegible),
   );
-  if (propiedades.esDemo) {
-    caja.append(crearEtiquetaDemo());
+  if (propiedadesZona.esDemo) {
+    contenedorPopup.append(crearEtiquetaDemo());
   }
-  return caja;
+  return contenedorPopup;
 }
 
 // Estilo normal de un marcador de punto (círculo rojo).
 function estiloPuntoNormal() {
-  return { radius: 10, color: '#ffffff', weight: 2, fillColor: COLOR_PUNTO, fillOpacity: 0.95 };
+  return { radius: 10, color: '#ffffff', weight: 2, fillColor: COLOR_PUNTO_NORMAL, fillOpacity: 0.95 };
 }
 
 // ---------- 4. Dibujar las zonas ----------
 
-function dibujarZonas(geojson) {
+function dibujarZonas(datosGeoJSONZonas) {
   // L.geoJSON convierte el GeoJSON en capas de Leaflet.
-  const capaGeoJSON = L.geoJSON(geojson, {
+  const capaTodasLasZonas = L.geoJSON(datosGeoJSONZonas, {
     // style se llama una vez por zona y decide su color según el tipo.
-    style: (feature) => {
-      const color = COLORES_ZONA[feature.properties.tipo] ?? '#6b7280'; // gris si el tipo es raro
-      return { color, weight: 2, fillColor: color, fillOpacity: 0.25 };
+    style: (zonaGeoJSON) => {
+      const colorZona =
+        COLORES_POR_TIPO_DE_ZONA[zonaGeoJSON.properties.tipo] ?? COLOR_ZONA_TIPO_DESCONOCIDO;
+      return { color: colorZona, weight: 2, fillColor: colorZona, fillOpacity: 0.25 };
     },
     // onEachFeature también se llama una vez por zona: guardamos la capa y le
     // ponemos su popup.
-    onEachFeature: (feature, capa) => {
-      capasZona.set(feature.properties.id, capa);
-      capa.bindPopup(crearPopupZona(feature.properties));
+    onEachFeature: (zonaGeoJSON, capaZona) => {
+      capasPorIdZona.set(zonaGeoJSON.properties.id, capaZona);
+      capaZona.bindPopup(crearPopupZona(zonaGeoJSON.properties));
     },
   });
 
-  capaGeoJSON.addTo(mapa);
+  capaTodasLasZonas.addTo(mapaDeZonas);
   // Ajusta la vista para que se vean todas las zonas
-  mapa.fitBounds(capaGeoJSON.getBounds(), { padding: [20, 20] });
+  mapaDeZonas.fitBounds(capaTodasLasZonas.getBounds(), { padding: [20, 20] });
 
   // Llenar el <select> con una opción por zona
-  for (const feature of geojson.features) {
-    const opcion = document.createElement('option');
-    opcion.value = feature.properties.id;
-    opcion.textContent = feature.properties.nombre;
-    selectZona.append(opcion);
+  for (const zonaGeoJSON of datosGeoJSONZonas.features) {
+    const opcionSelector = document.createElement('option');
+    opcionSelector.value = zonaGeoJSON.properties.id;
+    opcionSelector.textContent = zonaGeoJSON.properties.nombre;
+    selectorFiltroZona.append(opcionSelector);
   }
 }
 
 // ---------- 5. Dibujar los puntos de encuentro ----------
 
-function dibujarPuntos(puntos) {
-  for (const punto of puntos) {
+function dibujarPuntos(listaPuntosEncuentro) {
+  for (const puntoEncuentro of listaPuntosEncuentro) {
     // circleMarker es un círculo que mantiene su tamaño en pantalla al hacer zoom.
-    const marcador = L.circleMarker([punto.lat, punto.lng], estiloPuntoNormal());
-    marcador.bindPopup(crearPopupPunto(punto));
-    marcador.addTo(mapa);
-    marcadores.set(punto.id, { marcador, punto });
+    const marcadorPunto = L.circleMarker([puntoEncuentro.lat, puntoEncuentro.lng], estiloPuntoNormal());
+    marcadorPunto.bindPopup(crearPopupPunto(puntoEncuentro));
+    marcadorPunto.addTo(mapaDeZonas);
+    marcadoresPorIdPunto.set(puntoEncuentro.id, { marcadorPunto, puntoEncuentro });
   }
 }
 
 // ---------- 6. Filtro por zona ----------
 
 // Muestra solo la zona elegida y sus puntos ("todas" = mostrar todo).
-function aplicarFiltro(zonaId) {
+function aplicarFiltro(idZonaElegida) {
   // Zonas: agregar o quitar cada polígono del mapa
-  for (const [id, capa] of capasZona) {
-    const visible = zonaId === 'todas' || id === zonaId;
-    if (visible) capa.addTo(mapa);
-    else capa.remove();
+  for (const [idZona, capaZona] of capasPorIdZona) {
+    const zonaEsVisible = idZonaElegida === 'todas' || idZona === idZonaElegida;
+    if (zonaEsVisible) capaZona.addTo(mapaDeZonas);
+    else capaZona.remove();
   }
 
   // Puntos: igual, según la zona a la que pertenecen
-  let puntosVisibles = 0;
-  for (const { marcador, punto } of marcadores.values()) {
-    const visible = zonaId === 'todas' || punto.zonaId === zonaId;
-    if (visible) {
-      marcador.addTo(mapa);
-      puntosVisibles++;
+  let cantidadPuntosVisibles = 0;
+  for (const { marcadorPunto, puntoEncuentro } of marcadoresPorIdPunto.values()) {
+    const puntoEsVisible = idZonaElegida === 'todas' || puntoEncuentro.zonaId === idZonaElegida;
+    if (puntoEsVisible) {
+      marcadorPunto.addTo(mapaDeZonas);
+      cantidadPuntosVisibles++;
     } else {
-      marcador.remove();
+      marcadorPunto.remove();
     }
   }
 
   // Mover la cámara a lo que quedó visible
-  if (zonaId === 'todas') {
-    const grupo = L.featureGroup([...capasZona.values()]);
-    mapa.fitBounds(grupo.getBounds(), { padding: [20, 20] });
-  } else if (capasZona.has(zonaId)) {
-    mapa.fitBounds(capasZona.get(zonaId).getBounds(), { padding: [20, 20] });
+  if (idZonaElegida === 'todas') {
+    const grupoTodasLasZonas = L.featureGroup([...capasPorIdZona.values()]);
+    mapaDeZonas.fitBounds(grupoTodasLasZonas.getBounds(), { padding: [20, 20] });
+  } else if (capasPorIdZona.has(idZonaElegida)) {
+    mapaDeZonas.fitBounds(capasPorIdZona.get(idZonaElegida).getBounds(), { padding: [20, 20] });
   }
 
   // Mensaje para el usuario
-  if (puntosVisibles === 0) {
+  if (cantidadPuntosVisibles === 0) {
     mostrarMensaje('Esta zona es de paso: no tiene puntos de encuentro.');
   } else {
-    mostrarMensaje(`${puntosVisibles} punto(s) de encuentro visibles.`);
+    mostrarMensaje(`${cantidadPuntosVisibles} punto(s) de encuentro visibles.`);
   }
 }
 
@@ -214,35 +291,35 @@ function aplicarFiltro(zonaId) {
  * Ejemplo de uso en otro módulo:
  *   import { resaltarPunto } from './mapa.js';
  *   resaltarPunto('punto-3');
- * @param {string} puntoId - el "id" del punto en puntos-encuentro.json
+ * @param {string} idPuntoBuscado - el "id" del punto en puntos-encuentro.json
  * @returns {boolean} true si lo encontró, false si no existe o el mapa no ha cargado
  */
-export function resaltarPunto(puntoId) {
-  const encontrado = marcadores.get(puntoId);
-  if (!mapa || !encontrado) {
-    console.warn(`resaltarPunto: no encontré el punto "${puntoId}"`);
+export function resaltarPunto(idPuntoBuscado) {
+  const registroPuntoEncontrado = marcadoresPorIdPunto.get(idPuntoBuscado);
+  if (!mapaDeZonas || !registroPuntoEncontrado) {
+    console.warn(`resaltarPunto: no encontré el punto "${idPuntoBuscado}"`);
     return false;
   }
 
   // 1) Quitar el resaltado del punto anterior, si había uno
-  if (puntoResaltadoId && marcadores.has(puntoResaltadoId)) {
-    marcadores.get(puntoResaltadoId).marcador.setStyle(estiloPuntoNormal());
+  if (idPuntoResaltadoActual && marcadoresPorIdPunto.has(idPuntoResaltadoActual)) {
+    marcadoresPorIdPunto.get(idPuntoResaltadoActual).marcadorPunto.setStyle(estiloPuntoNormal());
   }
 
   // 2) Si el filtro está ocultando ese punto, cambiar el filtro a su zona
-  const { marcador, punto } = encontrado;
-  if (selectZona.value !== 'todas' && selectZona.value !== punto.zonaId) {
-    selectZona.value = punto.zonaId;
-    aplicarFiltro(punto.zonaId);
+  const { marcadorPunto, puntoEncuentro } = registroPuntoEncontrado;
+  if (selectorFiltroZona.value !== 'todas' && selectorFiltroZona.value !== puntoEncuentro.zonaId) {
+    selectorFiltroZona.value = puntoEncuentro.zonaId;
+    aplicarFiltro(puntoEncuentro.zonaId);
   }
 
   // 3) Resaltar, traer al frente, centrar y abrir el popup
-  marcador.setStyle({ radius: 14, fillColor: COLOR_RESALTADO, color: '#ffffff', weight: 3 });
-  marcador.bringToFront();
-  mapa.setView([punto.lat, punto.lng], Math.max(mapa.getZoom(), 16));
-  marcador.openPopup();
+  marcadorPunto.setStyle({ radius: 14, fillColor: COLOR_PUNTO_RESALTADO, color: '#ffffff', weight: 3 });
+  marcadorPunto.bringToFront();
+  mapaDeZonas.setView([puntoEncuentro.lat, puntoEncuentro.lng], Math.max(mapaDeZonas.getZoom(), 16));
+  marcadorPunto.openPopup();
 
-  puntoResaltadoId = puntoId;
+  idPuntoResaltadoActual = idPuntoBuscado;
   return true;
 }
 
@@ -256,27 +333,32 @@ async function iniciarMapa() {
   }
 
   // Crear el mapa dentro de <div id="mapa">
-  mapa = L.map('mapa').setView(CENTRO_INICIAL, ZOOM_INICIAL);
+  mapaDeZonas = L.map('mapa').setView(COORDENADAS_CENTRO_INICIAL_MAPA, NIVEL_ACERCAMIENTO_INICIAL);
 
   // Capa de fondo: imágenes ("tiles") de OpenStreetMap. No necesita clave de API.
   // La atribución (el texto abajo a la derecha) es OBLIGATORIA por la licencia de OSM.
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  }).addTo(mapa);
+  }).addTo(mapaDeZonas);
 
   try {
     // Promise.all descarga los dos archivos al mismo tiempo y espera a ambos.
-    const [zonas, puntos] = await Promise.all([cargarJSON(RUTA_ZONAS), cargarJSON(RUTA_PUNTOS)]);
-    dibujarZonas(zonas);
-    dibujarPuntos(puntos);
+    const [datosGeoJSONZonas, listaPuntosEncuentro] = await Promise.all([
+      cargarJSON(RUTA_ARCHIVO_ZONAS),
+      cargarJSON(RUTA_ARCHIVO_PUNTOS_ENCUENTRO),
+    ]);
+    dibujarZonas(datosGeoJSONZonas);
+    dibujarPuntos(listaPuntosEncuentro);
 
-    const hayDemo = zonas.features.some((f) => f.properties.esDemo) || puntos.some((p) => p.esDemo);
-    mostrarMensaje(hayDemo
+    const hayDatosDePrueba =
+      datosGeoJSONZonas.features.some((zonaGeoJSON) => zonaGeoJSON.properties.esDemo) ||
+      listaPuntosEncuentro.some((puntoEncuentro) => puntoEncuentro.esDemo);
+    mostrarMensaje(hayDatosDePrueba
       ? 'Las zonas y puntos actuales son datos de prueba.'
-      : `${puntos.length} punto(s) de encuentro.`);
-  } catch (error) {
-    console.error(error);
+      : `${listaPuntosEncuentro.length} punto(s) de encuentro.`);
+  } catch (errorDeCarga) {
+    console.error(errorDeCarga);
     mostrarMensaje(
       'No se pudieron cargar las zonas o los puntos. Revisa que los archivos existan ' +
       'en web/data/ y que el JSON no tenga errores (python -m json.tool).',
@@ -286,7 +368,7 @@ async function iniciarMapa() {
   }
 
   // Cuando el usuario cambie el <select>, aplicar el filtro
-  selectZona.addEventListener('change', () => aplicarFiltro(selectZona.value));
+  selectorFiltroZona.addEventListener('change', () => aplicarFiltro(selectorFiltroZona.value));
 }
 
 iniciarMapa();
