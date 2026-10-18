@@ -1,6 +1,8 @@
 # Carpool universitario por zonas
 
-Web app de carpool para **una** universidad (piloto por definir). Los estudiantes:
+Web app de carpool para **una** universidad. Universidad piloto: **Universidad del Valle de Guatemala (UVG)**,
+Campus Central, zona 15, Ciudad de Guatemala. Correo institucional permitido: `@uvg.edu.gt` [verificar con un estudiante].
+Los estudiantes:
 
 1. Se registran con su **correo institucional verificado**.
 2. Eligen las **zonas** por las que pasan y su **horario** por día.
@@ -102,13 +104,13 @@ Las reglas de seguridad se publican con `firebase deploy --only firestore:rules`
 
 ## ✋ Pasos manuales que te quedan
 
-- [ ] Elegir la universidad piloto.
+- [x] Elegir la universidad piloto → **UVG** (dominio `uvg.edu.gt`).
 - [ ] Crear el proyecto en <https://console.firebase.google.com>.
 - [ ] Activar **Authentication → Correo/contraseña**.
 - [ ] Crear la base **Cloud Firestore**.
 - [ ] Registrar una app web y pegar su configuración en `web/js/firebase-config.js`
       (reemplazando `"TU_API_KEY"`, etc.).
-- [ ] Cambiar `DOMINIO_UNIVERSIDAD` en `web/js/auth.js` **y** en `firebase/firestore.rules`.
+- [ ] Poner `DOMINIO_UNIVERSIDAD = "uvg.edu.gt"` en `web/js/auth.js` **y** en `firebase/firestore.rules`.
 - [ ] Quitar el dominio de prueba marcado con **"QUITAR ANTES DE LA DEMO"**.
 - [ ] Publicar las reglas de `firebase/firestore.rules`.
 - [ ] Dibujar las zonas reales en <https://geojson.io> y reemplazar `web/data/zonas.geojson`.
