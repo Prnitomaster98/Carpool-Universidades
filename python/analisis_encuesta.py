@@ -1,69 +1,5 @@
-"""
-analisis_encuesta.py — resume la encuesta de movilidad y hace gráficos.
+# Regresa un análisis de la encuesta, junto con los datos y mensajes de prueba importantes.
 
-Cómo correrlo (desde la carpeta python/):
-    python analisis_encuesta.py
-
-Lee data/encuesta.csv (la encuesta REAL exportada de Google Forms).
-Si todavía no existe, usa data/encuesta_ejemplo.csv y lo avisa en grande.
-
-Resultado:
-- Un resumen impreso en la terminal.
-- Gráficos de barras interactivos en salida/*.html (ábrelos con doble clic;
-    funcionan sin internet).
-
-======================================================================
-GUÍA DE NOMBRES DE VARIABLES (analisis_encuesta.py)
-======================================================================
-Las constantes y funciones que vienen de comun.py (CARPETA_DE_RESULTADOS_
-GENERADOS, DIAS_DE_CLASE_SIN_TILDE, etc.) están explicadas en la guía de
-comun.py.
-
---- contar_horas() ---
-tabla_encuesta               La encuesta ya limpia (tabla de pandas).
-tipo_de_hora                 "entrada" o "salida": qué columnas se cuentan.
-contador_de_horas            Counter que lleva cuántas veces aparece cada hora.
-dia_de_clase                 El día que se está recorriendo ("lunes"...).
-serie_veces_por_hora         Resultado final: hora → cantidad de veces,
-                             ordenado de la más temprana a la más tarde.
-
---- grafico_barras() ---
-serie_de_datos               Los datos a graficar (etiqueta → cantidad).
-titulo_del_grafico           Texto que va arriba del gráfico.
-etiqueta_eje_x               Nombre del eje horizontal ("Hora", "Zona"...).
-nombre_archivo_html          Nombre con el que se guarda el gráfico en salida/.
-encuesta_es_real             False = se agrega "⚠️ DATOS DE EJEMPLO" al título.
-                             Importa para nunca presentar datos falsos como reales.
-figura_plotly                El gráfico de barras creado por Plotly.
-ruta_archivo_guardado        Ruta completa del HTML que se guardó.
-
---- ejecutar_programa_principal() ---
-total_respuestas_validas     Cuántas filas quedaron después de limpiar.
-                             Es la base para calcular porcentajes.
-conteo_horas_entrada         Veces que aparece cada hora de ENTRADA.
-conteo_horas_salida          Veces que aparece cada hora de SALIDA.
-conteo_por_zona              Cuántas personas vienen de cada zona.
-conteo_por_transporte        Cuántas personas usan cada medio de transporte.
-conteo_por_nivel_interes     Cuántas respondieron 1, 2, 3, 4 o 5 a "¿La usarías?".
-hora_frecuente / cantidad_de_veces
-                             Una hora del top 3 y cuántas veces apareció.
-nombre_zona / cantidad_respuestas
-                             Una zona y cuántas respuestas la eligieron.
-lista_de_zonas_oficiales     Zonas oficiales (de zonas.geojson) para comparar.
-zona_escrita                 Una zona tal como quedó en la tabla.
-zonas_no_reconocidas         Zonas que no coinciden con ninguna oficial. Te dice
-                             qué apodos agregar a APODOS_DE_ZONAS_A_ID.
-medio_transporte             Un medio de transporte mientras se imprime.
-respuesta_abierta            Una respuesta de "¿Qué te frenaría?".
-rutas_graficos_guardados     Lista con la ruta de cada gráfico creado.
-ruta_grafico                 Una de esas rutas mientras se imprime.
-
---- Nombres que NO se cambiaron (y por qué) ---
-pd, px                       Apodos estándar de pandas y plotly.express.
-Counter                      Nombre de una herramienta de Python (no es nuestra).
-__name__, "__main__"         Nombres obligatorios de Python.
-======================================================================
-"""
 
 from collections import Counter
 
@@ -71,12 +7,11 @@ import pandas as pd
 import plotly.express as px
 
 from comun import (CARPETA_DE_RESULTADOS_GENERADOS, DIAS_DE_CLASE_SIN_TILDE,
-                   aviso_grande, cargar_zonas, id_de_zona, leer_encuesta)
+                aviso_grande, cargar_zonas, id_de_zona, leer_encuesta)
 
 
 def contar_horas(tabla_encuesta, tipo_de_hora):
     """Cuenta cuántas veces aparece cada hora de 'entrada' o 'salida'.
-
     Junta los 5 días: si alguien entra a las 7:00 de lunes a viernes,
     esa persona suma 5 a las 7:00. Las celdas vacías (días sin clase)
     no se cuentan.
@@ -92,10 +27,10 @@ def contar_horas(tabla_encuesta, tipo_de_hora):
 
 
 def grafico_barras(serie_de_datos, titulo_del_grafico, etiqueta_eje_x,
-                   nombre_archivo_html, encuesta_es_real):
+                nombre_archivo_html, encuesta_es_real):
     """Guarda un gráfico de barras de Plotly como HTML en salida/."""
     if not encuesta_es_real:
-        titulo_del_grafico += "  —  ⚠️ DATOS DE EJEMPLO"
+        titulo_del_grafico += "  —  DATOS DE EJEMPLO"
     figura_plotly = px.bar(
         x=serie_de_datos.index, y=serie_de_datos.values, text=serie_de_datos.values,
         labels={"x": etiqueta_eje_x, "y": "Cantidad de respuestas"},
@@ -122,7 +57,7 @@ def ejecutar_programa_principal():
 
     # idxmax() = la etiqueta del valor más grande (la moda)
     print("=" * 60)
-    print(" RESUMEN DE LA ENCUESTA" + ("" if encuesta_es_real else "  (⚠️ EJEMPLO, NO REAL)"))
+    print(" RESUMEN DE LA ENCUESTA" + ("" if encuesta_es_real else "  (EJEMPLO, NO REAL)"))
     print("=" * 60)
     print(f"Respuestas válidas: {total_respuestas_validas}\n")
 
@@ -146,7 +81,7 @@ def ejecutar_programa_principal():
     zonas_no_reconocidas = [zona_escrita for zona_escrita in conteo_por_zona.index
                             if id_de_zona(zona_escrita, lista_de_zonas_oficiales) is None]
     if zonas_no_reconocidas:
-        print("   ⚠️ No reconocidas (agrégalas a APODOS_DE_ZONAS_A_ID en comun.py):",
+        print("   No reconocidas (agrégalas a APODOS_DE_ZONAS_A_ID en comun.py):",
               zonas_no_reconocidas)
 
     print(f"\nMedio de transporte predominante: {conteo_por_transporte.idxmax()} "

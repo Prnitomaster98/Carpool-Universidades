@@ -1,0 +1,197 @@
+/* ==========================================================
+   perfil.css — estilos de "Mi perfil" y "Coincidencias" (Fase 4)
+   Va en un archivo aparte para no chocar con los cambios del mapa
+   en estilos.css. Usa las mismas variables de :root de estilos.css.
+   ========================================================== */
+
+.perfil-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* fieldset = grupo de campos con un título (legend) */
+.perfil-form fieldset {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--color-bordes);
+  border-radius: 8px;
+  min-width: 0;                    /* evita que la tabla estire la tarjeta en celular */
+}
+
+.perfil-form legend,
+.etiqueta-campo {
+  padding: 0 4px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Opciones (rol y zonas) como "pastillas" que se pueden tocar fácil en celular */
+.opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.opcion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;                /* tamaño cómodo para el dedo */
+  padding: 6px 12px;
+  border: 1px solid var(--color-bordes);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+/* :has() = "si adentro hay un input marcado" → se pinta la pastilla */
+.opcion:has(input:checked) {
+  border-color: var(--color-enlaces-y-menu);
+  background: rgba(24, 155, 94, 0.15);
+}
+
+.opcion input {
+  accent-color: var(--color-enlaces-y-menu);   /* color del check/radio */
+}
+
+/* ---------- Tabla del horario ---------- */
+.tabla-horario {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;             /* columnas fijas: la tabla no se sale en celular */
+}
+
+.tabla-horario th:first-child {
+  width: 30%;                      /* columna del día más angosta */
+}
+
+.tabla-horario th,
+.tabla-horario td {
+  padding: 4px;
+  text-align: left;
+}
+
+.tabla-horario thead th {
+  font-size: 0.85rem;
+  color: var(--color-texto-secundario);
+}
+
+/* Inputs de hora y el select, con el tema oscuro */
+.perfil-form input[type="time"],
+.perfil-form select,
+.coincidencias-filtros select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px;
+  font: inherit;
+  color: inherit;
+  background: var(--color-fondo-tarjetas);
+  border: 1px solid var(--color-bordes);
+  border-radius: 8px;
+  color-scheme: dark;              /* el reloj y la lista del navegador salen oscuros */
+  min-width: 0;                    /* deja que el reloj se encoja en pantallas chicas */
+}
+
+.perfil-form input[type="time"] {
+  padding: 6px 4px;
+}
+
+/* En celular (menos de 480px) la tabla no cabe con los relojes en formato
+   "07:00 a. m.". Cambiamos cada fila a una cuadrícula: el día arriba y
+   los dos relojes abajo, mitad y mitad. */
+@media (max-width: 480px) {
+  .tabla-horario,
+  .tabla-horario thead,
+  .tabla-horario tbody {
+    display: block;
+  }
+  .tabla-horario tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .tabla-horario th:first-child {
+    width: auto;
+    grid-column: 1 / -1;           /* el día ocupa las dos columnas */
+  }
+  .tabla-horario thead th:first-child {
+    display: none;                 /* el título "Día" sobra en este diseño */
+  }
+  .tabla-horario th,
+  .tabla-horario td {
+    padding: 0;
+  }
+}
+
+.mensaje-perfil {
+  min-height: 1.5em;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-texto-secundario);
+}
+.mensaje-perfil.error { color: #f87171; }
+.mensaje-perfil.exito { color: #4ade80; }
+
+/* ---------- Coincidencias ---------- */
+.coincidencias-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.coincidencias-filtros label {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 140px;
+  gap: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.lista-coincidencias {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.coincidencia {
+  padding: 12px;
+  border: 1px solid var(--color-bordes);
+  border-radius: 8px;
+}
+
+.coincidencia-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.coincidencia-nombre {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.coincidencia-puntaje {
+  font-weight: 700;
+  color: #4ade80;
+  white-space: nowrap;
+}
+
+/* El botón "Punto sugerido" alineado a la izquierda, como el resto del texto */
+.coincidencia .boton-enlace {
+  margin-top: 4px;
+  padding: 4px 0;
+  text-align: left;
+}
+
+.coincidencia-detalle {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: var(--color-texto-secundario);
+}

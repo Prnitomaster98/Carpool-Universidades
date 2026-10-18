@@ -25,8 +25,8 @@
       logOriginal(texto);
       const linea = document.createElement('div');
       linea.textContent = texto;
-      if (texto.startsWith('✔')) linea.className = 'ok';
-      if (texto.startsWith('✘')) linea.className = 'mal';
+      if (texto.startsWith('OK')) linea.className = 'ok';
+      if (texto.startsWith('FALLO')) linea.className = 'mal';
       salida.append(linea);
     };
 

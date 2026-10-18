@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pruebas — recomendacion.js</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    .ok { color: #15803d; } .falla { color: #b91c1c; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <h1>Pruebas de recomendacion.js</h1>
+  <p>Ábrelo con el servidor local: <code>http://localhost:8000/tests/recomendacion.test.html</code></p>
+  <ul id="resultados"></ul>
+
+  <script type="module">
+    import { distanciaKm, puntosMasCercanos, formatearDistancia } from '../web/js/recomendacion.js';
+
+    const listaResultados = document.getElementById('resultados');
+    // probar(): escribe OK o FALLO según si "condicion" es verdadera
+    function probar(descripcion, condicion) {
+      const elemento = document.createElement('li');
+      elemento.className = condicion ? 'ok' : 'falla';
+      elemento.textContent = `${condicion ? 'OK' : 'FALLO'} ${descripcion}`;
+      listaResultados.append(elemento);
+    }
+
+    const UVG = { lat: 14.6049, lng: -90.4891 };
+    const CAYALA = { lat: 14.6091, lng: -90.4857 };
+
+    // 1. Distancias
+    probar('La distancia de un punto a sí mismo es 0', distanciaKm(UVG, UVG) === 0);
+    probar('UVG → Cayalá mide unos 0.6 km', Math.abs(distanciaKm(UVG, CAYALA) - 0.6) < 0.05);
+    probar('La distancia es igual de ida que de vuelta',
+      Math.abs(distanciaKm(UVG, CAYALA) - distanciaKm(CAYALA, UVG)) < 1e-9);
+
+    // 2. Orden por cercanía, SIN importar la ruta
+    const puntosDePrueba = [
+      { id: 'lejos', zonaId: 'ruta-a', lat: 14.70, lng: -90.50 },
+      { id: 'cerca', zonaId: 'ruta-b', lat: 14.61, lng: -90.49 },  // otra ruta, pero más cerca
+      { id: 'medio', zonaId: 'ruta-a', lat: 14.64, lng: -90.49 },
+      { id: 'muy-lejos', zonaId: 'ruta-a', lat: 14.90, lng: -90.50 },
+    ];
+    const resultado = puntosMasCercanos(UVG, puntosDePrueba);
+    probar('Devuelve 3 puntos', resultado.length === 3);
+    probar('El primero es el más cercano aunque sea de otra ruta', resultado[0].id === 'cerca');
+    probar('Están ordenados de menor a mayor distancia',
+      resultado[0].distanciaKm <= resultado[1].distanciaKm && resultado[1].distanciaKm <= resultado[2].distanciaKm);
+    probar('El más lejano de todos queda fuera del top 3', !resultado.some((p) => p.id === 'muy-lejos'));
+    probar('No cambia la lista original', !('distanciaKm' in puntosDePrueba[0]));
+    probar('Si hay menos de 3 puntos, devuelve los que haya', puntosMasCercanos(UVG, puntosDePrueba.slice(0, 2)).length === 2);
+
+    // 3. Texto de distancia
+    probar('0.35 km se escribe "350 m"', formatearDistancia(0.35) === '350 m');
+    probar('2.456 km se escribe "2.5 km"', formatearDistancia(2.456) === '2.5 km');
+  </script>
+</body>
+</html>

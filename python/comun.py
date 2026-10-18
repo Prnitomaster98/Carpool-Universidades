@@ -138,7 +138,7 @@ from pathlib import Path
 # 0. Que los acentos y emojis se vean bien también en la terminal de Windows
 # ----------------------------------------------------------------------
 # La terminal clásica de Windows usa otra codificación y a veces falla al
-# imprimir "á" o "✅". reconfigure() la cambia a UTF-8 si se puede.
+# imprimir "á" o "→". reconfigure() la cambia a UTF-8 si se puede.
 for _flujo_de_salida_terminal in (sys.stdout, sys.stderr):
     try:
         _flujo_de_salida_terminal.reconfigure(encoding="utf-8")
@@ -178,7 +178,7 @@ CAMPOS_PERMITIDOS_EN_PERFIL = {"uid", "nombre", "carrera", "rol", "zonas", "hora
 # ----------------------------------------------------------------------
 # A la IZQUIERDA: el nombre que usan los scripts (no lo cambies).
 # A la DERECHA: el encabezado EXACTO de la columna en el CSV.
-# ⚠️ Si en tu Google Form escribiste las preguntas con otras palabras,
+# Si en tu Google Form escribiste las preguntas con otras palabras,
 #    cambia solo el texto de la derecha.
 COLUMNAS_DE_LA_ENCUESTA = {
     "zona": "Zona de origen",
@@ -211,7 +211,7 @@ ZONAS_PROVISIONALES_DE_RESPALDO = [
 # Las claves van "normalizadas" (minúsculas, sin tildes, espacios ni signos):
 # "San Cristóbal, Mixco" → "sancristobalmixco".
 # La agrupación salió del análisis de la encuesta real (octubre 2026).
-# ⚠️ Si alguien escribe una zona nueva, el análisis te la muestra como
+# Si alguien escribe una zona nueva, el análisis te la muestra como
 #    "no reconocida": agrégala aquí con su ruta.
 APODOS_DE_ZONAS_A_ID = {
     # Cerca de UVG
@@ -368,7 +368,7 @@ def leer_encuesta():
     else:
         ruta_encuesta_usada, encuesta_es_real = RUTA_ENCUESTA_DE_EJEMPLO, False
         aviso_grande([
-            "⚠️  ATENCIÓN: NO SE ENCONTRÓ data/encuesta.csv",
+            "ATENCIÓN: NO SE ENCONTRÓ data/encuesta.csv",
             "Se está usando data/encuesta_ejemplo.csv (DATOS INVENTADOS).",
             "Los resultados NO son reales: no los presentes como hallazgos.",
             "Cuando tengas la encuesta, expórtala de Google Forms como CSV",
@@ -385,7 +385,7 @@ def leer_encuesta():
                           for encabezado_esperado in COLUMNAS_DE_LA_ENCUESTA.values()
                           if encabezado_esperado not in tabla_encuesta.columns]
     if columnas_faltantes:
-        print("❌ Al CSV le faltan estas columnas:", columnas_faltantes)
+        print("Al CSV le faltan estas columnas:", columnas_faltantes)
         print("   Columnas que sí tiene:", list(tabla_encuesta.columns))
         print("   Ajusta el diccionario COLUMNAS_DE_LA_ENCUESTA en python/comun.py.")
         sys.exit(1)

@@ -18,6 +18,8 @@
 
   <!-- Nuestros estilos van DESPUÉS, para poder ajustar los de Leaflet si hace falta -->
   <link rel="stylesheet" href="css/estilos.css">
+  <!-- Estilos de "Mi perfil" y "Coincidencias" (Fase 4), en archivo aparte -->
+  <link rel="stylesheet" href="css/perfil.css">
 </head>
 <body class="cargando">
 
@@ -42,13 +44,67 @@
     <!-- ===== Sección 1: Mi perfil (se llena en la Fase 4) ===== -->
     <section id="perfil" class="tarjeta" aria-labelledby="titulo-perfil">
       <h2 id="titulo-perfil">Mi perfil</h2>
-      <p class="texto-vacio">Aquí vas a elegir tus zonas y tu horario. (Disponible pronto.)</p>
+
+      <!-- perfil.js dibuja las zonas y los días, y carga lo que ya guardaste.
+           novalidate: las revisiones las hace perfil.js con mensajes en español. -->
+      <form id="form-perfil" class="perfil-form" novalidate>
+        <fieldset>
+          <legend>¿Cómo viajas?</legend>
+          <div class="opciones">
+            <!-- name="rol" igual en los tres: así solo se puede elegir uno -->
+            <label class="opcion"><input type="radio" name="rol" value="conductor"> Conductor</label>
+            <label class="opcion"><input type="radio" name="rol" value="pasajero"> Pasajero</label>
+            <label class="opcion"><input type="radio" name="rol" value="ambos"> Ambos</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Zonas por las que pasas</legend>
+          <div id="perfil-zonas" class="opciones"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Horario (deja vacío el día que no vas)</legend>
+          <table class="tabla-horario">
+            <thead>
+              <tr><th scope="col">Día</th><th scope="col">Entrada</th><th scope="col">Salida</th></tr>
+            </thead>
+            <tbody id="perfil-horario"></tbody>
+          </table>
+        </fieldset>
+
+        <label for="perfil-tolerancia" class="etiqueta-campo">¿Cuánto puedes esperar a tu compañero?</label>
+        <select id="perfil-tolerancia">
+          <option value="10">10 minutos</option>
+          <option value="20" selected>20 minutos</option>
+          <option value="30">30 minutos</option>
+        </select>
+
+        <p id="perfil-mensaje" class="mensaje-perfil" role="status" aria-live="polite"></p>
+        <!-- disabled hasta que perfil.js termine de cargar tu perfil -->
+        <button type="submit" id="perfil-guardar" class="boton boton-principal" disabled>Guardar perfil</button>
+      </form>
     </section>
 
     <!-- ===== Sección 2: Coincidencias (se llena en la Fase 4) ===== -->
     <section id="coincidencias" class="tarjeta" aria-labelledby="titulo-coincidencias">
       <h2 id="titulo-coincidencias">Coincidencias</h2>
-      <p class="texto-vacio">Aquí aparecerán los compañeros compatibles contigo. (Disponible pronto.)</p>
+
+      <!-- coincidencias.js llena los días, elige hoy por defecto y dibuja la lista -->
+      <div class="coincidencias-filtros">
+        <label>Día
+          <select id="coincidencias-dia"></select>
+        </label>
+        <label>Viaje
+          <select id="coincidencias-tramo">
+            <option value="ida">Ida a la UVG (entrada)</option>
+            <option value="regreso">Regreso (salida)</option>
+          </select>
+        </label>
+      </div>
+
+      <p id="coincidencias-mensaje" class="mensaje-perfil" role="status" aria-live="polite"></p>
+      <ul id="lista-coincidencias" class="lista-coincidencias"></ul>
     </section>
 
     <!-- ===== Sección 3: Mapa ===== -->
@@ -67,6 +123,19 @@
            aria-live="polite" hace que un lector de pantalla los lea cuando cambian. -->
       <p id="mensaje-mapa" class="mensaje-mapa" aria-live="polite"></p>
 
+      <!-- ===== Punto de encuentro más cercano (lo maneja cercanos.js) ===== -->
+      <div class="cercanos" aria-labelledby="titulo-cercanos">
+        <h3 id="titulo-cercanos">¿Cuál punto me queda más cerca?</h3>
+        <div class="cercanos-botones">
+          <!-- disabled hasta que el mapa termine de cargar -->
+          <button type="button" id="boton-mi-ubicacion" class="boton boton-cercanos" disabled>Usar mi ubicación actual</button>
+          <button type="button" id="boton-marcar-en-mapa" class="boton boton-secundario" disabled>Marcar mi casa en el mapa</button>
+        </div>
+        <p id="mensaje-cercanos" class="mensaje-mapa" aria-live="polite">Tu ubicación no se guarda: solo se usa en esta pantalla para medir distancias.</p>
+        <!-- ol = lista numerada: 1 recomendado + 2 alternativas -->
+        <ol id="lista-cercanos" class="lista-cercanos" aria-live="polite"></ol>
+      </div>
+
       <!-- Aquí Leaflet dibuja el mapa. NECESITA una altura en el CSS o no se ve. -->
       <div id="mapa" class="mapa"></div>
 
@@ -74,8 +143,10 @@
       <!-- Las rutas las escribe mapa.js leyendo zonas.geojson (cada una con su color) -->
       <ul id="leyenda-rutas" class="leyenda" aria-label="Rutas"></ul>
       <ul class="leyenda" aria-label="Leyenda del mapa">
-        <li><span class="muestra muestra-punto"></span> Punto de encuentro</li>
+        <li><span class="muestra muestra-punto"></span> Punto recomendado</li>
+        <li><span class="muestra muestra-precaucion"></span> Punto con precaución</li>
         <li><span class="muestra muestra-destino"></span> UVG (destino)</li>
+        <li><span class="muestra muestra-usuario"></span> Tú</li>
       </ul>
     </section>
 
@@ -87,6 +158,9 @@
           crossorigin=""></script>
 
   <script type="module" src="js/mapa.js"></script>
+  <script type="module" src="js/cercanos.js"></script>
+  <script type="module" src="js/perfil.js"></script>
+  <script type="module" src="js/coincidencias.js"></script>
   <script type="module" src="js/panel.js"></script>
 </body>
 </html>

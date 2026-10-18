@@ -1,6 +1,6 @@
 # Fase 1 — Esqueleto del proyecto
 
-## ✅ Qué se completó
+## Qué se completó
 
 Se creó la estructura de carpetas, el README, el `.gitignore` y el repositorio Git
 con su primer commit.
@@ -62,7 +62,7 @@ Web app de carpool para **una** universidad (piloto por definir). Los estudiante
 
 1. Se registran con su **correo institucional verificado**.
 ...
-> 🔒 **Privacidad:** la app **nunca** guarda ni muestra direcciones de casa,
+> **Privacidad:** la app **nunca** guarda ni muestra direcciones de casa,
 ```
 
 - `#` = título principal (Markdown). `##` es un subtítulo, `###` uno más pequeño.
@@ -108,7 +108,7 @@ python -m http.server 8000
   por ti (crear Firebase, elegir universidad, dibujar zonas reales).
 - `<https://...>` = enlace automático.
 
-La tabla final "Fases de desarrollo" la iremos actualizando (⏳ → ✅) en cada commit.
+La tabla final "Fases de desarrollo" la iremos actualizando (Pendiente → Hecho) en cada commit.
 
 ### 4. `.gitignore`
 

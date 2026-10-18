@@ -31,20 +31,26 @@
   --color-fondo-tarjetas: #1b1d1f;
   --color-texto-principal: #e8ece9;
   --color-texto-secundario: #a9b4ae;
-  --color-enlaces-y-menu: #17750b;      /* azul de enlaces y menú */
+  --color-enlaces-y-menu: #17750b;
+  /* azul de enlaces y menú */
   --color-bordes: #2e3236;
 
   /* Colores del mapa (mapa.js usa los mismos valores) */
-  --color-zona-encuentro: #f97316;     /* naranja: zonas de encuentro */
-  --color-zona-paso: #2563eb;          /* azul: zonas de paso */
-  --color-punto-encuentro: #b91c1c;         /* rojo: puntos de encuentro */
+  --color-zona-encuentro: #f97316;
+  /* naranja: zonas de encuentro */
+  --color-zona-paso: #2563eb;
+  /* azul: zonas de paso */
+  --color-punto-encuentro: #15803d;
+  /* verde: puntos recomendados */
 
   /* Etiqueta "Dato de prueba" */
   --color-fondo-etiqueta-demo: #fef3c7;
   --color-texto-etiqueta-demo: #92400e;
 
-  --radio-esquinas-redondeadas: 12px;                  /* esquinas redondeadas */
-  --espacio-margen-base: 16px;                /* margen base */
+  --radio-esquinas-redondeadas: 12px;
+  /* esquinas redondeadas */
+  --espacio-margen-base: 16px;
+  /* margen base */
 }
 
 /* ---------- 2. Reglas básicas ---------- */
@@ -60,7 +66,8 @@
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 16px;               /* 16px evita que el iPhone haga zoom al tocar el <select> */
+  font-size: 16px;
+  /* 16px evita que el iPhone haga zoom al tocar el <select> */
   line-height: 1.5;
   color: var(--color-texto-principal);
   background: var(--color-fondo-pagina);
@@ -78,16 +85,19 @@ a {
 /* ---------- 3. Menú superior ---------- */
 .barra-superior {
   display: flex;
-  flex-wrap: wrap;               /* si no cabe, el menú baja a otra línea */
+  flex-wrap: wrap;
+  /* si no cabe, el menú baja a otra línea */
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   padding: 12px var(--espacio-margen-base);
   background: var(--color-fondo-tarjetas);
   border-bottom: 1px solid var(--color-bordes);
-  position: sticky;              /* el menú se queda arriba al bajar */
+  position: sticky;
+  /* el menú se queda arriba al bajar */
   top: 0;
-  z-index: 1000;                 /* por encima del mapa (Leaflet usa z-index hasta ~800) */
+  z-index: 1000;
+  /* por encima del mapa (Leaflet usa z-index hasta ~800) */
 }
 
 .marca {
@@ -101,12 +111,14 @@ a {
   gap: 4px;
   margin: 0;
   padding: 0;
-  list-style: none;              /* quita las viñetas de la lista */
+  list-style: none;
+  /* quita las viñetas de la lista */
 }
 
 .menu a {
   display: block;
-  padding: 8px 12px;             /* área grande para tocar con el dedo */
+  padding: 8px 12px;
+  /* área grande para tocar con el dedo */
   border-radius: 8px;
   text-decoration: none;
 }
@@ -128,7 +140,8 @@ a {
   gap: var(--espacio-margen-base);
   padding: var(--espacio-margen-base);
   max-width: 1280px;
-  margin: 0 auto;                /* centra el contenido en pantallas grandes */
+  margin: 0 auto;
+  /* centra el contenido en pantallas grandes */
 }
 
 .tarjeta {
@@ -136,7 +149,8 @@ a {
   border: 1px solid var(--color-bordes);
   border-radius: var(--radio-esquinas-redondeadas);
   padding: var(--espacio-margen-base);
-  min-width: 0;                  /* evita que el mapa estire la columna de la grilla */
+  min-width: 0;
+  /* evita que el mapa estire la columna de la grilla */
 }
 
 .texto-vacio {
@@ -155,7 +169,8 @@ a {
 }
 
 .filtro select {
-  flex: 1 1 200px;               /* ocupa el espacio disponible, mínimo ~200px */
+  flex: 1 1 200px;
+  /* ocupa el espacio disponible, mínimo ~200px */
   max-width: 100%;
   padding: 8px;
   font-size: 1rem;
@@ -166,7 +181,8 @@ a {
 
 .mensaje-mapa {
   margin: 0 0 8px;
-  min-height: 1.5em;             /* reserva el espacio para que el mapa no "salte" */
+  min-height: 1.5em;
+  /* reserva el espacio para que el mapa no "salte" */
   color: var(--color-texto-secundario);
   font-size: 0.9rem;
 }
@@ -178,7 +194,8 @@ a {
 
 /* Leaflet NECESITA que el contenedor tenga altura; sin esto el mapa mide 0px */
 .mapa {
-  height: 60vh;                  /* 60% del alto de la pantalla */
+  height: 60vh;
+  /* 60% del alto de la pantalla */
   min-height: 320px;
   width: 100%;
   border-radius: 8px;
@@ -210,12 +227,44 @@ a {
   border-radius: 4px;
 }
 
-.muestra-encuentro { background: var(--color-zona-encuentro); opacity: 0.6; }
-.muestra-paso      { background: var(--color-zona-paso);      opacity: 0.6; }
-.muestra-punto     { background: var(--color-punto-encuentro); border-radius: 50%; }
+.muestra-encuentro {
+  background: var(--color-zona-encuentro);
+  opacity: 0.6;
+}
+
+.muestra-paso {
+  background: var(--color-zona-paso);
+  opacity: 0.6;
+}
+
+.muestra-punto {
+  background: var(--color-punto-encuentro);
+  border-radius: 50%;
+}
+
 /* El color de cada ruta lo pone mapa.js (style.backgroundColor) */
-.muestra-ruta      { opacity: 0.6; }
-.muestra-destino   { background: #111827; border-radius: 50%; border: 2px solid #ffffff; box-shadow: 0 0 0 1px #111827; }
+.muestra-ruta {
+  opacity: 0.6;
+}
+
+.muestra-precaucion {
+  background: #eab308;
+  border-radius: 50%;
+}
+
+/* Aviso ámbar dentro del popup de un punto "con precaución" */
+.leaflet-popup-content .popup-aviso {
+  margin: 0 0 4px;
+  color: #b45309;
+  font-weight: 600;
+}
+
+.muestra-destino {
+  background: #111827;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px #111827;
+}
 
 /* Contenido de los popups (las ventanitas al tocar un marcador).
    Empezamos con ".leaflet-popup-content" porque Leaflet ya le da márgenes
@@ -241,7 +290,8 @@ a {
   display: inline-block;
   margin-top: 6px;
   padding: 2px 8px;
-  border-radius: 999px;          /* forma de "pastilla" */
+  border-radius: 999px;
+  /* forma de "pastilla" */
   background: var(--color-fondo-etiqueta-demo);
   color: var(--color-texto-etiqueta-demo);
   font-size: 0.75rem;
@@ -252,7 +302,8 @@ a {
 /* ---------- 7. Pantallas medianas (tablet, 768px o más) ---------- */
 @media (min-width: 768px) {
   .contenido {
-    grid-template-columns: 1fr 1fr;   /* dos columnas iguales */
+    grid-template-columns: 1fr 1fr;
+    /* dos columnas iguales */
   }
 
   /* El mapa ocupa el ancho completo, debajo de perfil y coincidencias */
@@ -270,12 +321,20 @@ a {
     align-items: start;
   }
 
-  #perfil        { grid-column: 1; grid-row: 1; }
-  #coincidencias { grid-column: 1; grid-row: 2; }
+  #perfil {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  #coincidencias {
+    grid-column: 1;
+    grid-row: 2;
+  }
 
   .tarjeta-mapa {
     grid-column: 2;
-    grid-row: 1 / span 2;              /* el mapa ocupa las dos filas */
+    grid-row: 1 / span 2;
+    /* el mapa ocupa las dos filas */
   }
 
   .mapa {
@@ -283,8 +342,8 @@ a {
   }
 }
 
-[hidden]{
-  display:none !important;
+[hidden] {
+  display: none !important;
 
 }
 
@@ -293,7 +352,7 @@ a {
 .formulario {
   display: flex;
   flex-direction: column;
-  gap: 6px;                        
+  gap: 6px;
 }
 
 .formulario label {
@@ -304,21 +363,23 @@ a {
 
 .formulario input {
   width: 100%;
-  padding: 12px;                   
-  font: inherit;                  
+  padding: 12px;
+  font: inherit;
   color: inherit;
   background: var(--color-fondo-tarjetas);
   border: 1px solid var(--color-bordes);
   border-radius: 8px;
 }
 
-.formulario input::placeholder {color: #8a9590;}
+.formulario input::placeholder {
+  color: #8a9590;
+}
 
 /* :focus = cuando el campo está activo (escribiendo en él) */
 .formulario input:focus {
   outline: none;
   border-color: var(--color-enlaces-y-menu);
-  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2);   
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2);
 }
 
 /* Si algo es inválido*/
@@ -331,13 +392,14 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;      
+  min-height: 44px;
   padding: 10px 16px;
   font: inherit;
   font-weight: 700;
   border: none;
   border-radius: 8px;
-  cursor: pointer;                 /* manita al pasar el mouse */
+  cursor: pointer;
+  /* manita al pasar el mouse */
 }
 
 .boton-principal {
@@ -348,7 +410,8 @@ a {
 }
 
 .boton-principal:hover {
-  filter: brightness(1.1);         /* se aclara un poco al pasar el mouse */
+  filter: brightness(1.1);
+  /* se aclara un poco al pasar el mouse */
 }
 
 /* disabled = mientras se espera la respuesta de Firebase */
@@ -361,7 +424,7 @@ a {
 .boton-secundario {
   background: transparent;
   color: var(--color-enlaces-y-menu);
-  border: 2px solid currentColor;  
+  border: 2px solid currentColor;
 }
 
 /* Botón que parece enlace  */
@@ -376,7 +439,7 @@ a {
   cursor: pointer;
 }
 
-/* Contorno visible con Tab/
+/* Contorno visible con Tab */
 .boton:focus-visible,
 .boton-enlace:focus-visible {
   outline: 3px solid var(--color-enlaces-y-menu);
@@ -394,10 +457,10 @@ a {
 
 /* Centra la tarjeta en medio de la pantalla, vertical y horizontalmente */
 .pagina-login {
-  min-height: 100vh;              
+  min-height: 100vh;
   display: flex;
-  align-items: center;            
-  justify-content: center;        
+  align-items: center;
+  justify-content: center;
   padding: var(--espacio-margen-base);
   background: linear-gradient(160deg, #99ecca 0%, var(--color-fondo-pagina) 60%);
 }
@@ -410,7 +473,7 @@ a {
 
 .tarjeta-login {
   padding: calc(var(--espacio-margen-base) * 1.5);
-  box-shadow: 0 10px 30px rgba(19, 102, 185, 0.08);  
+  box-shadow: 0 10px 30px rgba(19, 102, 185, 0.08);
 }
 
 .login-encabezado {
@@ -459,7 +522,7 @@ a {
    visibility (no display): el espacio se conserva, así el mapa
    de Leaflet calcula bien su tamaño aunque esté oculto. */
 
-   body.cargando .contenido,
+body.cargando .contenido,
 body.cargando .sesion {
   visibility: hidden;
 }
@@ -472,4 +535,129 @@ body.cargando .sesion {
 
 .saludo {
   font-weight: 600;
+}
+
+/* ---------- Punto de encuentro más cercano (cercanos.js) ---------- */
+.cercanos {
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid var(--color-bordes);
+  border-radius: 8px;
+}
+
+.cercanos h3 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+.cercanos-botones {
+  display: flex;
+  flex-wrap: wrap;
+  /* en celular, un botón debajo del otro */
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.cercanos-botones .boton {
+  flex: 1 1 220px;
+}
+
+.boton-cercanos {
+  background: #2563eb;
+  /* el mismo azul del círculo "Tú" */
+  color: #ffffff;
+}
+
+.cercanos-botones .boton:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.lista-cercanos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  /* quitamos los números: la etiqueta ya dice cuál es */
+}
+
+/* Cada opción es un botón: se puede tocar o elegir con Tab + Enter */
+.opcion-boton {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+  border: 2px solid var(--color-bordes);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.opcion-boton:hover {
+  border-color: #2563eb;
+}
+
+.opcion-cercana.elegido .opcion-boton {
+  border-color: #2563eb;
+  background: rgba(37, 99, 235, 0.12);
+}
+
+.opcion-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.opcion-etiqueta {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-texto-secundario);
+}
+
+.opcion-etiqueta.principal {
+  color: #22c55e;
+  /* verde: el recomendado */
+}
+
+.opcion-distancia {
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.opcion-nombre {
+  font-weight: 600;
+}
+
+.opcion-ruta {
+  font-size: 0.85rem;
+  color: var(--color-texto-secundario);
+}
+
+.opcion-aviso {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #eab308;
+}
+
+.muestra-usuario {
+  background: #2563eb;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px #2563eb;
+}
+
+/* Mientras el usuario elige su casa, el cursor del mapa es una cruz */
+.mapa.modo-marcar,
+.mapa.modo-marcar .leaflet-interactive {
+  cursor: crosshair;
 }

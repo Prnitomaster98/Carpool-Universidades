@@ -1,7 +1,7 @@
 """
 cargar_demo.py — sube los perfiles demo a Firestore (colección "usuarios").
 
-⚠️ Por defecto NO sube nada: está en modo "ensayo" (--dry-run) y solo
+Por defecto NO sube nada: está en modo "ensayo" (--dry-run) y solo
    muestra lo que subiría. Para subir de verdad hay que escribir --confirmar.
 
 Cómo correrlo (desde la carpeta python/):
@@ -103,7 +103,7 @@ def leer_argumentos():
 def leer_perfiles():
     """Carga perfiles_demo.json y revisa que sean seguros de subir."""
     if not RUTA_JSON_PERFILES_DEMO.exists():
-        print(f"❌ No existe {RUTA_JSON_PERFILES_DEMO.relative_to(CARPETA_RAIZ_DEL_PROYECTO)}.")
+        print(f"No existe {RUTA_JSON_PERFILES_DEMO.relative_to(CARPETA_RAIZ_DEL_PROYECTO)}.")
         print("   Corre primero:  python generar_demo.py")
         sys.exit(1)
     perfiles_demo = json.loads(RUTA_JSON_PERFILES_DEMO.read_text(encoding="utf-8"))
@@ -122,7 +122,7 @@ def leer_perfiles():
             problemas_encontrados.append(
                 f"{uid_perfil}: el uid de un perfil demo debe empezar con 'demo-'")
     if problemas_encontrados:
-        print("❌ Los perfiles no pasaron la revisión; no se sube nada:")
+        print("Los perfiles no pasaron la revisión; no se sube nada:")
         for descripcion_problema in problemas_encontrados:
             print("   -", descripcion_problema)
         sys.exit(1)
@@ -133,19 +133,19 @@ def revisar_credenciales():
     """Devuelve la ruta de la clave o None, explicando qué falta."""
     ruta_clave_en_variable_entorno = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
     if not ruta_clave_en_variable_entorno:
-        print("🔑 Falta la variable de entorno GOOGLE_APPLICATION_CREDENTIALS.")
+        print("Falta la variable de entorno GOOGLE_APPLICATION_CREDENTIALS.")
         print("   Es la ruta al archivo .json de la cuenta de servicio.")
         print("   Windows (PowerShell):  $env:GOOGLE_APPLICATION_CREDENTIALS=\"C:\\ruta\\clave.json\"")
         print("   Git Bash / Mac / Linux: export GOOGLE_APPLICATION_CREDENTIALS=\"/ruta/clave.json\"")
         return None
     archivo_clave_resuelto = Path(ruta_clave_en_variable_entorno).expanduser().resolve()
     if not archivo_clave_resuelto.is_file():
-        print("🔑 GOOGLE_APPLICATION_CREDENTIALS apunta a un archivo que no existe: "
+        print("GOOGLE_APPLICATION_CREDENTIALS apunta a un archivo que no existe: "
               f"{archivo_clave_resuelto}")
         return None
     # Si la clave está dentro de carpool-zonas/, podría terminar en Git.
     if CARPETA_RAIZ_DEL_PROYECTO in archivo_clave_resuelto.parents:
-        print("⛔ La clave está DENTRO de la carpeta del proyecto. Muévela fuera")
+        print("La clave está DENTRO de la carpeta del proyecto. Muévela fuera")
         print("   (ej. Documentos/claves/) para que nunca termine en Git.")
         return None
     return archivo_clave_resuelto
@@ -167,9 +167,9 @@ def mostrar_ensayo(perfiles_demo):
     print(f"\nTodos con esDemo = true: {all(perfil['esDemo'] is True for perfil in perfiles_demo)}")
     print("\n¿Credenciales listas para subir de verdad?")
     if revisar_credenciales():
-        print("   ✅ Sí. Cuando quieras subir:  python cargar_demo.py --confirmar")
+        print("   Sí. Cuando quieras subir:  python cargar_demo.py --confirmar")
     else:
-        print("   ❌ Todavía no (es normal si aún no creaste el proyecto de Firebase).")
+        print("   Todavía no (es normal si aún no creaste el proyecto de Firebase).")
 
 
 def subir(perfiles_demo, ruta_clave_cuenta_servicio):
@@ -178,7 +178,7 @@ def subir(perfiles_demo, ruta_clave_cuenta_servicio):
         import firebase_admin
         from firebase_admin import credentials, firestore
     except ImportError:
-        print("❌ Falta firebase-admin. Instálalo con:  pip install -r requirements.txt")
+        print("Falta firebase-admin. Instálalo con:  pip install -r requirements.txt")
         sys.exit(1)
 
     firebase_admin.initialize_app(credentials.Certificate(str(ruta_clave_cuenta_servicio)))
@@ -194,7 +194,7 @@ def subir(perfiles_demo, ruta_clave_cuenta_servicio):
             base_de_datos_firestore.collection(NOMBRE_COLECCION_FIRESTORE).document(perfil["uid"]),
             perfil)
     lote_de_escrituras.commit()
-    print(f"✅ Subidos {len(perfiles_demo)} perfiles demo a '{NOMBRE_COLECCION_FIRESTORE}'.")
+    print(f"Subidos {len(perfiles_demo)} perfiles demo a '{NOMBRE_COLECCION_FIRESTORE}'.")
 
 
 def ejecutar_programa_principal():
@@ -207,7 +207,7 @@ def ejecutar_programa_principal():
 
     ruta_clave_cuenta_servicio = revisar_credenciales()
     if ruta_clave_cuenta_servicio is None:
-        print("\n❌ No se subió nada: faltan credenciales válidas.")
+        print("\nNo se subió nada: faltan credenciales válidas.")
         sys.exit(1)
     respuesta_confirmacion_usuario = input(
         f"Vas a escribir {len(perfiles_demo)} documentos en Firestore. "

@@ -28,10 +28,20 @@
 // COLORES_POR_TIPO_DE_ZONA         tipo de zona ("encuentro"/"paso") → color.
 //                                  Deben coincidir con las variables del CSS.
 // COLOR_ZONA_TIPO_DESCONOCIDO      Gris para una zona con un tipo no esperado.
-// COLOR_PUNTO_NORMAL               Rojo de los puntos de encuentro.
+// COLOR_PUNTO_NORMAL               Verde de los puntos recomendados.
 // COLOR_PUNTO_RESALTADO            Morado del punto que marca resaltarPunto().
 // DESTINO_UNIVERSIDAD              Nombre y [lat, lng] de la UVG (destino de los viajes).
 // COLOR_DESTINO                    Color del marcador de la UVG.
+// COLOR_PUNTO_PRECAUCION           Amarillo de los puntos con nivel "precaucion".
+// centrarEnUVG()             Encuadra el mapa dejando la UVG en el centro.
+// nivelAcercamiento          Zoom con el que cabe el área de las rutas.
+// metrosHastaUVG             Distancia en línea recta del punto a la UVG.
+// registroAnterior           El punto que estaba resaltado antes.
+//
+// --- Para las recomendaciones por cercanía (cercanos.js) ---
+// mapaListo                  Promise EXPORTADA: se cumple cuando el mapa y los puntos cargaron.
+// avisarMapaListo            La función que cumple esa promesa.
+// nombresDeRutas             Map: id de ruta -> nombre ("ruta-sur" -> "Sur (Villa Nueva...)").
 //
 // --- Nuevos con las rutas reales ---
 // listaLeyendaRutas          El <ul id="leyenda-rutas"> que se llena solo.
@@ -113,8 +123,9 @@ const COLORES_POR_TIPO_DE_ZONA = {
   paso: '#2563eb',      // azul
 };
 const COLOR_ZONA_TIPO_DESCONOCIDO = '#6b7280'; // gris
-const COLOR_PUNTO_NORMAL = '#b91c1c';          // rojo
+const COLOR_PUNTO_NORMAL = '#15803d';          // verde: punto recomendado
 const COLOR_PUNTO_RESALTADO = '#7c3aed';       // morado, para resaltarPunto()
+const COLOR_PUNTO_PRECAUCION = '#eab308';     // amarillo: punto con precaución
 
 // Destino de todos los viajes: UVG Campus Central (18 Avenida 11-95, zona 15).
 // No es un punto de encuentro: se dibuja aparte y no entra en el filtro.
@@ -190,9 +201,19 @@ function crearParrafo(claseCss, textoParrafo) {
 // Arma el contenido del popup de un punto de encuentro.
 function crearPopupPunto(puntoEncuentro) {
   const contenedorPopup = document.createElement('div');
+  contenedorPopup.append(crearParrafo('popup-titulo', puntoEncuentro.nombre));
+  if (puntoEncuentro.nivel === 'precaucion') {
+    contenedorPopup.append(crearParrafo('popup-aviso', 'Usar con precaución'));
+  }
+  contenedorPopup.append(crearParrafo('popup-texto', `${puntoEncuentro.notaSeguridad}`));
+  if (puntoEncuentro.horario) {
+    contenedorPopup.append(crearParrafo('popup-texto', `${puntoEncuentro.horario}`));
+  }
+  // distanceTo() de Leaflet da la distancia en metros (en línea recta, no por calle)
+  const metrosHastaUVG = L.latLng(puntoEncuentro.lat, puntoEncuentro.lng)
+    .distanceTo([DESTINO_UNIVERSIDAD.lat, DESTINO_UNIVERSIDAD.lng]);
   contenedorPopup.append(
-    crearParrafo('popup-titulo', puntoEncuentro.nombre),
-    crearParrafo('popup-texto', `🛡️ ${puntoEncuentro.notaSeguridad}`),
+    crearParrafo('popup-fecha', `A ${(metrosHastaUVG / 1000).toFixed(1)} km de la UVG en línea recta`),
   );
   // La fecha solo aparece cuando alguien del equipo ya visitó el lugar.
   // Un punto "por definir" no tiene fecha, y no hay que inventarle una.
@@ -224,9 +245,21 @@ function crearPopupZona(propiedadesZona) {
   return contenedorPopup;
 }
 
-// Estilo normal de un marcador de punto (círculo rojo).
-function estiloPuntoNormal() {
-  return { radius: 10, color: '#ffffff', weight: 2, fillColor: COLOR_PUNTO_NORMAL, fillOpacity: 0.95 };
+// Estilo normal de un marcador de punto: rojo si es recomendado,
+// ámbar si es "con precaución".
+function estiloPuntoNormal(puntoEncuentro) {
+  const colorPunto = puntoEncuentro?.nivel === 'precaucion' ? COLOR_PUNTO_PRECAUCION : COLOR_PUNTO_NORMAL;
+  return { radius: 10, color: '#ffffff', weight: 2, fillColor: colorPunto, fillOpacity: 0.95 };
+}
+
+// Pone la UVG en el CENTRO del mapa.
+// getBoundsZoom() calcula qué tan cerca hay que acercarse para que el área
+// quepa en pantalla; luego setView() centra en la UVG con ese acercamiento.
+// (Si una ruta queda muy lejos de la UVG, una orilla puede quedar cortada:
+// se ve arrastrando el mapa.)
+function centrarEnUVG(limitesArea) {
+  const nivelAcercamiento = mapaDeZonas.getBoundsZoom(limitesArea, false, L.point(20, 20));
+  mapaDeZonas.setView([DESTINO_UNIVERSIDAD.lat, DESTINO_UNIVERSIDAD.lng], nivelAcercamiento);
 }
 
 // ---------- 4. Dibujar las zonas ----------
@@ -251,7 +284,7 @@ function dibujarZonas(datosGeoJSONZonas) {
 
   capaTodasLasZonas.addTo(mapaDeZonas);
   // Ajusta la vista para que se vean todas las zonas
-  mapaDeZonas.fitBounds(capaTodasLasZonas.getBounds(), { padding: [20, 20] });
+  centrarEnUVG(capaTodasLasZonas.getBounds());
 
   // Llenar el <select> con una opción por zona
   for (const zonaGeoJSON of datosGeoJSONZonas.features) {
@@ -291,15 +324,18 @@ function dibujarLeyendaRutas(datosGeoJSONZonas) {
 
 function dibujarDestino() {
   const marcadorDestino = L.circleMarker([DESTINO_UNIVERSIDAD.lat, DESTINO_UNIVERSIDAD.lng], {
-    radius: 12, color: '#ffffff', weight: 3, fillColor: COLOR_DESTINO, fillOpacity: 1,
+    radius: 14, color: '#ffffff', weight: 4, fillColor: COLOR_DESTINO, fillOpacity: 1,
   });
+  // Etiqueta fija junto al marcador (permanent: se ve sin pasar el mouse)
+  marcadorDestino.bindTooltip('UVG — destino', { permanent: true, direction: 'right', offset: [12, 0] });
   const contenedorPopup = document.createElement('div');
   contenedorPopup.append(
-    crearParrafo('popup-titulo', `🎓 ${DESTINO_UNIVERSIDAD.nombre}`),
+    crearParrafo('popup-titulo', `${DESTINO_UNIVERSIDAD.nombre}`),
     crearParrafo('popup-texto', 'Destino de todos los viajes'),
   );
   marcadorDestino.bindPopup(contenedorPopup);
   marcadorDestino.addTo(mapaDeZonas);
+  marcadorDestino.bringToFront(); // que ningún punto o zona la tape
 }
 
 // ---------- 5. Dibujar los puntos de encuentro ----------
@@ -307,7 +343,7 @@ function dibujarDestino() {
 function dibujarPuntos(listaPuntosEncuentro) {
   for (const puntoEncuentro of listaPuntosEncuentro) {
     // circleMarker es un círculo que mantiene su tamaño en pantalla al hacer zoom.
-    const marcadorPunto = L.circleMarker([puntoEncuentro.lat, puntoEncuentro.lng], estiloPuntoNormal());
+    const marcadorPunto = L.circleMarker([puntoEncuentro.lat, puntoEncuentro.lng], estiloPuntoNormal(puntoEncuentro));
     marcadorPunto.bindPopup(crearPopupPunto(puntoEncuentro));
     marcadorPunto.addTo(mapaDeZonas);
     marcadoresPorIdPunto.set(puntoEncuentro.id, { marcadorPunto, puntoEncuentro });
@@ -340,7 +376,7 @@ function aplicarFiltro(idZonaElegida) {
   // Mover la cámara a lo que quedó visible
   if (idZonaElegida === 'todas') {
     const grupoTodasLasZonas = L.featureGroup([...capasPorIdZona.values()]);
-    mapaDeZonas.fitBounds(grupoTodasLasZonas.getBounds(), { padding: [20, 20] });
+    centrarEnUVG(grupoTodasLasZonas.getBounds());
   } else if (capasPorIdZona.has(idZonaElegida)) {
     mapaDeZonas.fitBounds(capasPorIdZona.get(idZonaElegida).getBounds(), { padding: [20, 20] });
   }
@@ -373,7 +409,8 @@ export function resaltarPunto(idPuntoBuscado) {
 
   // 1) Quitar el resaltado del punto anterior, si había uno
   if (idPuntoResaltadoActual && marcadoresPorIdPunto.has(idPuntoResaltadoActual)) {
-    marcadoresPorIdPunto.get(idPuntoResaltadoActual).marcadorPunto.setStyle(estiloPuntoNormal());
+    const registroAnterior = marcadoresPorIdPunto.get(idPuntoResaltadoActual);
+    registroAnterior.marcadorPunto.setStyle(estiloPuntoNormal(registroAnterior.puntoEncuentro));
   }
 
   // 2) Si el filtro está ocultando ese punto, cambiar el filtro a su zona
@@ -393,7 +430,17 @@ export function resaltarPunto(idPuntoBuscado) {
   return true;
 }
 
-// ---------- 8. Arranque ----------
+// ---------- 8. Aviso de "mapa listo" para otros módulos ----------
+// cercanos.js necesita el mapa y la lista de puntos, pero estos se cargan
+// con fetch() y tardan un momento. Una Promise es una "promesa de que el
+// dato va a llegar": el otro módulo hace  await mapaListo  y espera.
+// avisarMapaListo es la función que "cumple" la promesa cuando ya cargó todo.
+let avisarMapaListo;
+export const mapaListo = new Promise((resolver) => {
+  avisarMapaListo = resolver;
+});
+
+// ---------- 9. Arranque ----------
 
 async function iniciarMapa() {
   // Si Leaflet no cargó (sin internet, CDN bloqueada), "L" no existe.
@@ -421,6 +468,12 @@ async function iniciarMapa() {
     dibujarZonas(datosGeoJSONZonas);
     dibujarPuntos(listaPuntosEncuentro);
     dibujarDestino();
+
+    // Avisar a cercanos.js: aquí van el mapa, los puntos y el nombre de cada ruta
+    const nombresDeRutas = new Map(
+      datosGeoJSONZonas.features.map((zonaGeoJSON) => [zonaGeoJSON.properties.id, zonaGeoJSON.properties.nombre]),
+    );
+    avisarMapaListo({ mapa: mapaDeZonas, puntos: listaPuntosEncuentro, nombresDeRutas });
 
     const hayDatosDePrueba =
       datosGeoJSONZonas.features.some((zonaGeoJSON) => zonaGeoJSON.properties.esDemo) ||

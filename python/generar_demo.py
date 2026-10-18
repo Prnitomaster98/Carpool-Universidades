@@ -1,97 +1,4 @@
-"""
-generar_demo.py — crea 35 perfiles de DEMOSTRACIÓN (ficticios) para la app.
-
-Cómo correrlo (desde la carpeta python/):
-    python generar_demo.py
-
-Qué hace:
-  1. Lee la encuesta (la real si existe; si no, la de ejemplo).
-  2. Usa sus respuestas como "molde": las zonas y horarios que más se
-     repiten en la encuesta también se repiten en los perfiles demo.
-  3. Inventa nombre, carrera y rol, y marca cada perfil con esDemo: true.
-  4. Guarda:
-       salida/perfiles_demo.json            (para cargar_demo.py)
-       ../web/data/perfiles-demo.json       (copia para el modo demo sin internet)
-
-La semilla fija (SEMILLA_ALEATORIA_FIJA) hace que SIEMPRE salgan los mismos
-perfiles: si lo corres dos veces, el resultado es idéntico.
-
-======================================================================
-GUÍA DE NOMBRES DE VARIABLES (generar_demo.py)
-======================================================================
-Las constantes y funciones que vienen de comun.py están explicadas en la
-guía de comun.py.
-
---- Constantes de configuración ---
-CANTIDAD_PERFILES_DEMO       Cuántos perfiles ficticios se crean (35).
-SEMILLA_ALEATORIA_FIJA       Número que "fija" el azar. Importa porque así la
-                             demo es reproducible: siempre los mismos perfiles.
-TOLERANCIAS_PERMITIDAS_MINUTOS
-                             Las únicas tolerancias de espera que acepta la app
-                             (10, 20 o 30 min).
-CARRERAS_UNIVERSITARIAS_DISPONIBLES
-                             Carreras entre las que se elige al azar.
-NOMBRES_DE_RESERVA / APELLIDOS_DE_RESERVA
-                             Listas propias para inventar nombres si la
-                             librería Faker no está instalada.
-RUTA_JSON_PERFILES_DEMO_SALIDA
-                             salida/perfiles_demo.json (lo lee cargar_demo.py).
-RUTA_JSON_PERFILES_DEMO_WEB  web/data/perfiles-demo.json (lo usa la app en
-                             modo demo sin internet).
-
---- Funciones de ayuda ---
-generador_aleatorio          Generador de azar propio con semilla fija. Se pasa
-                             a todas las funciones para que TODO el azar salga
-                             del mismo lugar (y sea reproducible).
-generador_faker              Objeto de Faker que inventa nombres en español.
-hora_hhmm_original           Hora "HH:MM" que se va a mover un poquito.
-horas / minutos              Las dos partes de esa hora como números.
-minutos_totales_ajustados    La hora convertida a minutos desde medianoche,
-                             ya con el cambio de −15, 0 o +15 min.
-minutos_espera_tolerables    Minutos de espera que respondió alguien.
-tolerancia_opcion            Una de las tolerancias permitidas (10, 20 o 30).
-medio_transporte             Cómo llega a clases la persona del molde.
-
---- ejecutar_programa_principal() ---
-inventar_nombre_completo     Función que, cada vez que se llama, devuelve un
-                             nombre completo nuevo.
-lista_de_zonas               Zonas oficiales {"id", "nombre"}.
-zonas_vienen_del_geojson     True si las zonas vienen de zonas.geojson.
-ids_de_zonas                 Solo los ids ("zona-norte", ...).
-tabla_encuesta               La encuesta ya limpia.
-encuesta_es_real             False = el molde es el archivo de ejemplo.
-respuestas_molde             Cada fila de la encuesta como diccionario. Son el
-                             "molde" del que se copian zonas y horarios.
-peso_por_id_zona             id de zona → qué tan seguido aparece en la
-                             encuesta. Hace que las zonas populares también
-                             sean populares en la demo.
-id_zona                      Un id de zona mientras se recorre la lista.
-respuesta_molde              La respuesta de la encuesta elegida para un perfil.
-id_zona_del_molde            Zona de origen de esa respuesta, ya como id.
-perfiles_demo                Lista final de perfiles ficticios.
-nombres_ya_usados            Nombres que ya salieron, para no repetir.
-numero_perfil                1, 2, 3... sirve para armar el uid "demo-001".
-nombre_completo_perfil       El nombre inventado para este perfil.
-id_zona_origen               Zona donde "vive" el perfil (como id).
-zonas_del_perfil             Zona de origen + 0 a 2 zonas por las que pasa.
-_numero_de_zona_extra        Contador del ciclo (no se usa su valor).
-id_zona_extra                Otra zona elegida al azar para agregar.
-horario_semanal              día → {"entrada", "salida"} o None si no hay clase.
-dia_de_clase                 El día que se está armando ("lunes"...).
-hora_entrada_molde / hora_salida_molde
-                             Horas que tenía la respuesta molde ese día.
-perfil                       Un perfil mientras se revisa o se cuenta.
-texto_json_perfiles          Todos los perfiles convertidos a texto JSON.
-cantidad_por_rol             rol → cuántos perfiles lo tienen (para el resumen).
-perfiles_por_zona            id de zona → cuántos perfiles pasan por ella.
-
---- Nombres que NO se cambiaron (y por qué) ---
-"uid", "nombre", "carrera", "rol", "zonas", "horario", "tolerancia", "esDemo",
-"entrada", "salida"          Son los campos del perfil en Firestore y en el
-                             JSON que lee la app. Cambiarlos rompería la app.
-Faker, random, json          Nombres de librerías (no son nuestros).
-======================================================================
-"""
+#Crea perfiles falsos para probar los datos, es importante para el inicio del proyecto
 
 import json
 import random
@@ -130,7 +37,7 @@ def preparar_nombres(generador_aleatorio):
         generador_faker = Faker("es_MX")
         return lambda: f"{generador_faker.first_name()} {generador_faker.last_name()}"
     except ImportError:
-        print("ℹ️  Faker no está instalado: uso la lista de nombres propia.")
+        print("Faker no está instalado: uso la lista de nombres propia.")
         return lambda: (f"{generador_aleatorio.choice(NOMBRES_DE_RESERVA)} "
                         f"{generador_aleatorio.choice(APELLIDOS_DE_RESERVA)}")
 
@@ -169,7 +76,7 @@ def ejecutar_programa_principal():
 
     lista_de_zonas, zonas_vienen_del_geojson = cargar_zonas()
     if not zonas_vienen_del_geojson:
-        print("ℹ️  Todavía no existe web/data/zonas.geojson: uso zonas provisionales")
+        print("Todavía no existe web/data/zonas.geojson: uso zonas provisionales")
         print("   (cuando termines la Fase 2, vuelve a correr este script).\n")
     ids_de_zonas = [diccionario_zona["id"] for diccionario_zona in lista_de_zonas]
 
@@ -249,7 +156,7 @@ def ejecutar_programa_principal():
     print("=" * 60)
     print(f" {len(perfiles_demo)} PERFILES DEMO GENERADOS (semilla {SEMILLA_ALEATORIA_FIJA})")
     print("=" * 60)
-    print("Encuesta usada como molde:", "REAL" if encuesta_es_real else "⚠️ EJEMPLO")
+    print("Encuesta usada como molde:", "REAL" if encuesta_es_real else "EJEMPLO")
     print("Zonas:", "web/data/zonas.geojson" if zonas_vienen_del_geojson else "provisionales")
     cantidad_por_rol = {}
     for perfil in perfiles_demo:

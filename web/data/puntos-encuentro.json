@@ -1,47 +1,152 @@
 [
   {
-    "id": "punto-norte",
-    "nombre": "Punto por definir — Ruta Norte",
-    "zonaId": "ruta-norte",
-    "lat": 14.6560,
-    "lng": -90.4950,
-    "notaSeguridad": "Pendiente: elegir un lugar público, iluminado y con vigilancia (parqueo de centro comercial, gasolinera 24 h) y visitarlo antes de la demo.",
-    "esDemo": true
-  },
-  {
-    "id": "punto-occidente",
-    "nombre": "Punto por definir — Ruta Occidente",
-    "zonaId": "ruta-occidente",
-    "lat": 14.6250,
-    "lng": -90.5750,
-    "notaSeguridad": "Pendiente: elegir un lugar público, iluminado y con vigilancia (parqueo de centro comercial, gasolinera 24 h) y visitarlo antes de la demo.",
-    "esDemo": true
-  },
-  {
-    "id": "punto-sur",
-    "nombre": "Punto por definir — Ruta Sur",
-    "zonaId": "ruta-sur",
-    "lat": 14.5300,
-    "lng": -90.5650,
-    "notaSeguridad": "Pendiente: elegir un lugar público, iluminado y con vigilancia (parqueo de centro comercial, gasolinera 24 h) y visitarlo antes de la demo.",
-    "esDemo": true
-  },
-  {
-    "id": "punto-oriente",
-    "nombre": "Punto por definir — Ruta Oriente",
-    "zonaId": "ruta-oriente",
-    "lat": 14.5600,
-    "lng": -90.4450,
-    "notaSeguridad": "Pendiente: elegir un lugar público, iluminado y con vigilancia (parqueo de centro comercial, gasolinera 24 h) y visitarlo antes de la demo.",
-    "esDemo": true
-  },
-  {
-    "id": "punto-uvg",
-    "nombre": "Punto por definir — Cerca de UVG",
+    "id": "punto-uvg-cayala",
+    "nombre": "Paseo Cayalá",
     "zonaId": "ruta-uvg",
-    "lat": 14.5950,
-    "lng": -90.5100,
-    "notaSeguridad": "Pendiente: elegir un lugar público, iluminado y con vigilancia (parqueo de centro comercial, gasolinera 24 h) y visitarlo antes de la demo.",
+    "lat": 14.6091,
+    "lng": -90.4857,
+    "nivel": "recomendado",
+    "notaSeguridad": "Ciudad Cayalá tiene su propia red de más de 2,000 cámaras con lectura de placas y personal de seguridad privado. Está a 600 m de la UVG.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-uvg-oakland",
+    "nombre": "Oakland Place, zona 10",
+    "zonaId": "ruta-uvg",
+    "lat": 14.5987,
+    "lng": -90.5076,
+    "nivel": "recomendado",
+    "notaSeguridad": "Parqueo cerrado con lectura de placas en la entrada y cámara en cada espacio. Es de los centros comerciales con más movimiento de zona 10.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-uvg-fontabella",
+    "nombre": "Fontabella, zona 10",
+    "zonaId": "ruta-uvg",
+    "lat": 14.5998,
+    "lng": -90.5122,
+    "nivel": "recomendado",
+    "notaSeguridad": "Plaza con seguridad privada, rodeada de hotel y oficinas. No encontré incidentes reportados ahí entre 2023 y 2026.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-norte-portales",
+    "nombre": "Portales, km 4.5 ruta al Atlántico",
+    "zonaId": "ruta-norte",
+    "lat": 14.647,
+    "lng": -90.4818,
+    "nivel": "recomendado",
+    "notaSeguridad": "Centro comercial grande con parqueo propio. No encontré incidentes reportados dentro entre 2023 y 2026. Esperar en la entrada principal o dentro del parqueo, no a la orilla de la carretera.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-norte-mega6",
+    "nombre": "Mega 6, zona 6",
+    "zonaId": "ruta-norte",
+    "lat": 14.6615,
+    "lng": -90.4953,
+    "nivel": "precaucion",
+    "notaSeguridad": "Parqueo controlado (con cobro) y supermercado. No encontré incidentes dentro, pero la zona alrededor es más insegura: esperar siempre dentro del parqueo, nunca en la calle.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-norte-metronorte",
+    "nombre": "Metronorte, km 5 ruta al Atlántico",
+    "zonaId": "ruta-norte",
+    "lat": 14.648,
+    "lng": -90.4771,
+    "nivel": "recomendado",
+    "notaSeguridad": "Centro comercial grande con parqueo propio y gratuito, al lado de Portales. Hay guardias en las entradas. No encontré incidentes reportados dentro entre 2023 y 2026.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-occidente-miraflores",
+    "nombre": "Miraflores, zona 11",
+    "zonaId": "ruta-occidente",
+    "lat": 14.6223,
+    "lng": -90.5521,
+    "nivel": "recomendado",
+    "notaSeguridad": "Parqueo muy amplio y cerrado. No encontré incidentes reportados dentro entre 2023 y 2026.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-occidente-majadas",
+    "nombre": "Majadas Once, zona 11",
+    "zonaId": "ruta-occidente",
+    "lat": 14.6206,
+    "lng": -90.5617,
+    "nivel": "recomendado",
+    "notaSeguridad": "Plaza con guardias y parqueo propio.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-occidente-naranjo",
+    "nombre": "Naranjo Mall, Mixco",
+    "zonaId": "ruta-occidente",
+    "lat": 14.6506,
+    "lng": -90.5426,
+    "nivel": "recomendado",
+    "notaSeguridad": "Parqueo en superficie, no subterráneo. Sin incidentes reportados dentro, pero ha habido asaltos en el bulevar El Naranjo: esperar dentro del parqueo, no afuera.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-sur-metrocentro",
+    "nombre": "Metrocentro Villa Nueva",
+    "zonaId": "ruta-sur",
+    "lat": 14.5139,
+    "lng": -90.5772,
+    "nivel": "precaucion",
+    "notaSeguridad": "En septiembre de 2026 mataron a un conductor en el parqueo de un centro comercial del km 17.5 en Bárcenas, Villa Nueva (no se publicó cuál y parece un ataque dirigido). Esperar en un área iluminada, cerca de los guardias.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-sur-plaza-vn",
+    "nombre": "Plaza Villa Nueva, Calzada Concepción",
+    "zonaId": "ruta-sur",
+    "lat": 14.533,
+    "lng": -90.5851,
+    "nivel": "precaucion",
+    "notaSeguridad": "Centro comercial con parqueo propio. Villa Nueva tiene más incidentes que el resto de las rutas: esperar dentro del parqueo, en un área iluminada.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-sur-san-diego",
+    "nombre": "Plaza San Diego, Villa Nueva",
+    "zonaId": "ruta-sur",
+    "lat": 14.5099,
+    "lng": -90.5713,
+    "nivel": "precaucion",
+    "notaSeguridad": "Plaza con una sola entrada y salida y guardia en el parqueo. Villa Nueva tiene más incidentes que el resto de las rutas: esperar dentro del parqueo, en un área iluminada.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-oriente-pradera",
+    "nombre": "Pradera Concepción, km 15.5 CAES",
+    "zonaId": "ruta-oriente",
+    "lat": 14.5526,
+    "lng": -90.4538,
+    "nivel": "recomendado",
+    "notaSeguridad": "Centro comercial grande y moderno, junto a Condado Concepción. No encontré incidentes reportados dentro entre 2023 y 2026.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-oriente-metroplaza",
+    "nombre": "Metroplaza, km 13 CAES",
+    "zonaId": "ruta-oriente",
+    "lat": 14.5678,
+    "lng": -90.4719,
+    "nivel": "recomendado",
+    "notaSeguridad": "Plaza pequeña con parqueo propio, cerca de la entrada de la carretera. No encontré incidentes reportados dentro entre 2023 y 2026.",
+    "esDemo": true
+  },
+  {
+    "id": "punto-oriente-pinula",
+    "nombre": "Plaza Pinula, San Jorge Muxbal",
+    "zonaId": "ruta-oriente",
+    "lat": 14.5418,
+    "lng": -90.4488,
+    "nivel": "recomendado",
+    "notaSeguridad": "Plaza con supermercado La Torre y parqueo propio y gratuito. No encontré incidentes reportados dentro entre 2023 y 2026.",
     "esDemo": true
   }
 ]

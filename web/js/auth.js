@@ -5,6 +5,7 @@ import {
     sendEmailVerification,            // mandar correo de verificación
     updateProfile,                    // guardar el nombre en la cuenta
     signOut,
+    onAuthStateChanged,               // avisa si ya hay una sesión abierta
 } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'
 
 import {db} from "./firebase-config.js"
@@ -91,7 +92,7 @@ function traducirError(codigo) {
         'auth/operation-not-allowed': 'El registro con correo no está habilitado. (Admin: actívalo en la consola de Firebase.)',
         'permission-denied': 'No tienes permiso para esta acción.',
     }
-    // Si el código no está en la lista, muestro uno genérico con el código 
+    // Si el código no está en la lista, muestro un error cualquiera.
     return mensajes[codigo] ?? `Algo salió mal (${codigo}). Intenta de nuevo.`; //Los ?? capturan si lo de antes no existe usa lo de al derecha
 }
 
@@ -102,7 +103,7 @@ formEntrar.addEventListener("submit", async (evento) => {
     limpiarErrores(formEntrar, errorEntrar) //Limpia algo de antes
 
     const correo = leer(entrarCorreo).toLowerCase();
-    const clave = entrarClave.value
+    const clave = entrarClave.value //Revisa principalmente que todo este ingresado correctamente junto con el correo
 
     if (correo === "") {
         return mostrarError(errorEntrar, entrarCorreo, "Escribe tu correo institucional")
@@ -117,7 +118,7 @@ formEntrar.addEventListener("submit", async (evento) => {
 
     botonEntrar.disabled = true
     try {
-        const credencial = await signInWithEmailAndPassword(auth, correo, clave)
+        const credencial = await signInWithEmailAndPassword(auth, correo, clave) //El await espera la respuesta de la database de las credenciales
         const usuario = credencial.user
 
         if (!usuario.emailVerified) {
@@ -135,7 +136,7 @@ formEntrar.addEventListener("submit", async (evento) => {
 })
 
 formRegistro.addEventListener('submit', async (evento) => {
-    evento.preventDefault();
+    evento.preventDefault(); //Revisa los datos al crear una nueva cuenta
     limpiarErrores(formRegistro, errorRegistro);
 
     const nombre = leer(registroNombre);
@@ -161,7 +162,7 @@ formRegistro.addEventListener('submit', async (evento) => {
     try {
         const credencial = await createUserWithEmailAndPassword(auth, correo, clave)
 
-        await setDoc(doc(db, "usuarios", credencial.user.uid),{
+        await setDoc(doc(db, "usuarios", credencial.user.uid),{ //Guarda los datos en Firebase
             uid: credencial.user.uid,
             nombre: nombre,
             carrera: carrera,
@@ -169,17 +170,17 @@ formRegistro.addEventListener('submit', async (evento) => {
         })
 
         await updateProfile(credencial.user, { displayName: nombre })
-        await sendEmailVerification(credencial.user)
+        await sendEmailVerification(credencial.user) //Todo el proceso de crear una cuenta
         await signOut(auth)
 
-        formRegistro.reset()
+        formRegistro.reset() //regresa a la otra parte despues de ingresar el formulario
         cambiarFormulario()
         entrarCorreo.value = correo
         avisoVerificacion.hidden = false
         errorEntrar.textContent = ""            
         
     } catch (error) {
-    mostrarError(errorRegistro, null, traducirError(error.code))
+    mostrarError(errorRegistro, null, traducirError(error.code)) //Muestra el error según la función y el diccionario creado.
 } finally {
     botonRegistrar.disabled = false
 }
@@ -200,4 +201,10 @@ botonReenviar.addEventListener('click', async ()=>{
     } finally{
         botonReenviar.disabled = false
     }
+})
+
+onAuthStateChanged(auth, (usuario) => {
+    if (usuario && usuario.emailVerified) {
+        window.location.replace("app.html")
+    } //Te cambia de pestaña solo sí estas verificado
 })

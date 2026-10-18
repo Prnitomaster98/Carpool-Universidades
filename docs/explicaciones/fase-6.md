@@ -1,6 +1,6 @@
 # Fase 6 — Python: análisis de encuesta y datos demo
 
-## ✅ Qué se completó
+## Qué se completó
 
 Se crearon los scripts de Python que viven **fuera de la app**: uno analiza la
 encuesta y hace gráficos, otro inventa 35 perfiles de demostración a partir de la
@@ -212,7 +212,7 @@ figura.write_html(ruta, include_plotlyjs=True)
 - `include_plotlyjs=True` mete la librería **dentro** del HTML: cada archivo pesa
   ~5 MB pero se abre **sin internet**, útil en la feria. (`salida/` está en el
   `.gitignore`, así que no pesa en Git.)
-- Si los datos son de ejemplo, el título del gráfico dice "⚠️ DATOS DE EJEMPLO".
+- Si los datos son de ejemplo, el título del gráfico dice "DATOS DE EJEMPLO".
 
 ```python
 if __name__ == "__main__":
@@ -323,7 +323,7 @@ grupo.add_argument("--confirmar", action="store_true")
 
 ```python
 if CARPETA_PROYECTO in archivo.parents:
-    print("⛔ La clave está DENTRO de la carpeta del proyecto...")
+    print("La clave está DENTRO de la carpeta del proyecto...")
 ```
 
 - Revisa la variable `GOOGLE_APPLICATION_CREDENTIALS` y se **niega** a usar una
@@ -390,7 +390,7 @@ lote.commit()
 ### Correrlo en Google Colab (sin instalar nada)
 
 1. Entra a <https://colab.research.google.com> → *Nuevo cuaderno*.
-2. En el panel izquierdo, ícono de carpeta 📁 → crea la carpeta `python` y dentro
+2. En el panel izquierdo, ícono de carpeta → crea la carpeta `python` y dentro
    `data`. Sube `comun.py`, `analisis_encuesta.py` y `generar_demo.py` a `python/`,
    y el CSV (`encuesta.csv` o `encuesta_ejemplo.csv`) a `python/data/`.
    - Opcional: crea también `web/data/` (al mismo nivel que `python/`) y sube
@@ -416,7 +416,7 @@ lote.commit()
 
 ### Subir los perfiles a Firestore (cuando tengas Firebase)
 
-1. Consola de Firebase → ⚙️ *Configuración del proyecto* → *Cuentas de servicio*
+1. Consola de Firebase → *Configuración del proyecto* → *Cuentas de servicio*
    → *Generar nueva clave privada*. Se descarga un `.json`.
 2. Muévelo **fuera** del proyecto, por ejemplo `C:\Users\suizo\claves\carpool.json`.
 3. En PowerShell (solo dura mientras la terminal esté abierta):
@@ -466,7 +466,7 @@ lote.commit()
 2. Si tus preguntas tienen otro texto, ajusta la derecha de `COLUMNAS` en `comun.py`.
    Lo más fácil: que en el formulario cada día tenga dos preguntas de tipo *Hora*
    llamadas `Entrada lunes`, `Salida lunes`, etc.
-3. Corre `python analisis_encuesta.py`. Si aparece "⚠️ No reconocidas", agrega
+3. Corre `python analisis_encuesta.py`. Si aparece "No reconocidas", agrega
    esos textos a `ALIAS_ZONAS` en `comun.py`.
 4. Cuando reemplaces `web/data/zonas.geojson` por las zonas reales, vuelve a
    correr `python generar_demo.py` (y `cargar_demo.py --confirmar` si ya subiste

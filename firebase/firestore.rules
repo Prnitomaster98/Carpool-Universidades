@@ -10,7 +10,7 @@ service cloud.firestore {
     function correoPermitido() {
       return request.auth != null
         && (request.auth.token.email.matches('.*@uvg[.]edu[.]gt$')
-            || request.auth.token.email.matches('.*@gmail[.]com$'));  // ⚠️ QUITAR ANTES DE LA DEMO
+            || request.auth.token.email.matches('.*@gmail[.]com$'));  // QUITAR ANTES DE LA DEMO
     }
 
     // ¿Además verificó su correo?
@@ -22,6 +22,17 @@ service cloud.firestore {
     function soloCamposPermitidos() {
       return request.resource.data.keys().hasOnly(
         ['uid', 'nombre', 'carrera', 'rol', 'zonas', 'horario', 'tolerancia', 'esDemo']);
+    }
+
+    // ¿Los campos del perfil (Fase 4) tienen valores válidos?
+    // "!('rol' in d) ||" = si el campo no viene, no hay nada que revisar.
+    function perfilValido() {
+      let d = request.resource.data;
+      return (!('rol' in d) || d.rol in ['conductor', 'pasajero', 'ambos'])
+        && (!('zonas' in d) || (d.zonas is list && d.zonas.size() <= 10))
+        && (!('horario' in d) || (d.horario is map
+              && d.horario.keys().hasOnly(['lunes', 'martes', 'miercoles', 'jueves', 'viernes'])))
+        && (!('tolerancia' in d) || d.tolerancia in [10, 20, 30]);
     }
 
     // ---------- Colección usuarios ----------
@@ -45,6 +56,7 @@ service cloud.firestore {
       allow update: if verificado()
         && request.auth.uid == uid
         && soloCamposPermitidos()
+        && perfilValido()
         && request.resource.data.uid == resource.data.uid
         && request.resource.data.esDemo == false;
 

@@ -1,11 +1,3 @@
-// ==========================================================
-// matching.js — funciones para encontrar compañeros compatibles (Fase 4)
-//
-// Todas las funciones de este archivo son PURAS:
-//   - No usan Firebase, ni el DOM (document...), ni fetch.
-//   - Con la misma entrada siempre devuelven la misma salida.
-// Por eso se pueden probar con node:  node tests/matching.test.mjs
-//
 // Funciones exportadas:
 //   minutos("HH:MM")                    Hora → minutos desde medianoche.
 //   zonasComunes(a, b)                  Zonas que a y b tienen en común.
@@ -16,9 +8,7 @@
 //   buscarCoincidencias(yo, otros, dia, tramo, puntos)
 //                                       Lista ordenada de compañeros compatibles.
 //
-// ¿Qué es "tramo"?
-//   "ida"      → viaje hacia la UVG en la mañana: se compara la hora de ENTRADA.
-//   "regreso"  → viaje de vuelta a casa: se compara la hora de SALIDA.
+// Tramo es la hora en la que viajan
 //
 // Forma de un perfil (igual que usuarios/{uid} en Firestore):
 //   {
@@ -27,11 +17,18 @@
 //     zonas: ["ruta-norte", ...],             // ids de zonas.geojson
 //     horario: { lunes: { entrada: "07:00", salida: "13:00" }, ... },
 //     tolerancia: 10 | 20 | 30,               // minutos
-//     esDemo: true | false
 //   }
-//   Un día sin clases simplemente NO aparece en horario.
-// ==========================================================
+//   Un día sin clases no aparece en horario.
 
+// Los días de clase: "id" es como se guarda (sin tilde), "nombre" es lo que se ve.
+// Lo usan perfil.js y coincidencias.js, por eso vive aquí (un solo lugar).
+export const DIAS = [
+    { id: 'lunes', nombre: 'Lunes' },
+    { id: 'martes', nombre: 'Martes' },
+    { id: 'miercoles', nombre: 'Miércoles' },
+    { id: 'jueves', nombre: 'Jueves' },
+    { id: 'viernes', nombre: 'Viernes' },
+];
 
 // Pesos de la fórmula del puntaje. Suman 1, así el puntaje máximo es 1.
 const PESO_ZONAS = 0.6;   // qué tanto pesa compartir zonas
@@ -52,32 +49,22 @@ export function minutos(hora) {
 }
 
 
-// ----------------------------------------------------------
-// zonasComunes(a, b) → ["ruta-norte"]
-// filter se queda solo con los elementos que cumplen la condición:
-// las zonas de a que TAMBIÉN están (includes) en las zonas de b.
-// ----------------------------------------------------------
+//Revisa lista de zonas comunes de ambos, encuentra matchings y los regresa
 export function zonasComunes(a, b) {
-    return a.zonas.filter((zona) => b.zonas.includes(zona));
+    const zonasB = b.zonas ?? [];
+    return (a.zonas ?? []).filter((zona) => zonasB.includes(zona));
 }
 
+// Revisa que almenos uno sea pasajero porque si no no hay viaje.
 
-// ----------------------------------------------------------
-// rolesCompatibles(a, b) → true / false
-// Alguien tiene que manejar: basta con que UNO de los dos
-// no sea solo pasajero ("conductor" o "ambos").
-// Dos pasajeros no pueden viajar juntos (nadie tiene carro).
-// ----------------------------------------------------------
 export function rolesCompatibles(a, b) {
     return a.rol !== 'pasajero' || b.rol !== 'pasajero';
 }
 
-
-// ----------------------------------------------------------
 // diferenciaMinutos(a, b, "lunes", "ida") → 15   (o null)
 // Cuántos minutos de diferencia hay entre la hora de a y la de b
 // ese día. Devuelve null si alguno de los dos no va ese día.
-// ----------------------------------------------------------
+
 export function diferenciaMinutos(a, b, dia, tramo) {
     // Qué hora comparar según el tramo del viaje
     const campo = tramo === 'ida' ? 'entrada' : 'salida'
@@ -87,7 +74,7 @@ export function diferenciaMinutos(a, b, dia, tramo) {
     const horaA = a.horario?.[dia]?.[campo]
     const horaB = b.horario?.[dia]?.[campo]
 
-    // Si a alguno le falta la hora (día vacío), no hay comparación posible
+    // Si a alguno le falta la hora (día vacío), no hay comparación posible y regresa null, que evita un error
     if (!horaA || !horaB) return null;
 
     // Math.abs quita el signo: 10 minutos antes o después es lo mismo
@@ -95,21 +82,10 @@ export function diferenciaMinutos(a, b, dia, tramo) {
 }
 
 
-// ----------------------------------------------------------
-// puntaje(a, b, "lunes", "regreso") → número de 0 a 1, o null
-//
-// null (no coinciden) si:
-//   - no tienen ninguna zona en común,
-//   - alguno no va ese día,
-//   - la diferencia de hora supera la tolerancia MÁS ESTRICTA de los dos.
-//
-// Si coinciden:
-//   0.6 × (zonas comunes / zonas de a)  +  0.4 × (1 − diferencia / tolerancia)
-//   └── parte de zonas ──────────────┘    └── parte de hora ─────────────┘
-// Ejemplo: a pasa por 2 zonas y comparte 1 con b; tolerancias 20 y 30
-// (se usa 20); salen con 10 min de diferencia:
-//   0.6 × (1/2) + 0.4 × (1 − 10/20) = 0.3 + 0.2 = 0.5
-// ----------------------------------------------------------
+// Puntaje toma el peso de las desiciones de ambos y las regresa en caso de encontrar una correcta. Toma más importante
+//Los criterios del más estricto. El horario es el 40% y la zona es el 60%, los puntajes no ayudan a ordenarlos.
+//Toma en cuenta la diferencia en minutos de la salida de ambos
+
 export function puntaje(a, b, dia, tramo) {
     const comunes = zonasComunes(a, b);
     if (comunes.length === 0) return null;
@@ -126,13 +102,7 @@ export function puntaje(a, b, dia, tramo) {
     return PESO_ZONAS * parteZonas + PESO_HORA * parteHora;
 }
 
-
-// ----------------------------------------------------------
-// puntoSugerido(["ruta-norte"], puntos) → { id, nombre, ... } o null
-// Busca un punto de encuentro de alguna de las zonas comunes.
-// Prefiere los que tienen nivel "recomendado"; si no hay, cualquiera.
-// find devuelve el PRIMER elemento que cumple la condición (o undefined).
-// ----------------------------------------------------------
+//Revisa puntos comunes entre ambos y regresa el más importante, el primero sugerido.
 export function puntoSugerido(comunes, puntos) {
     const deLasZonas = puntos.filter((punto) => comunes.includes(punto.zonaId));
     const recomendado = deLasZonas.find((punto) => punto.nivel === 'recomendado');
@@ -141,15 +111,13 @@ export function puntoSugerido(comunes, puntos) {
 }
 
 
-// ----------------------------------------------------------
-// buscarCoincidencias(yo, otros, "lunes", "ida", puntos) → lista
-// Pasos:
-//   1. Quita mi propio perfil de la lista.
-//   2. Quita a quien no tenga rol compatible conmigo.
-//   3. Calcula el puntaje con cada uno; quita los null.
-//   4. Ordena de mayor a menor puntaje.
+
+// Quita mi propio perfil de la lista.
+// Quita a quien no tenga rol compatible conmigo.
+// Calcula el puntaje con cada uno; quita los null.
+// Ordena de mayor a menor puntaje.
 // Cada resultado trae solo lo que la pantalla necesita mostrar.
-// ----------------------------------------------------------
+
 export function buscarCoincidencias(yo, otros, dia, tramo, puntos = []) {
     const resultados = [];
 
@@ -174,7 +142,7 @@ export function buscarCoincidencias(yo, otros, dia, tramo, puntos = []) {
         });
     }
 
-    // 4. sort con comparador: si (b - a) es positivo, b va primero → mayor a menor
+    //sort con comparador: si (b - a) es positivo, b va primero → mayor a menor
     resultados.sort((x, y) => y.puntaje - x.puntaje);
     return resultados;
 }

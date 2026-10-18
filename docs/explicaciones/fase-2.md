@@ -1,6 +1,6 @@
 # Fase 2 — Mapa de zonas y puntos de encuentro
 
-## ✅ Qué se completó
+## Qué se completó
 
 Se creó la página principal de la app con su menú, los estilos (para celular y para
 computadora), el mapa con Leaflet + OpenStreetMap, 5 zonas de ejemplo, 4 puntos de
@@ -15,13 +15,13 @@ Fase 5.
 | `web/data/puntos-encuentro.json` | 4 puntos de encuentro de ejemplo en lugares públicos genéricos |
 | `web/js/mapa.js` | Crea el mapa, dibuja zonas y puntos, maneja el filtro y exporta `resaltarPunto()` |
 | `docs/explicaciones/fase-2.md` | Este documento |
-| `README.md` | Fase 2 marcada como ✅ |
+| `README.md` | Fase 2 marcada como Hecho |
 
-> ⚠️ **Zonas de ejemplo:** las 5 zonas son cuadros y pentágonos inventados, solo para
+> **Zonas de ejemplo:** las 5 zonas son cuadros y pentágonos inventados, solo para
 > probar. **Hay que reemplazarlas con zonas reales dibujadas en <https://geojson.io>**
 > (ver "Cómo replicarlo", paso 4).
 
-> ℹ️ El enlace "Recomendaciones" del menú todavía da error 404: esa página se crea en
+> El enlace "Recomendaciones" del menú todavía da error 404: esa página se crea en
 > la Fase 5.
 
 ---
@@ -74,7 +74,7 @@ Lo usan Leaflet, Google Maps, geojson.io y casi cualquier herramienta de mapas.
 - `esDemo: true` = regla del proyecto: todo dato inventado lo lleva, para que la
   interfaz muestre "Dato de prueba".
 
-**⚠️ La trampa más importante del archivo: el orden de las coordenadas.**
+**La trampa más importante del archivo: el orden de las coordenadas.**
 
 | Dónde | Orden |
 |---|---|
@@ -157,7 +157,7 @@ tú solo tienes que cuidar el orden cuando escribas coordenadas a mano.
 
 ```html
 <header class="barra-superior">
-  <a class="marca" href="app.html">🚗 Carpool por zonas</a>
+  <a class="marca" href="app.html">Carpool por zonas</a>
   <nav aria-label="Menú principal">
     <ul class="menu">
       <li><a href="app.html" aria-current="page">Mi panel</a></li>

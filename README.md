@@ -9,10 +9,10 @@ Los estudiantes:
 3. Ven **compañeros compatibles** ordenados por puntaje.
 4. Ven un **punto de encuentro público** en el mapa.
 
-> 🔒 **Privacidad:** la app **nunca** guarda ni muestra direcciones de casa,
+> **Privacidad:** la app **nunca** guarda ni muestra direcciones de casa,
 > coordenadas de casa, teléfonos ni fotos. El perfil solo elige zonas de una lista.
 
-> 🧪 Todo dato de demostración lleva `esDemo = true` y se muestra en la interfaz
+> Todo dato de demostración lleva `esDemo = true` y se muestra en la interfaz
 > con la etiqueta **"Dato de prueba"**.
 
 ---
@@ -102,17 +102,18 @@ Las reglas de seguridad se publican con `firebase deploy --only firestore:rules`
 
 ---
 
-## ✋ Pasos manuales que te quedan
+## Pasos manuales que te quedan
 
 - [x] Elegir la universidad piloto → **UVG** (dominio `uvg.edu.gt`).
-- [ ] Crear el proyecto en <https://console.firebase.google.com>.
-- [ ] Activar **Authentication → Correo/contraseña**.
-- [ ] Crear la base **Cloud Firestore**.
-- [ ] Registrar una app web y pegar su configuración en `web/js/firebase-config.js`
-      (reemplazando `"TU_API_KEY"`, etc.).
-- [ ] Poner `DOMINIO_UNIVERSIDAD = "uvg.edu.gt"` en `web/js/auth.js` **y** en `firebase/firestore.rules`.
-- [ ] Quitar el dominio de prueba marcado con **"QUITAR ANTES DE LA DEMO"**.
-- [ ] Publicar las reglas de `firebase/firestore.rules`.
+- [x] Crear el proyecto en <https://console.firebase.google.com> (`carpool-uvg-e62d0`).
+- [x] Activar **Authentication → Correo/contraseña**.
+- [x] Crear la base **Cloud Firestore**.
+- [x] Registrar una app web y pegar su configuración en `web/js/firebase-config.js`.
+- [x] Poner `DOMINIO_UNIVERSIDAD = "uvg.edu.gt"` en `web/js/auth.js` **y** en `firebase/firestore.rules`.
+- [ ] Publicar las reglas de `firebase/firestore.rules` **cada vez que cambian**
+      (la última vez: Fase 4, función `perfilValido()`).
+- [ ] Antes de la feria: quitar el dominio de prueba (`gmail.com`) marcado con
+      **"QUITAR ANTES DE LA DEMO"** en `auth.js` **y** en las reglas, y volver a publicarlas.
 - [x] Zonas reales: 5 rutas sacadas de la encuesta en `web/data/zonas.geojson` (límites **aproximados**:
       corregirlos en <https://geojson.io> si algún borde está mal).
 - [ ] Elegir y visitar un punto de encuentro real por ruta y reemplazar los "Punto por definir"
@@ -127,11 +128,12 @@ Las reglas de seguridad se publican con `firebase deploy --only firestore:rules`
 
 | Fase | Contenido | Estado |
 |---|---|---|
-| 1 | Esqueleto: carpetas, README, .gitignore, git init | ✅ |
-| 2 | Mapa: HTML base, estilos, mapa.js, zonas.geojson | ✅ |
-| 3 | Autenticación: firebase-config.js, auth.js, firestore.rules | ⏳ |
-| 4 | Perfil y matching: perfil.js, matching.js, pruebas | ⏳ |
-| 5 | Solicitudes y recomendaciones | ⏳ |
-| 6 | Python: análisis de encuesta y datos demo | ✅ |
+| 1 | Esqueleto: carpetas, README, .gitignore, git init | Hecho |
+| 2 | Mapa: HTML base, estilos, mapa.js, zonas.geojson | Hecho |
+| 3 | Autenticación: firebase-config.js, auth.js, firestore.rules | Hecho |
+| 4 | Perfil y matching: perfil.js, matching.js, coincidencias.js, pruebas | Hecho |
+| 5 | Solicitudes y recomendaciones | Pendiente |
+| 6 | Python: análisis de encuesta y datos demo | Hecho |
+| 7 | Modo demo sin internet, checklist y guion de la demo | Pendiente |
 
 Cada fase tiene su explicación en `docs/explicaciones/fase-N.md`.
