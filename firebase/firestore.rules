@@ -1,0 +1,57 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Funciones de ayuda ----------
+
+    // ¿Hay sesión y el correo es de un dominio permitido?
+    // [.] significa "un punto de verdad" (en regex, un punto solo significa "cualquier letra")
+    function correoPermitido() {
+      return request.auth != null
+        && (request.auth.token.email.matches('.*@uvg[.]edu[.]gt$')
+            || request.auth.token.email.matches('.*@gmail[.]com$'));  // ⚠️ QUITAR ANTES DE LA DEMO
+    }
+
+    // ¿Además verificó su correo?
+    function verificado() {
+      return correoPermitido() && request.auth.token.email_verified == true;
+    }
+
+    // ¿El documento solo trae campos de nuestra lista?
+    function soloCamposPermitidos() {
+      return request.resource.data.keys().hasOnly(
+        ['uid', 'nombre', 'carrera', 'rol', 'zonas', 'horario', 'tolerancia', 'esDemo']);
+    }
+
+    // ---------- Colección usuarios ----------
+    match /usuarios/{uid} {
+
+      // Leer perfiles: solo estudiantes verificados (para el matching)
+      allow read: if verificado();
+
+      // Crear: al registrarse (aún sin verificar), SOLO su propio documento
+      allow create: if correoPermitido()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['uid', 'nombre', 'carrera', 'esDemo'])
+        && request.resource.data.uid == uid
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() <= 60
+        && request.resource.data.carrera is string
+        && request.resource.data.carrera.size() <= 60
+        && request.resource.data.esDemo == false;
+
+      // Modificar: solo el dueño, verificado, sin campos extra, sin cambiar uid ni esDemo
+      allow update: if verificado()
+        && request.auth.uid == uid
+        && soloCamposPermitidos()
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.esDemo == false;
+
+      // Borrar: nadie desde la app
+      allow delete: if false;
+    }
+
+    // Cualquier otra colección: cerrada hasta que escribamos sus reglas (Fase 5)
+  }
+}

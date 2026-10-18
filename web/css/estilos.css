@@ -213,6 +213,9 @@ a {
 .muestra-encuentro { background: var(--color-zona-encuentro); opacity: 0.6; }
 .muestra-paso      { background: var(--color-zona-paso);      opacity: 0.6; }
 .muestra-punto     { background: var(--color-punto-encuentro); border-radius: 50%; }
+/* El color de cada ruta lo pone mapa.js (style.backgroundColor) */
+.muestra-ruta      { opacity: 0.6; }
+.muestra-destino   { background: #111827; border-radius: 50%; border: 2px solid #ffffff; box-shadow: 0 0 0 1px #111827; }
 
 /* Contenido de los popups (las ventanitas al tocar un marcador).
    Empezamos con ".leaflet-popup-content" porque Leaflet ya le da márgenes

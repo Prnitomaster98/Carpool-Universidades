@@ -4,20 +4,56 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "zona-centro",
-        "nombre": "Zona Centro — ejemplo",
+        "id": "ruta-uvg",
+        "nombre": "Cerca de UVG (zonas 10, 14, 15 y 16)",
         "tipo": "encuentro",
-        "esDemo": true
+        "color": "#7c3aed",
+        "esAproximada": true
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-90.5120, 14.6300],
-            [-90.5020, 14.6300],
-            [-90.5020, 14.6400],
-            [-90.5120, 14.6400],
-            [-90.5120, 14.6300]
+            [
+              -90.528,
+              14.612
+            ],
+            [
+              -90.505,
+              14.615
+            ],
+            [
+              -90.49,
+              14.625
+            ],
+            [
+              -90.46,
+              14.64
+            ],
+            [
+              -90.45,
+              14.61
+            ],
+            [
+              -90.47,
+              14.59
+            ],
+            [
+              -90.505,
+              14.58
+            ],
+            [
+              -90.525,
+              14.57
+            ],
+            [
+              -90.528,
+              14.595
+            ],
+            [
+              -90.528,
+              14.612
+            ]
           ]
         ]
       }
@@ -25,64 +61,56 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "zona-norte",
-        "nombre": "Zona Norte — ejemplo",
-        "tipo": "paso",
-        "esDemo": true
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [-90.5120, 14.6400],
-            [-90.5020, 14.6400],
-            [-90.5000, 14.6480],
-            [-90.5070, 14.6530],
-            [-90.5140, 14.6480],
-            [-90.5120, 14.6400]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "zona-sur",
-        "nombre": "Zona Sur — ejemplo",
-        "tipo": "paso",
-        "esDemo": true
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [-90.5140, 14.6220],
-            [-90.5070, 14.6170],
-            [-90.5000, 14.6220],
-            [-90.5020, 14.6300],
-            [-90.5120, 14.6300],
-            [-90.5140, 14.6220]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "zona-este",
-        "nombre": "Zona Este — ejemplo",
+        "id": "ruta-norte",
+        "nombre": "Norte (zonas 1, 2, 5, 6, 17 y 18)",
         "tipo": "encuentro",
-        "esDemo": true
+        "color": "#0891b2",
+        "esAproximada": true
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-90.5020, 14.6300],
-            [-90.4900, 14.6300],
-            [-90.4900, 14.6400],
-            [-90.5020, 14.6400],
-            [-90.5020, 14.6300]
+            [
+              -90.528,
+              14.612
+            ],
+            [
+              -90.535,
+              14.645
+            ],
+            [
+              -90.525,
+              14.68
+            ],
+            [
+              -90.48,
+              14.7
+            ],
+            [
+              -90.43,
+              14.69
+            ],
+            [
+              -90.42,
+              14.65
+            ],
+            [
+              -90.46,
+              14.64
+            ],
+            [
+              -90.49,
+              14.625
+            ],
+            [
+              -90.505,
+              14.615
+            ],
+            [
+              -90.528,
+              14.612
+            ]
           ]
         ]
       }
@@ -90,20 +118,178 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "zona-oeste",
-        "nombre": "Zona Oeste — ejemplo",
-        "tipo": "paso",
-        "esDemo": true
+        "id": "ruta-occidente",
+        "nombre": "Occidente (Mixco y zonas 7, 11 y 12)",
+        "tipo": "encuentro",
+        "color": "#16a34a",
+        "esAproximada": true
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [-90.5240, 14.6300],
-            [-90.5120, 14.6300],
-            [-90.5120, 14.6400],
-            [-90.5240, 14.6400],
-            [-90.5240, 14.6300]
+            [
+              -90.528,
+              14.612
+            ],
+            [
+              -90.528,
+              14.595
+            ],
+            [
+              -90.54,
+              14.58
+            ],
+            [
+              -90.6,
+              14.58
+            ],
+            [
+              -90.65,
+              14.6
+            ],
+            [
+              -90.65,
+              14.66
+            ],
+            [
+              -90.6,
+              14.69
+            ],
+            [
+              -90.525,
+              14.68
+            ],
+            [
+              -90.535,
+              14.645
+            ],
+            [
+              -90.528,
+              14.612
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ruta-sur",
+        "nombre": "Sur (Villa Nueva, Petapa, Villa Canales y zona 13)",
+        "tipo": "encuentro",
+        "color": "#dc2626",
+        "esAproximada": true
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -90.54,
+              14.58
+            ],
+            [
+              -90.528,
+              14.595
+            ],
+            [
+              -90.525,
+              14.57
+            ],
+            [
+              -90.505,
+              14.58
+            ],
+            [
+              -90.495,
+              14.54
+            ],
+            [
+              -90.5,
+              14.45
+            ],
+            [
+              -90.56,
+              14.44
+            ],
+            [
+              -90.62,
+              14.48
+            ],
+            [
+              -90.63,
+              14.54
+            ],
+            [
+              -90.6,
+              14.58
+            ],
+            [
+              -90.54,
+              14.58
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ruta-oriente",
+        "nombre": "Oriente (Carretera a El Salvador y las Pinulas)",
+        "tipo": "encuentro",
+        "color": "#ea580c",
+        "esAproximada": true
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -90.505,
+              14.58
+            ],
+            [
+              -90.47,
+              14.59
+            ],
+            [
+              -90.45,
+              14.61
+            ],
+            [
+              -90.46,
+              14.64
+            ],
+            [
+              -90.42,
+              14.65
+            ],
+            [
+              -90.37,
+              14.6
+            ],
+            [
+              -90.37,
+              14.5
+            ],
+            [
+              -90.42,
+              14.43
+            ],
+            [
+              -90.5,
+              14.45
+            ],
+            [
+              -90.495,
+              14.54
+            ],
+            [
+              -90.505,
+              14.58
+            ]
           ]
         ]
       }

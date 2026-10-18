@@ -113,7 +113,10 @@ Las reglas de seguridad se publican con `firebase deploy --only firestore:rules`
 - [ ] Poner `DOMINIO_UNIVERSIDAD = "uvg.edu.gt"` en `web/js/auth.js` **y** en `firebase/firestore.rules`.
 - [ ] Quitar el dominio de prueba marcado con **"QUITAR ANTES DE LA DEMO"**.
 - [ ] Publicar las reglas de `firebase/firestore.rules`.
-- [ ] Dibujar las zonas reales en <https://geojson.io> y reemplazar `web/data/zonas.geojson`.
+- [x] Zonas reales: 5 rutas sacadas de la encuesta en `web/data/zonas.geojson` (límites **aproximados**:
+      corregirlos en <https://geojson.io> si algún borde está mal).
+- [ ] Elegir y visitar un punto de encuentro real por ruta y reemplazar los "Punto por definir"
+      de `web/data/puntos-encuentro.json` (agregar `fechaObservacion` y quitar `esDemo`).
 - [ ] Para `cargar_demo.py`: descargar una clave de cuenta de servicio, guardarla
       **fuera del repositorio** y poner su ruta en la variable de entorno
       `GOOGLE_APPLICATION_CREDENTIALS`. **Nunca** la subas a Git.

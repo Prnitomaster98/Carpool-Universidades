@@ -200,24 +200,40 @@ for _dia_de_clase in DIAS_DE_CLASE_SIN_TILDE:
 # Los ids y nombres de las zonas se leen de web/data/zonas.geojson (Fase 2).
 # Esta lista PROVISIONAL (los mismos ids) solo se usa si ese archivo no existe.
 ZONAS_PROVISIONALES_DE_RESPALDO = [
-    {"id": "zona-centro", "nombre": "Zona Centro"},
-    {"id": "zona-norte", "nombre": "Zona Norte"},
-    {"id": "zona-sur", "nombre": "Zona Sur"},
-    {"id": "zona-este", "nombre": "Zona Este"},
-    {"id": "zona-oeste", "nombre": "Zona Oeste"},
+    {"id": "ruta-uvg", "nombre": "Cerca de UVG (zonas 10, 14, 15 y 16)"},
+    {"id": "ruta-norte", "nombre": "Norte (zonas 1, 2, 5, 6, 17 y 18)"},
+    {"id": "ruta-occidente", "nombre": "Occidente (Mixco y zonas 7, 11 y 12)"},
+    {"id": "ruta-sur", "nombre": "Sur (Villa Nueva, Petapa, Villa Canales y zona 13)"},
+    {"id": "ruta-oriente", "nombre": "Oriente (Carretera a El Salvador y las Pinulas)"},
 ]
 
-# Formas "raras" en que la gente escribe una zona → id de la zona.
-# Las claves van "normalizadas" (minúsculas, sin tildes, espacios ni signos).
-# No hace falta poner "zonanorte" ni "norte": esas se reconocen solas.
-# ⚠️ Cuando tengas las zonas reales, agrega aquí los apodos que aparezcan
-#    en la encuesta (el análisis te muestra los que no reconoció).
+# Lo que la gente escribió en "Zona de origen" → la RUTA a la que pertenece.
+# Las claves van "normalizadas" (minúsculas, sin tildes, espacios ni signos):
+# "San Cristóbal, Mixco" → "sancristobalmixco".
+# La agrupación salió del análisis de la encuesta real (octubre 2026).
+# ⚠️ Si alguien escribe una zona nueva, el análisis te la muestra como
+#    "no reconocida": agrégala aquí con su ruta.
 APODOS_DE_ZONAS_A_ID = {
-    "zn": "zona-norte",
-    "zs": "zona-sur",
-    "ze": "zona-este",
-    "zo": "zona-oeste",
-    "elcentro": "zona-centro",
+    # Cerca de UVG
+    "zona10": "ruta-uvg", "zona14": "ruta-uvg", "zona15": "ruta-uvg", "zona16": "ruta-uvg",
+    "z10": "ruta-uvg", "z14": "ruta-uvg", "z15": "ruta-uvg", "z16": "ruta-uvg",
+    # Norte
+    "zona1": "ruta-norte", "zona2": "ruta-norte", "zona5": "ruta-norte",
+    "zona6": "ruta-norte", "zona17": "ruta-norte", "zona18": "ruta-norte",
+    "z1": "ruta-norte", "z2": "ruta-norte", "z5": "ruta-norte",
+    "z6": "ruta-norte", "z17": "ruta-norte", "z18": "ruta-norte",
+    # Occidente
+    "mixco": "ruta-occidente", "sancristobal": "ruta-occidente",
+    "sancristobalmixco": "ruta-occidente",
+    "zona7": "ruta-occidente", "zona11": "ruta-occidente", "zona12": "ruta-occidente",
+    "z7": "ruta-occidente", "z11": "ruta-occidente", "z12": "ruta-occidente",
+    # Sur
+    "villanueva": "ruta-sur", "sanmiguelpetapa": "ruta-sur", "petapa": "ruta-sur",
+    "villacanales": "ruta-sur", "zona13": "ruta-sur", "z13": "ruta-sur",
+    # Oriente
+    "carreteraaelsalvador": "ruta-oriente", "caes": "ruta-oriente",
+    "fraijanes": "ruta-oriente", "santacatarinapinula": "ruta-oriente",
+    "sanjosepinula": "ruta-oriente",
 }
 
 

@@ -7,6 +7,8 @@ import {
     signOut,
 } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'
 
+import {db} from "./firebase-config.js"
+import {doc, setDoc} from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js'
 
 
 const DOMINIO_UNIVERSIDAD = "uvg.edu.gt"
@@ -87,6 +89,7 @@ function traducirError(codigo) {
         'auth/too-many-requests': 'Demasiados intentos. Espera unos minutos y vuelve a probar.',
         'auth/network-request-failed': 'Sin conexión a internet. Revisa tu red.',
         'auth/operation-not-allowed': 'El registro con correo no está habilitado. (Admin: actívalo en la consola de Firebase.)',
+        'permission-denied': 'No tienes permiso para esta acción.',
     }
     // Si el código no está en la lista, muestro uno genérico con el código 
     return mensajes[codigo] ?? `Algo salió mal (${codigo}). Intenta de nuevo.`; //Los ?? capturan si lo de antes no existe usa lo de al derecha
@@ -157,6 +160,14 @@ formRegistro.addEventListener('submit', async (evento) => {
     botonRegistrar.disabled = true
     try {
         const credencial = await createUserWithEmailAndPassword(auth, correo, clave)
+
+        await setDoc(doc(db, "usuarios", credencial.user.uid),{
+            uid: credencial.user.uid,
+            nombre: nombre,
+            carrera: carrera,
+            esDemo: false,
+        })
+
         await updateProfile(credencial.user, { displayName: nombre })
         await sendEmailVerification(credencial.user)
         await signOut(auth)

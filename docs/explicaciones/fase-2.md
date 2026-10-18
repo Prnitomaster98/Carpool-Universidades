@@ -572,7 +572,7 @@ const [zonas, puntos] = await Promise.all([cargarJSON(RUTA_ZONAS), cargarJSON(RU
    m.resaltarPunto('punto-3');   // → true, el punto se pone morado y se abre su popup
    m.resaltarPunto('no-existe'); // → false y un aviso amarillo en la consola
    ```
-6. **Celular y computadora:** en F12, presiona `Ctrl+Shift+M` (modo dispositivo) y
+6. **Celular y computadora:** en F12, presiona `Ctrl+Shift+M` (modo dispositivo) y  
    elige un ancho de **375px**: todo en una columna, sin scroll horizontal. Luego
    prueba **1440px**: perfil y coincidencias a la izquierda, mapa grande a la derecha.
 7. **Prueba de error 1:** abre `app.html` con doble clic (`file://`). El mapa queda

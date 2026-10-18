@@ -71,10 +71,11 @@
       <div id="mapa" class="mapa"></div>
 
       <!-- Leyenda de colores -->
+      <!-- Las rutas las escribe mapa.js leyendo zonas.geojson (cada una con su color) -->
+      <ul id="leyenda-rutas" class="leyenda" aria-label="Rutas"></ul>
       <ul class="leyenda" aria-label="Leyenda del mapa">
-        <li><span class="muestra muestra-encuentro"></span> Zona de encuentro</li>
-        <li><span class="muestra muestra-paso"></span> Zona de paso</li>
         <li><span class="muestra muestra-punto"></span> Punto de encuentro</li>
+        <li><span class="muestra muestra-destino"></span> UVG (destino)</li>
       </ul>
     </section>
 

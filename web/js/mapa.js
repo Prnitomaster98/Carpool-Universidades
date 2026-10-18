@@ -30,6 +30,16 @@
 // COLOR_ZONA_TIPO_DESCONOCIDO      Gris para una zona con un tipo no esperado.
 // COLOR_PUNTO_NORMAL               Rojo de los puntos de encuentro.
 // COLOR_PUNTO_RESALTADO            Morado del punto que marca resaltarPunto().
+// DESTINO_UNIVERSIDAD              Nombre y [lat, lng] de la UVG (destino de los viajes).
+// COLOR_DESTINO                    Color del marcador de la UVG.
+//
+// --- Nuevos con las rutas reales ---
+// listaLeyendaRutas          El <ul id="leyenda-rutas"> que se llena solo.
+// colorDeZona()              Color de una ruta: su "color" del GeoJSON o el de su tipo.
+// muestraColor               El cuadrito de color de la leyenda.
+// marcadorDestino            El círculo negro de la UVG.
+// hayZonasAproximadas        true si alguna ruta tiene esAproximada: true.
+// avisos                     Lista de avisos que se juntan en un solo mensaje.
 //
 // --- Estado del módulo (viven mientras la página está abierta) ---
 // mapaDeZonas                El mapa de Leaflet. Empieza en null hasta que
@@ -106,6 +116,15 @@ const COLOR_ZONA_TIPO_DESCONOCIDO = '#6b7280'; // gris
 const COLOR_PUNTO_NORMAL = '#b91c1c';          // rojo
 const COLOR_PUNTO_RESALTADO = '#7c3aed';       // morado, para resaltarPunto()
 
+// Destino de todos los viajes: UVG Campus Central (18 Avenida 11-95, zona 15).
+// No es un punto de encuentro: se dibuja aparte y no entra en el filtro.
+const DESTINO_UNIVERSIDAD = {
+  nombre: 'UVG — Campus Central',
+  lat: 14.6049,
+  lng: -90.4891,
+};
+const COLOR_DESTINO = '#111827';               // casi negro, para que resalte
+
 // ---------- 2. Variables del módulo ----------
 // Viven mientras la página esté abierta. Las guardamos para que el filtro
 // y resaltarPunto() puedan encontrar las capas después.
@@ -118,6 +137,7 @@ let idPuntoResaltadoActual = null;            // qué punto está resaltado ahor
 // Referencias a elementos del HTML
 const selectorFiltroZona = document.getElementById('filtro-zona');
 const parrafoMensajeMapa = document.getElementById('mensaje-mapa');
+const listaLeyendaRutas = document.getElementById('leyenda-rutas');
 
 // ---------- 3. Funciones de ayuda ----------
 
@@ -173,8 +193,14 @@ function crearPopupPunto(puntoEncuentro) {
   contenedorPopup.append(
     crearParrafo('popup-titulo', puntoEncuentro.nombre),
     crearParrafo('popup-texto', `🛡️ ${puntoEncuentro.notaSeguridad}`),
-    crearParrafo('popup-fecha', `Observado el ${formatearFecha(puntoEncuentro.fechaObservacion)}`),
   );
+  // La fecha solo aparece cuando alguien del equipo ya visitó el lugar.
+  // Un punto "por definir" no tiene fecha, y no hay que inventarle una.
+  if (puntoEncuentro.fechaObservacion) {
+    contenedorPopup.append(
+      crearParrafo('popup-fecha', `Observado el ${formatearFecha(puntoEncuentro.fechaObservacion)}`),
+    );
+  }
   if (puntoEncuentro.esDemo) {
     contenedorPopup.append(crearEtiquetaDemo());
   }
@@ -189,6 +215,9 @@ function crearPopupZona(propiedadesZona) {
     crearParrafo('popup-titulo', propiedadesZona.nombre),
     crearParrafo('popup-texto', tipoZonaLegible),
   );
+  if (propiedadesZona.esAproximada) {
+    contenedorPopup.append(crearParrafo('popup-fecha', 'Límites aproximados'));
+  }
   if (propiedadesZona.esDemo) {
     contenedorPopup.append(crearEtiquetaDemo());
   }
@@ -206,11 +235,12 @@ function dibujarZonas(datosGeoJSONZonas) {
   // L.geoJSON convierte el GeoJSON en capas de Leaflet.
   const capaTodasLasZonas = L.geoJSON(datosGeoJSONZonas, {
     // style se llama una vez por zona y decide su color según el tipo.
-    style: (zonaGeoJSON) => {
-      const colorZona =
-        COLORES_POR_TIPO_DE_ZONA[zonaGeoJSON.properties.tipo] ?? COLOR_ZONA_TIPO_DESCONOCIDO;
-      return { color: colorZona, weight: 2, fillColor: colorZona, fillOpacity: 0.25 };
-    },
+    style: (zonaGeoJSON) => ({
+      color: colorDeZona(zonaGeoJSON.properties),
+      weight: 2,
+      fillColor: colorDeZona(zonaGeoJSON.properties),
+      fillOpacity: 0.25,
+    }),
     // onEachFeature también se llama una vez por zona: guardamos la capa y le
     // ponemos su popup.
     onEachFeature: (zonaGeoJSON, capaZona) => {
@@ -230,6 +260,46 @@ function dibujarZonas(datosGeoJSONZonas) {
     opcionSelector.textContent = zonaGeoJSON.properties.nombre;
     selectorFiltroZona.append(opcionSelector);
   }
+
+  dibujarLeyendaRutas(datosGeoJSONZonas);
+}
+
+// Cada ruta trae su propio color en el GeoJSON ("color": "#7c3aed").
+// Si una zona no lo trae, usamos el color de su tipo, como antes.
+function colorDeZona(propiedadesZona) {
+  return propiedadesZona.color
+    ?? COLORES_POR_TIPO_DE_ZONA[propiedadesZona.tipo]
+    ?? COLOR_ZONA_TIPO_DESCONOCIDO;
+}
+
+// Escribe la leyenda de rutas leyendo el GeoJSON: si mañana agregan una
+// sexta ruta, aparece sola en la leyenda sin tocar el HTML.
+function dibujarLeyendaRutas(datosGeoJSONZonas) {
+  if (!listaLeyendaRutas) return; // por si app.html no tiene la leyenda
+  listaLeyendaRutas.replaceChildren();
+  for (const zonaGeoJSON of datosGeoJSONZonas.features) {
+    const elementoLeyenda = document.createElement('li');
+    const muestraColor = document.createElement('span');
+    muestraColor.className = 'muestra muestra-ruta';
+    muestraColor.style.backgroundColor = colorDeZona(zonaGeoJSON.properties);
+    elementoLeyenda.append(muestraColor, zonaGeoJSON.properties.nombre);
+    listaLeyendaRutas.append(elementoLeyenda);
+  }
+}
+
+// ---------- 4b. Dibujar el destino (la universidad) ----------
+
+function dibujarDestino() {
+  const marcadorDestino = L.circleMarker([DESTINO_UNIVERSIDAD.lat, DESTINO_UNIVERSIDAD.lng], {
+    radius: 12, color: '#ffffff', weight: 3, fillColor: COLOR_DESTINO, fillOpacity: 1,
+  });
+  const contenedorPopup = document.createElement('div');
+  contenedorPopup.append(
+    crearParrafo('popup-titulo', `🎓 ${DESTINO_UNIVERSIDAD.nombre}`),
+    crearParrafo('popup-texto', 'Destino de todos los viajes'),
+  );
+  marcadorDestino.bindPopup(contenedorPopup);
+  marcadorDestino.addTo(mapaDeZonas);
 }
 
 // ---------- 5. Dibujar los puntos de encuentro ----------
@@ -350,12 +420,18 @@ async function iniciarMapa() {
     ]);
     dibujarZonas(datosGeoJSONZonas);
     dibujarPuntos(listaPuntosEncuentro);
+    dibujarDestino();
 
     const hayDatosDePrueba =
       datosGeoJSONZonas.features.some((zonaGeoJSON) => zonaGeoJSON.properties.esDemo) ||
       listaPuntosEncuentro.some((puntoEncuentro) => puntoEncuentro.esDemo);
-    mostrarMensaje(hayDatosDePrueba
-      ? 'Las zonas y puntos actuales son datos de prueba.'
+    const hayZonasAproximadas =
+      datosGeoJSONZonas.features.some((zonaGeoJSON) => zonaGeoJSON.properties.esAproximada);
+    const avisos = [];
+    if (hayZonasAproximadas) avisos.push('Los límites de las rutas son aproximados.');
+    if (hayDatosDePrueba) avisos.push('Los puntos de encuentro todavía son de prueba.');
+    mostrarMensaje(avisos.length
+      ? avisos.join(' ')
       : `${listaPuntosEncuentro.length} punto(s) de encuentro.`);
   } catch (errorDeCarga) {
     console.error(errorDeCarga);
