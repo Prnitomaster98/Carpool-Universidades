@@ -15,6 +15,11 @@ service cloud.firestore {
             || request.auth.token.email.matches('.*@gmail[.]com$'));  // QUITAR ANTES DE LA DEMO
     }
 
+    // ¿Es un número de Guatemala de 8 dígitos?
+    function telefonoValido(t) {
+      return t is string && t.matches('^[0-9]{8}$');
+    }
+
     // ¿Además verificó su correo?
     function verificado() {
       return correoPermitido() && request.auth.token.email_verified == true;
@@ -60,13 +65,14 @@ service cloud.firestore {
       let d = request.resource.data;
       return d.keys().hasOnly(['viajeId', 'conductorUid', 'conductorNombre', 'pasajeroUid',
                                'pasajeroNombre', 'dia', 'tramo', 'hora', 'puntoId',
-                               'estado', 'creado', 'esDemo'])
+                               'estado', 'creado', 'esDemo', 'pasajeroTelefono'])
         && solicitudId == d.viajeId + '_' + request.auth.uid
         && d.pasajeroUid == request.auth.uid
         && d.conductorUid != request.auth.uid
         && d.conductorUid == get(/databases/$(database)/documents/viajes/$(d.viajeId)).data.conductorUid
         && d.pasajeroNombre is string && d.pasajeroNombre.size() <= 60
         && d.conductorNombre is string && d.conductorNombre.size() <= 60
+        && (!('pasajeroTelefono' in d) || telefonoValido(d.pasajeroTelefono))
         && d.estado == 'pendiente'
         && d.creado == request.time
         && d.esDemo == false;
@@ -129,11 +135,22 @@ service cloud.firestore {
       // Responder: solo el conductor, y SOLO puede cambiar "estado"
       allow update: if verificado()
         && resource.data.conductorUid == request.auth.uid
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estado'])
-        && request.resource.data.estado in ['aceptada', 'rechazada'];
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estado', 'conductorTelefono'])
+        && request.resource.data.estado in ['aceptada', 'rechazada']
+        && (!('conductorTelefono' in request.resource.data)
+            || telefonoValido(request.resource.data.conductorTelefono));
 
       // Cancelar: solo el pasajero que la mandó
       allow delete: if verificado() && resource.data.pasajeroUid == request.auth.uid;
+    }
+
+    // ---------- Colección contactos (tu WhatsApp, privado) ----------
+    match /contactos/{uid} {
+      allow read: if verificado() && request.auth.uid == uid;
+      allow create, update: if verificado() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['telefono'])
+        && telefonoValido(request.resource.data.telefono);
+      allow delete: if false;
     }
 
     // Cualquier otra colección: cerrada hasta que escribamos sus reglas

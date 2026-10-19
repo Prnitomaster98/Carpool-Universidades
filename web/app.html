@@ -152,6 +152,12 @@
         <!-- ===== Sección: Solicitudes (Fase 5) ===== -->
     <section id="solicitudes" class="tarjeta" aria-labelledby="titulo-solicitudes">
       <h2 id="titulo-solicitudes">Solicitudes</h2>
+            <!-- Whatsapp solo lo puede ver el que te acepta el viaje -->
+      <form id="form-whatsapp" class="perfil-form" novalidate>
+        <label for="mi-whatsapp" class="etiqueta-campo">Tu número de WhatsApp (8 dígitos)</label>
+        <input type="tel" id="mi-whatsapp" inputmode="numeric" maxlength="15" placeholder="5555 1234" autocomplete="tel-national">
+        <button type="submit" id="whatsapp-guardar" class="boton boton-secundario" disabled>Guardar número</button>
+      </form>
       <p id="solicitudes-mensaje" class="mensaje-perfil" role="status" aria-live="polite"></p>
 
       <h3>Solicitudes que recibí (mis viajes)</h3>

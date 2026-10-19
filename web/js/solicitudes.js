@@ -33,12 +33,16 @@ const seccion = document.getElementById('solicitudes')
 const mensaje = document.getElementById('solicitudes-mensaje')
 const listaRecibidas = document.getElementById('lista-recibidas')
 const listaEnviadas = document.getElementById('lista-enviadas')
+const formWhatsApp = document.getElementById('form-whatsapp')
+const inputWhatsApp = document.getElementById('mi-whatsapp')
+const botonGuardarWhatsApp = document.getElementById('whatsapp-guardar')
 
 // ---------- Datos ----------
 let miPerfil = null   // llega con "perfil-listo" (lo usamos para tu nombre)
 let puntos = []       // para mostrar el nombre del punto
 let recibidas = []
 let enviadas = []
+let miTelefono = ''
 
 
 // Igual que en viajes.js
@@ -95,6 +99,8 @@ async function solicitar(viaje) {
         creado: serverTimestamp(),
         esDemo: false,
     }
+
+    if (miTelefono) solicitud.pasajeroTelefono = miTelefono
 
     mensaje.textContent = 'Enviando solicitud...'
     try {
@@ -223,8 +229,9 @@ function dibujarEnviada(solicitud) {
 // soyConductor = true si la tarjeta es de una solicitud que recibiste.
 // ----------------------------------------------------------
 function botonWhatsApp(solicitud, soyConductor) {
-    const boton = crear('button', 'boton boton-secundario', 'Avisar por WhatsApp')
-    boton.type = 'button'
+    const telefono = soyConductor ? solicitud.pasajeroTelefono : solicitud.conductorTelefono
+    const otroNombre = soyConductor ? solicitud.pasajeroNombre : solicitud.conductorNombre
+    const boton = crear('button', 'boton boton-secundario', telefono ? `Escribir a ${otroNombre} por WhatsApp` : 'Avisar por WhatsApp')
     boton.addEventListener('click', () => {
         const detalle = `${nombreDia(solicitud.dia).toLowerCase()} `
             + `(${(NOMBRES_TRAMO[solicitud.tramo] ?? solicitud.tramo).toLowerCase()}) a las ${solicitud.hora}, `
@@ -233,7 +240,9 @@ function botonWhatsApp(solicitud, soyConductor) {
             ? `Carpool UVG: hola ${solicitud.pasajeroNombre}, te acepté en mi viaje del ${detalle}`
             : `Carpool UVG: hola ${solicitud.conductorNombre}, gracias por aceptarme en tu viaje del ${detalle}`
         // encodeURIComponent cambia espacios, tildes y : por códigos que sí caben en un link
-        window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank', 'noopener')
+        // Con número: abre el chat de la otra persona (502 = Guatemala). Sin número se da a elegir
+        const destino = telefono ? `https://wa.me/502${telefono}` : 'https://wa.me/'
+        window.open(`${destino}?text=${encodeURIComponent(texto)}`, '_blank', 'noopener')
     })
     return boton
 }
@@ -260,7 +269,10 @@ async function responder(solicitud, nuevoEstado) {
             }
         }
         // updateDoc cambia SOLO los campos que le pasas; lo demás queda igual
-        await updateDoc(doc(db, 'solicitudes', solicitud.id), { estado: nuevoEstado })
+        const cambios = { estado: nuevoEstado }
+        // Al aceptar, le pasamos tu número al pasajero (solo él y tú pueden leer la solicitud)
+        if (nuevoEstado === 'aceptada' && miTelefono) cambios.conductorTelefono = miTelefono
+        await updateDoc(doc(db, 'solicitudes', solicitud.id), cambios)
         mensaje.textContent = nuevoEstado === 'aceptada'
             ? `Aceptaste a ${solicitud.pasajeroNombre}.`
             : `Rechazaste a ${solicitud.pasajeroNombre}.`
@@ -285,9 +297,45 @@ async function cancelar(solicitud) {
     }
 }
 
+function limpiarTelefono(texto) {
+    let numero = texto.replace(/\D/g, '')   // \D = todo lo que NO es dígito (espacios, guiones, +)
+    if (numero.length === 11 && numero.startsWith('502')) numero = numero.slice(3)
+    return numero
+}
+
+async function cargarMiTelefono() {
+    try {
+        const documento = await getDoc(doc(db, 'contactos', auth.currentUser.uid))
+        if (documento.exists()) miTelefono = documento.data().telefono
+    } catch (problema) {
+        console.warn('No se pudo leer tu WhatsApp', problema)
+    }
+    inputWhatsApp.value = miTelefono
+    botonGuardarWhatsApp.disabled = false
+}
+
+async function guardarTelefono(evento) {
+    evento.preventDefault()   // sin esto, el formulario recarga la página
+    const numero = limpiarTelefono(inputWhatsApp.value)
+    if (!/^[0-9]{8}$/.test(numero)) { //expresión en regex
+        mensaje.textContent = 'Escribe tu número de WhatsApp de 8 dígitos (por ejemplo 5555 1234).'
+        return
+    }
+    try {
+        await setDoc(doc(db, 'contactos', auth.currentUser.uid), { telefono: numero })
+        miTelefono = numero
+        inputWhatsApp.value = numero
+        mensaje.textContent = 'Número guardado. Solo lo verá quien comparta un viaje contigo.'
+    } catch (problema) {
+        console.error(problema)
+        mensaje.textContent = problema.code === 'permission-denied'
+            ? 'Firebase no dejó guardar el número. Revisa que las reglas nuevas estén publicadas.'
+            : 'No se pudo guardar el número. Revisa tu internet.'
+    }
+}
 
 // ---------- Arranque ----------
-// Los "oídos" van ANTES de cualquier await
+//Los que reciben los eventos antes de los awaits
 document.addEventListener('perfil-listo', (evento) => {
     miPerfil = evento.detail
 })
@@ -295,11 +343,13 @@ document.addEventListener('solicitar-viaje', (evento) => {
     solicitar(evento.detail)
 })
 
+formWhatsApp.addEventListener('submit', guardarTelefono)
+
 mensaje.textContent = 'Cargando solicitudes...'
 
-// Aquí SÍ necesitamos saber quién eres antes de consultar (el uid va en el "where").
-// authStateReady() espera a que Firebase termine de revisar la sesión guardada.
+//Se revisa la identidad del usuario antes de comenzar
 await auth.authStateReady()
 puntos = await leerJSON('data/puntos-encuentro.json', [])
+await cargarMiTelefono()
 await cargarSolicitudes()
 mensaje.textContent = ''

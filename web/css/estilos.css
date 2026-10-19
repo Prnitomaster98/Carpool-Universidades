@@ -3,7 +3,16 @@
    Enfoque "mobile-first": primero escribimos los estilos para
    celular (pantalla angosta) y después, con @media, los
    ajustamos para pantallas más anchas.
+
+   Idea del diseño: tema oscuro "de noche en la ciudad", con el
+   verde como color de la marca. El fondo tiene una cuadrícula
+   muy suave que recuerda a un mapa de calles.
    ========================================================== */
+
+/* Tipografía Manrope (Google Fonts). Si no hay internet, el
+   navegador usa la letra del sistema y todo sigue funcionando.
+   @import tiene que ir ANTES que cualquier otra regla. */
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
 
 /* ---------- 1. Variables de color y tamaño ----------
    :root es la raíz del documento. Las variables (--nombre) se
@@ -11,46 +20,60 @@
    la app, lo cambias solo aquí.
 
    GUÍA DE NOMBRES DE VARIABLES (estilos.css)
-   --color-fondo-pagina          Fondo gris claro de toda la página.
-   --color-fondo-tarjetas        Fondo blanco de las tarjetas y del menú.
+   --color-fondo-pagina          Fondo de toda la página.
+   --color-fondo-tarjetas        Fondo de las tarjetas y del menú.
+   --color-fondo-elevado         Fondo de cajas DENTRO de una tarjeta (items, inputs).
    --color-texto-principal       Color del texto normal.
    --color-texto-secundario      Texto menos importante (avisos, leyenda).
-   --color-enlaces-y-menu        Azul de los enlaces y del menú.
+   --color-enlaces-y-menu        Verde de la marca: botones, enlaces, menú.
+   --color-marca-claro           Verde más brillante para textos sobre fondo oscuro.
+   --color-azul-ubicacion        Azul de "Tú" (igual a COLOR_USUARIO en cercanos.js).
    --color-bordes                Líneas que separan tarjetas y elementos.
+   --color-error                 Rojo de los mensajes de error.
    --color-zona-encuentro        Naranja de las zonas de encuentro (igual en mapa.js).
    --color-zona-paso             Azul de las zonas de paso (igual en mapa.js).
-   --color-punto-encuentro       Rojo de los puntos de encuentro (igual en mapa.js).
-   --color-fondo-etiqueta-demo   Fondo amarillo de la etiqueta "Dato de prueba".
+   --color-punto-encuentro       Verde de los puntos de encuentro (igual en mapa.js).
+   --color-fondo-etiqueta-demo   Fondo de la etiqueta "Dato de prueba".
    --color-texto-etiqueta-demo   Texto de esa etiqueta.
-   --radio-esquinas-redondeadas  Cuánto se redondean las esquinas.
+   --radio-esquinas-redondeadas  Cuánto se redondean las esquinas de las tarjetas.
+   --radio-controles             Esquinas de botones e inputs (un poco menos).
    --espacio-margen-base         Margen/relleno base; los demás espacios parten de él.
+   --sombra-tarjeta              Sombra suave que "levanta" las tarjetas del fondo.
+   --transicion                  Duración y curva de las animaciones cortas.
    Los nombres de CLASES (.tarjeta, .mapa...) no se cambiaron porque
-   el HTML y mapa.js los usan. */
+   el HTML y los .js los usan. */
 :root {
-  --color-fondo-pagina: #189b5e;
-  --color-fondo-tarjetas: #1b1d1f;
-  --color-texto-principal: #e8ece9;
-  --color-texto-secundario: #a9b4ae;
-  --color-enlaces-y-menu: #17750b;
-  /* azul de enlaces y menú */
-  --color-bordes: #2e3236;
+  --color-fondo-pagina: #0b1110;
+  --color-fondo-tarjetas: #131a18;
+  --color-fondo-elevado: #1a2320;
+  --color-texto-principal: #e8efeb;
+  --color-texto-secundario: #93a39b;
+  --color-enlaces-y-menu: #22a463;
+  --color-marca-claro: #4ade80;
+  --color-azul-ubicacion: #2563eb;
+  --color-bordes: #25302c;
+  --color-error: #f87171;
 
   /* Colores del mapa (mapa.js usa los mismos valores) */
   --color-zona-encuentro: #f97316;
-  /* naranja: zonas de encuentro */
   --color-zona-paso: #2563eb;
-  /* azul: zonas de paso */
   --color-punto-encuentro: #15803d;
-  /* verde: puntos recomendados */
 
-  /* Etiqueta "Dato de prueba" */
-  --color-fondo-etiqueta-demo: #fef3c7;
-  --color-texto-etiqueta-demo: #92400e;
+  /* Etiqueta "Dato de prueba": ámbar transparente, se lee bien en oscuro */
+  --color-fondo-etiqueta-demo: rgba(234, 179, 8, 0.14);
+  --color-texto-etiqueta-demo: #fcd34d;
 
-  --radio-esquinas-redondeadas: 12px;
-  /* esquinas redondeadas */
+  --radio-esquinas-redondeadas: 18px;
+  --radio-controles: 11px;
   --espacio-margen-base: 16px;
-  /* margen base */
+
+  --sombra-tarjeta: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 20px 40px -24px rgba(0, 0, 0, 0.7);
+  --transicion: 180ms cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Le dice al navegador que la página es oscura: barras de scroll,
+     calendarios y listas desplegables salen en tema oscuro. */
+  color-scheme: dark;
 }
 
 /* ---------- 2. Reglas básicas ---------- */
@@ -65,21 +88,65 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  font-family: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 16px;
   /* 16px evita que el iPhone haga zoom al tocar el <select> */
   line-height: 1.5;
   color: var(--color-texto-principal);
-  background: var(--color-fondo-pagina);
+  background-color: var(--color-fondo-pagina);
+  /* Tres capas de fondo, de arriba hacia abajo:
+     1 y 2: dos "luces" verdes difusas en las esquinas.
+     3 y 4: líneas finas cada 48px que forman una cuadrícula tipo mapa. */
+  background-image:
+    radial-gradient(900px 500px at 10% -10%, rgba(34, 164, 99, 0.16), transparent 60%),
+    radial-gradient(700px 500px at 110% 10%, rgba(37, 99, 235, 0.08), transparent 60%),
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: auto, auto, 48px 48px, 48px 48px;
+  background-attachment: fixed;
+  /* el fondo no se mueve al bajar */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Color del texto al seleccionarlo con el mouse */
+::selection {
+  background: rgba(74, 222, 128, 0.3);
 }
 
 h2 {
-  margin: 0 0 12px;
-  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* Rayita verde antes de cada título de tarjeta: le da ritmo a la página */
+.tarjeta > h2::before {
+  content: "";
+  width: 4px;
+  height: 1.1em;
+  border-radius: 4px;
+  background: linear-gradient(var(--color-marca-claro), var(--color-enlaces-y-menu));
+  flex: none;
+}
+
+/* Subtítulos dentro de una tarjeta (ej. "Viajes publicados") */
+.tarjeta h3 {
+  margin: 20px 0 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-texto-secundario);
 }
 
 a {
-  color: var(--color-enlaces-y-menu);
+  color: var(--color-marca-claro);
+  text-underline-offset: 3px;
 }
 
 /* ---------- 3. Menú superior ---------- */
@@ -89,9 +156,12 @@ a {
   /* si no cabe, el menú baja a otra línea */
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 10px 16px;
   padding: 12px var(--espacio-margen-base);
-  background: var(--color-fondo-tarjetas);
+  /* Fondo semitransparente + desenfoque = efecto "vidrio esmerilado" */
+  background: rgba(13, 19, 17, 0.78);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
   border-bottom: 1px solid var(--color-bordes);
   position: sticky;
   /* el menú se queda arriba al bajar */
@@ -101,37 +171,65 @@ a {
 }
 
 .marca {
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
   text-decoration: none;
   color: var(--color-texto-principal);
 }
 
+/* Logo dibujado solo con CSS: un círculo verde con un punto blanco,
+   como un marcador de "punto de encuentro". */
+.marca::before {
+  content: "";
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #ffffff 0 4px, transparent 5px),
+    linear-gradient(135deg, var(--color-marca-claro), var(--color-enlaces-y-menu));
+  box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.14);
+}
+
+/* El menú es un "control segmentado": una cápsula con dos opciones */
 .menu {
   display: flex;
   gap: 4px;
   margin: 0;
-  padding: 0;
+  padding: 4px;
   list-style: none;
   /* quita las viñetas de la lista */
+  background: var(--color-fondo-elevado);
+  border: 1px solid var(--color-bordes);
+  border-radius: 999px;
 }
 
 .menu a {
   display: block;
-  padding: 8px 12px;
+  padding: 7px 16px;
   /* área grande para tocar con el dedo */
-  border-radius: 8px;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 600;
   text-decoration: none;
+  color: var(--color-texto-secundario);
+  transition: color var(--transicion), background var(--transicion);
 }
 
 .menu a:hover,
 .menu a:focus-visible {
-  background: #e8eefc;
+  color: var(--color-texto-principal);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* La página actual se marca diferente */
 .menu a[aria-current="page"] {
   background: var(--color-enlaces-y-menu);
   color: #ffffff;
+  box-shadow: 0 6px 16px -8px rgba(34, 164, 99, 0.9);
 }
 
 /* ---------- 4. Contenido y tarjetas ---------- */
@@ -139,18 +237,56 @@ a {
   display: grid;
   gap: var(--espacio-margen-base);
   padding: var(--espacio-margen-base);
-  max-width: 1280px;
+  max-width: 1320px;
   margin: 0 auto;
   /* centra el contenido en pantallas grandes */
 }
 
 .tarjeta {
-  background: var(--color-fondo-tarjetas);
+  position: relative;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 120px),
+    var(--color-fondo-tarjetas);
   border: 1px solid var(--color-bordes);
   border-radius: var(--radio-esquinas-redondeadas);
-  padding: var(--espacio-margen-base);
+  padding: calc(var(--espacio-margen-base) * 1.25);
+  box-shadow: var(--sombra-tarjeta);
   min-width: 0;
   /* evita que el mapa estire la columna de la grilla */
+}
+
+/* Animación de entrada: las tarjetas suben un poquito y aparecen.
+   Empieza cuando panel.js quita la clase "cargando" del <body>.
+   Cada tarjeta empieza un poco después que la anterior. */
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+body:not(.cargando) .contenido > .tarjeta,
+.tarjeta-login {
+  animation: aparecer 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.contenido > .tarjeta:nth-child(2) { animation-delay: 60ms; }
+.contenido > .tarjeta:nth-child(3) { animation-delay: 120ms; }
+.contenido > .tarjeta:nth-child(4) { animation-delay: 180ms; }
+.contenido > .tarjeta:nth-child(5) { animation-delay: 240ms; }
+
+/* Si la persona pidió "reducir movimiento" en su sistema, no animamos */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 .texto-vacio {
@@ -164,19 +300,42 @@ a {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 8px 12px;
   margin-bottom: 8px;
+}
+
+.filtro label {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--color-texto-secundario);
+}
+
+/* Todas las listas desplegables de la app se ven igual.
+   appearance: none quita el estilo del navegador y dibujamos
+   nuestra propia flechita con una imagen SVG. */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2393a39b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  cursor: pointer;
 }
 
 .filtro select {
   flex: 1 1 200px;
   /* ocupa el espacio disponible, mínimo ~200px */
   max-width: 100%;
-  padding: 8px;
-  font-size: 1rem;
+  min-height: 44px;
+  padding: 8px 12px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-texto-principal);
   border: 1px solid var(--color-bordes);
-  border-radius: 8px;
-  background: #ffffff;
+  border-radius: var(--radio-controles);
+  background-color: var(--color-fondo-elevado);
+  transition: border-color var(--transicion), box-shadow var(--transicion);
 }
 
 .mensaje-mapa {
@@ -184,11 +343,11 @@ a {
   min-height: 1.5em;
   /* reserva el espacio para que el mapa no "salte" */
   color: var(--color-texto-secundario);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 .mensaje-mapa.error {
-  color: #b91c1c;
+  color: var(--color-error);
   font-weight: 600;
 }
 
@@ -198,65 +357,82 @@ a {
   /* 60% del alto de la pantalla */
   min-height: 320px;
   width: 100%;
-  border-radius: 8px;
+  border-radius: 14px;
   border: 1px solid var(--color-bordes);
+  overflow: hidden;
+  /* las esquinas redondeadas también recortan el mapa */
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.02), 0 18px 40px -20px rgba(0, 0, 0, 0.8);
+  background: #1a2320;
+  /* color mientras cargan los cuadritos del mapa */
+}
+
+/* Bajamos un poco la saturación del mapa base para que resalten
+   los colores de las rutas y los puntos (solo afecta al fondo). */
+.mapa .leaflet-tile-pane {
+  filter: saturate(0.75) contrast(1.02);
 }
 
 /* Leyenda debajo del mapa */
 .leyenda {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 16px;
+  gap: 8px;
   margin: 12px 0 0;
   padding: 0;
   list-style: none;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--color-texto-secundario);
 }
 
+/* La leyenda vacía (antes de que mapa.js la llene) no ocupa espacio */
+.leyenda:empty {
+  display: none;
+}
+
+/* Cada elemento de la leyenda es una pastillita */
 .leyenda li {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  padding: 5px 12px 5px 8px;
+  background: var(--color-fondo-elevado);
+  border: 1px solid var(--color-bordes);
+  border-radius: 999px;
 }
 
 .muestra {
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 4px;
+  flex: none;
 }
 
 .muestra-encuentro {
   background: var(--color-zona-encuentro);
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 .muestra-paso {
   background: var(--color-zona-paso);
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 .muestra-punto {
   background: var(--color-punto-encuentro);
   border-radius: 50%;
+  border: 2px solid #ffffff;
 }
 
 /* El color de cada ruta lo pone mapa.js (style.backgroundColor) */
 .muestra-ruta {
-  opacity: 0.6;
+  opacity: 0.75;
 }
 
 .muestra-precaucion {
   background: #eab308;
   border-radius: 50%;
-}
-
-/* Aviso ámbar dentro del popup de un punto "con precaución" */
-.leaflet-popup-content .popup-aviso {
-  margin: 0 0 4px;
-  color: #b45309;
-  font-weight: 600;
+  border: 2px solid #ffffff;
 }
 
 .muestra-destino {
@@ -266,12 +442,91 @@ a {
   box-shadow: 0 0 0 1px #111827;
 }
 
+/* ----- Controles de Leaflet en tema oscuro ----- */
+.leaflet-container {
+  font-family: inherit;
+}
+
+.leaflet-bar {
+  border: 1px solid var(--color-bordes) !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+  box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.6) !important;
+}
+
+.leaflet-bar a,
+.leaflet-bar a:hover {
+  width: 34px !important;
+  height: 34px !important;
+  line-height: 34px !important;
+  color: var(--color-texto-principal) !important;
+  background: var(--color-fondo-tarjetas) !important;
+  border-bottom-color: var(--color-bordes) !important;
+}
+
+.leaflet-bar a:hover {
+  background: var(--color-fondo-elevado) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(13, 19, 17, 0.75) !important;
+  color: var(--color-texto-secundario) !important;
+  border-top-left-radius: 8px;
+}
+
+.leaflet-control-attribution a {
+  color: var(--color-texto-principal) !important;
+}
+
+/* Etiquetas fijas sobre el mapa ("UVG — destino", "Tú") */
+.leaflet-tooltip {
+  padding: 4px 10px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #0b1110;
+  background: #ffffff;
+  border: none;
+  border-radius: 999px;
+  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* Las ventanitas (popups) también en oscuro */
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--color-fondo-tarjetas);
+  color: var(--color-texto-principal);
+  border: 1px solid var(--color-bordes);
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.7);
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 14px;
+}
+
+.leaflet-popup-content {
+  margin: 14px 16px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  color: var(--color-texto-secundario);
+}
+
+/* Aviso ámbar dentro del popup de un punto "con precaución" */
+.leaflet-popup-content .popup-aviso {
+  margin: 0 0 6px;
+  color: #fbbf24;
+  font-weight: 700;
+}
+
 /* Contenido de los popups (las ventanitas al tocar un marcador).
    Empezamos con ".leaflet-popup-content" porque Leaflet ya le da márgenes
    grandes a los <p> del popup; una regla más específica gana sobre la suya. */
 .leaflet-popup-content .popup-titulo {
-  margin: 0 0 4px;
-  font-weight: 700;
+  margin: 0 0 6px;
+  font-weight: 800;
+  font-size: 1rem;
 }
 
 .leaflet-popup-content .popup-texto {
@@ -281,22 +536,35 @@ a {
 .leaflet-popup-content .popup-fecha {
   margin: 0;
   color: var(--color-texto-secundario);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 
 /* ---------- 6. Etiqueta "Dato de prueba" ----------
    Se usa en TODO dato de ejemplo (esDemo: true). */
 .etiqueta-demo {
-  display: inline-block;
-  margin-top: 6px;
-  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 2px 10px;
   border-radius: 999px;
   /* forma de "pastilla" */
   background: var(--color-fondo-etiqueta-demo);
   color: var(--color-texto-etiqueta-demo);
-  font-size: 0.75rem;
+  border: 1px solid rgba(234, 179, 8, 0.28);
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Puntito antes del texto */
+.etiqueta-demo::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 /* ---------- 7. Pantallas medianas (tablet, 768px o más) ---------- */
@@ -304,20 +572,29 @@ a {
   .contenido {
     grid-template-columns: 1fr 1fr;
     /* dos columnas iguales */
+    gap: 20px;
+    padding: 24px;
   }
 
   /* El mapa ocupa el ancho completo, debajo de perfil y coincidencias */
   .tarjeta-mapa {
     grid-column: 1 / -1;
   }
+
+  .barra-superior {
+    padding: 12px 24px;
+  }
 }
 
 /* ---------- 8. Pantallas grandes (computadora, 1024px o más) ---------- */
 @media (min-width: 1024px) {
   .contenido {
-    /* Columna izquierda angosta (perfil y coincidencias) y mapa grande a la derecha */
-    grid-template-columns: 340px 1fr;
-    grid-template-rows: auto 1fr;
+    /* Columna izquierda angosta y columna derecha grande.
+       Fila 1: perfil | mapa
+       Fila 2: coincidencias | viajes
+       Fila 3: solicitudes   | (viajes sigue, porque ocupa dos filas)
+       Así ninguna columna queda con un hueco grande. */
+    grid-template-columns: 380px minmax(0, 1fr);
     align-items: start;
   }
 
@@ -326,25 +603,51 @@ a {
     grid-row: 1;
   }
 
+  .tarjeta-mapa {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
   #coincidencias {
     grid-column: 1;
     grid-row: 2;
   }
 
-  .tarjeta-mapa {
+  #solicitudes {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  #viajes {
     grid-column: 2;
-    grid-row: 1 / span 2;
-    /* el mapa ocupa las dos filas */
+    grid-row: 2 / span 2;
+  }
+
+  /* En la columna ancha, el formulario de viajes usa dos columnas */
+  #form-viaje fieldset {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(6, auto);
+    column-gap: 16px;
+  }
+
+  #form-viaje legend {
+    grid-column: 1 / -1;
+  }
+
+  /* "Viaje" es el primer campo de la segunda columna: sin margen arriba */
+  #form-viaje .etiqueta-campo:nth-of-type(4) {
+    margin-top: 0;
   }
 
   .mapa {
-    height: 70vh;
+    height: 64vh;
   }
 }
 
 [hidden] {
   display: none !important;
-
 }
 
 /* ---------- 10. Formularios y botones (se reusan en toda la app) ---------- */
@@ -355,36 +658,50 @@ a {
   gap: 6px;
 }
 
+.formulario h2 {
+  margin-bottom: 4px;
+}
+
 .formulario label {
-  margin-top: 8px;
+  margin-top: 10px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  color: var(--color-texto-secundario);
 }
 
 .formulario input {
   width: 100%;
-  padding: 12px;
+  min-height: 48px;
+  padding: 12px 14px;
   font: inherit;
   color: inherit;
-  background: var(--color-fondo-tarjetas);
+  background: var(--color-fondo-elevado);
   border: 1px solid var(--color-bordes);
-  border-radius: 8px;
+  border-radius: var(--radio-controles);
+  transition: border-color var(--transicion), box-shadow var(--transicion), background var(--transicion);
 }
 
 .formulario input::placeholder {
-  color: #8a9590;
+  color: #66766e;
+}
+
+.formulario input:hover,
+.filtro select:hover {
+  border-color: #34433d;
 }
 
 /* :focus = cuando el campo está activo (escribiendo en él) */
-.formulario input:focus {
+.formulario input:focus,
+.filtro select:focus {
   outline: none;
   border-color: var(--color-enlaces-y-menu);
-  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2);
+  box-shadow: 0 0 0 4px rgba(34, 164, 99, 0.18);
 }
 
-/* Si algo es inválido*/
+/* Si algo es inválido */
 .formulario input[aria-invalid="true"] {
-  border-color: #b91c1c;
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.14);
 }
 
 /* Base de todos los botones */
@@ -392,39 +709,57 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  padding: 10px 16px;
+  gap: 8px;
+  min-height: 46px;
+  padding: 10px 18px;
   font: inherit;
   font-weight: 700;
+  letter-spacing: 0.005em;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radio-controles);
   cursor: pointer;
   /* manita al pasar el mouse */
+  transition: transform var(--transicion), filter var(--transicion),
+    box-shadow var(--transicion), background var(--transicion), color var(--transicion);
+}
+
+/* :active = mientras lo estás presionando: se "hunde" un poquito */
+.boton:active:not(:disabled) {
+  transform: translateY(1px) scale(0.99);
 }
 
 .boton-principal {
   width: 100%;
   margin-top: 12px;
-  background: var(--color-enlaces-y-menu);
   color: #ffffff;
+  background: linear-gradient(180deg, #2bb872, var(--color-enlaces-y-menu));
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 10px 24px -12px rgba(34, 164, 99, 0.9);
 }
 
-.boton-principal:hover {
-  filter: brightness(1.1);
+.boton-principal:hover:not(:disabled) {
+  filter: brightness(1.08);
   /* se aclara un poco al pasar el mouse */
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 14px 28px -12px rgba(34, 164, 99, 1);
 }
 
 /* disabled = mientras se espera la respuesta de Firebase */
 .boton-principal:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: wait;
+  box-shadow: none;
 }
-
 
 .boton-secundario {
   background: transparent;
-  color: var(--color-enlaces-y-menu);
-  border: 2px solid currentColor;
+  color: var(--color-marca-claro);
+  border: 1.5px solid rgba(74, 222, 128, 0.45);
+}
+
+.boton-secundario:hover:not(:disabled) {
+  background: rgba(74, 222, 128, 0.08);
+  border-color: var(--color-marca-claro);
 }
 
 /* Botón que parece enlace  */
@@ -432,25 +767,37 @@ a {
   padding: 4px;
   font: inherit;
   font-weight: 700;
-  color: var(--color-enlaces-y-menu);
+  color: var(--color-marca-claro);
   text-decoration: underline;
+  text-decoration-color: rgba(74, 222, 128, 0.4);
+  text-underline-offset: 4px;
   background: none;
   border: none;
+  border-radius: 6px;
   cursor: pointer;
+  transition: color var(--transicion), text-decoration-color var(--transicion);
 }
 
-/* Contorno visible con Tab */
+.boton-enlace:hover {
+  color: #86efac;
+  text-decoration-color: currentColor;
+}
+
+/* Contorno visible con Tab (para quien usa teclado) */
 .boton:focus-visible,
-.boton-enlace:focus-visible {
-  outline: 3px solid var(--color-enlaces-y-menu);
+.boton-enlace:focus-visible,
+.menu a:focus-visible,
+.opcion-boton:focus-visible {
+  outline: 3px solid rgba(74, 222, 128, 0.6);
   outline-offset: 2px;
 }
 
 .mensaje-error {
   min-height: 1.5em;
   margin: 4px 0 0;
-  color: #b91c1c;
-  font-size: 0.9rem;
+  color: var(--color-error);
+  font-size: 0.88rem;
+  font-weight: 600;
 }
 
 /* ---------- 11. Pantalla de login ---------- */
@@ -462,9 +809,15 @@ a {
   align-items: center;
   justify-content: center;
   padding: var(--espacio-margen-base);
-  background: linear-gradient(160deg, #99ecca 0%, var(--color-fondo-pagina) 60%);
+  /* Fondo propio del login: una luz verde grande detrás de la tarjeta
+     y la misma cuadrícula de mapa del resto de la app. */
+  background-image:
+    radial-gradient(600px 400px at 50% 30%, rgba(34, 164, 99, 0.28), transparent 70%),
+    radial-gradient(500px 400px at 80% 90%, rgba(37, 99, 235, 0.12), transparent 70%),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: auto, auto, 48px 48px, 48px 48px;
 }
-
 
 .contenedor-login {
   width: 100%;
@@ -472,18 +825,45 @@ a {
 }
 
 .tarjeta-login {
-  padding: calc(var(--espacio-margen-base) * 1.5);
-  box-shadow: 0 10px 30px rgba(19, 102, 185, 0.08);
+  padding: calc(var(--espacio-margen-base) * 2);
+  background: rgba(19, 26, 24, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 30px 60px -20px rgba(0, 0, 0, 0.8);
+}
+
+/* En el login los títulos no llevan la rayita verde */
+.tarjeta-login h2::before {
+  display: none;
 }
 
 .login-encabezado {
   text-align: center;
-  margin-bottom: var(--espacio-margen-base);
+  margin-bottom: calc(var(--espacio-margen-base) * 1.25);
+  padding-bottom: calc(var(--espacio-margen-base) * 1.25);
+  border-bottom: 1px solid var(--color-bordes);
+}
+
+/* Logo grande encima del nombre (el mismo marcador del menú) */
+.login-encabezado::before {
+  content: "";
+  display: block;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 14px;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle, #ffffff 0 6px, transparent 7px),
+    linear-gradient(135deg, var(--color-marca-claro), var(--color-enlaces-y-menu));
+  box-shadow: 0 0 0 6px rgba(74, 222, 128, 0.12), 0 14px 30px -10px rgba(34, 164, 99, 0.8);
 }
 
 .login-marca {
   margin: 0;
-  font-size: 1.75rem;
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
 .login-frase {
@@ -492,27 +872,33 @@ a {
 }
 
 .cambiar-formulario {
-  margin: 16px 0 0;
+  margin: 18px 0 0;
   text-align: center;
+  color: var(--color-texto-secundario);
 }
-
 
 .aviso {
   margin-top: 16px;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 14px;
+  border-radius: var(--radio-controles);
   background: var(--color-fondo-etiqueta-demo);
   color: var(--color-texto-etiqueta-demo);
+  border: 1px solid rgba(234, 179, 8, 0.28);
 }
 
 .aviso p {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
+}
+
+.aviso .boton-secundario {
+  color: var(--color-texto-etiqueta-demo);
+  border-color: rgba(252, 211, 77, 0.5);
 }
 
 .nota-privacidad {
-  margin: 16px 0 0;
+  margin: 18px 0 0;
   text-align: center;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--color-texto-secundario);
 }
 
@@ -530,24 +916,56 @@ body.cargando .sesion {
 .sesion {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  font-size: 0.92rem;
 }
 
 .saludo {
   font-weight: 600;
 }
 
+.sesion .boton-enlace {
+  color: var(--color-texto-secundario);
+  text-decoration-color: transparent;
+}
+
+.sesion .boton-enlace:hover {
+  color: var(--color-texto-principal);
+}
+
+/* En celular: marca y sesión arriba, el menú abajo a todo lo ancho */
+@media (max-width: 640px) {
+  .barra-superior nav {
+    order: 3;
+    width: 100%;
+  }
+
+  .menu a {
+    flex: 1;
+    text-align: center;
+  }
+
+  .menu li {
+    flex: 1;
+  }
+}
+
 /* ---------- Punto de encuentro más cercano (cercanos.js) ---------- */
 .cercanos {
-  margin-bottom: 12px;
-  padding: 12px;
+  margin-bottom: 14px;
+  padding: 16px;
+  background: var(--color-fondo-elevado);
   border: 1px solid var(--color-bordes);
-  border-radius: 8px;
+  border-radius: 14px;
 }
 
 .cercanos h3 {
-  margin: 0 0 8px;
-  font-size: 1.05rem;
+  margin: 0 0 12px;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--color-texto-principal);
 }
 
 .cercanos-botones {
@@ -563,13 +981,19 @@ body.cargando .sesion {
 }
 
 .boton-cercanos {
-  background: #2563eb;
-  /* el mismo azul del círculo "Tú" */
   color: #ffffff;
+  background: linear-gradient(180deg, #3b7bf0, var(--color-azul-ubicacion));
+  /* el mismo azul del círculo "Tú" */
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 10px 24px -12px rgba(37, 99, 235, 0.9);
+}
+
+.boton-cercanos:hover:not(:disabled) {
+  filter: brightness(1.1);
 }
 
 .cercanos-botones .boton:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: wait;
 }
 
@@ -583,6 +1007,10 @@ body.cargando .sesion {
   /* quitamos los números: la etiqueta ya dice cuál es */
 }
 
+.lista-cercanos:not(:empty) {
+  margin-top: 12px;
+}
+
 /* Cada opción es un botón: se puede tocar o elegir con Tab + Enter */
 .opcion-boton {
   display: flex;
@@ -590,23 +1018,26 @@ body.cargando .sesion {
   gap: 2px;
   width: 100%;
   height: 100%;
-  padding: 10px;
+  padding: 12px;
   font: inherit;
   text-align: left;
   color: inherit;
-  background: transparent;
-  border: 2px solid var(--color-bordes);
-  border-radius: 8px;
+  background: var(--color-fondo-tarjetas);
+  border: 1.5px solid var(--color-bordes);
+  border-radius: 12px;
   cursor: pointer;
+  transition: border-color var(--transicion), background var(--transicion), transform var(--transicion);
 }
 
 .opcion-boton:hover {
-  border-color: #2563eb;
+  border-color: rgba(59, 123, 240, 0.7);
+  transform: translateY(-1px);
 }
 
 .opcion-cercana.elegido .opcion-boton {
-  border-color: #2563eb;
-  background: rgba(37, 99, 235, 0.12);
+  border-color: var(--color-azul-ubicacion);
+  background: rgba(37, 99, 235, 0.14);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
 }
 
 .opcion-fila {
@@ -617,47 +1048,75 @@ body.cargando .sesion {
 }
 
 .opcion-etiqueta {
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-texto-secundario);
 }
 
 .opcion-etiqueta.principal {
-  color: #22c55e;
+  color: var(--color-marca-claro);
   /* verde: el recomendado */
 }
 
 .opcion-distancia {
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 
 .opcion-nombre {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .opcion-ruta {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--color-texto-secundario);
 }
 
 .opcion-aviso {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #eab308;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fbbf24;
 }
 
 .muestra-usuario {
-  background: #2563eb;
+  background: var(--color-azul-ubicacion);
   border-radius: 50%;
   border: 2px solid #ffffff;
-  box-shadow: 0 0 0 1px #2563eb;
+  box-shadow: 0 0 0 1px var(--color-azul-ubicacion);
 }
 
 /* Mientras el usuario elige su casa, el cursor del mapa es una cruz */
 .mapa.modo-marcar,
 .mapa.modo-marcar .leaflet-interactive {
   cursor: crosshair;
+}
+
+/* Y el mapa se marca con un borde azul para que se note el modo */
+.mapa.modo-marcar {
+  border-color: var(--color-azul-ubicacion);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25);
+}
+
+/* ---------- 13. Barra de scroll (Chrome/Edge) ---------- */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-fondo-pagina);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #26322d;
+  border-radius: 999px;
+  border: 3px solid var(--color-fondo-pagina);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #33423c;
 }
