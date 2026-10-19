@@ -7,65 +7,149 @@
 #puntos, #consejos, #convivencia, #ayuda { min-width: 0; }
 
 .descripcion {
-  margin: 0 0 16px;
+  margin: -6px 0 18px;
   color: var(--color-texto-secundario);
   font-size: .94rem;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 /* Filtro de ruta: etiqueta arriba, selector a lo ancho */
 .filtro { display: grid; gap: 7px; }
-.filtro label { font-size: .9rem; font-weight: 700; }
-.filtro select { width: 100%; min-height: 42px; color: #1b1d1f; }
+.filtro label { font-size: .85rem; font-weight: 700; }
+.filtro select { width: 100%; }
 
-.mensaje-puntos { color: var(--color-texto-secundario); margin: 12px 0; }
+.mensaje-puntos { color: var(--color-texto-secundario); margin: 12px 0; font-size: .9rem; }
 .mensaje-puntos:empty { display: none; }
-.mensaje-puntos.error { color: #ffb4a9; font-weight: 600; }
+.mensaje-puntos.error {
+  padding: 10px 14px;
+  color: #fca5a5;
+  font-weight: 600;
+  background: rgba(248, 113, 113, .1);
+  border: 1px solid rgba(248, 113, 113, .25);
+  border-radius: 10px;
+}
 
 /* ---------- Bloque de cada ruta ---------- */
 .bloque-ruta {
-  margin-top: 18px;
-  padding-top: 17px;
+  margin-top: 22px;
+  padding-top: 20px;
   border-top: 1px solid var(--color-bordes);
 }
-.cabecera-ruta { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
+.cabecera-ruta { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
 /* El color de cada ruta lo pone recomendaciones.js leyendo zonas.geojson */
 .barra-color-ruta {
   display: inline-block;
-  width: 5px; height: 28px; flex: 0 0 5px;
-  border-radius: 4px;
+  width: 6px; height: 26px; flex: 0 0 6px;
+  border-radius: 6px;
   background: var(--color-bordes);
 }
-.nombre-ruta { margin: 0; font-size: 1rem; overflow-wrap: anywhere; }
+/* ".tarjeta" delante para ganarle al estilo de subtítulo (mayúsculas) de estilos.css */
+.tarjeta .nombre-ruta {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  text-transform: none;
+  color: var(--color-texto-principal);
+  overflow-wrap: anywhere;
+}
 
 /* ---------- Tarjetas de puntos ---------- */
 .cuadricula-puntos { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
 .tarjeta-punto {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
-  padding: 16px;
-  background: #24282a;
-  border: 1px solid #384043;
-  border-radius: 9px;
+  padding: 18px;
+  background-color: var(--color-fondo-elevado);
+  border: 1px solid var(--color-bordes);
+  border-radius: 14px;
   overflow-wrap: anywhere;
+  transition: border-color var(--transicion), transform var(--transicion), box-shadow var(--transicion);
 }
-.tarjeta-punto:hover { border-color: #557765; }
-.nombre-punto { margin: 0 0 10px; font-size: 1rem; line-height: 1.4; }
-.etiquetas-punto { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; }
-.etiqueta-nivel { display: inline-block; padding: 3px 9px; border-radius: 6px; font-size: .82rem; font-weight: 700; }
-.etiqueta-recomendada { background: #d1fae5; color: #065f46; }
-.etiqueta-precaucion  { background: #fef3c7; color: #92400e; }
-.etiqueta-pendiente   { background: var(--color-bordes); color: var(--color-texto-principal); }
+.tarjeta-punto:hover {
+  border-color: #3a5a49;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px -18px rgba(0, 0, 0, .85);
+}
+.nombre-punto { margin: 0 0 10px; font-size: 1rem; font-weight: 800; line-height: 1.35; }
+.etiquetas-punto { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 12px; }
+
+/* Etiquetas de nivel: fondo transparente del mismo color que el texto */
+.etiqueta-nivel {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+.etiqueta-recomendada { background: rgba(74, 222, 128, .12); color: #86efac; border-color: rgba(74, 222, 128, .28); }
+.etiqueta-precaucion  { background: rgba(234, 179, 8, .14);  color: #fcd34d; border-color: rgba(234, 179, 8, .3); }
+.etiqueta-pendiente   { background: rgba(255, 255, 255, .05); color: var(--color-texto-secundario); border-color: var(--color-bordes); }
 .etiquetas-punto .etiqueta-demo { margin-top: 0; }
-.nota-seguridad { margin: 0 0 12px; font-size: .9rem; color: #d1d9d5; line-height: 1.55; }
-.fecha-observacion { color: var(--color-texto-secundario); font-size: .88rem; margin: 0 0 10px; }
-.enlace-maps { display: inline-block; font-weight: 600; font-size: .9rem; color: #76da80; text-underline-offset: 3px; }
+
+.nota-seguridad { margin: 0 0 12px; font-size: .9rem; color: #c9d4ce; line-height: 1.6; }
+.fecha-observacion { color: var(--color-texto-secundario); font-size: .82rem; margin: 0 0 12px; }
+
+/* El enlace a Maps queda siempre abajo de la tarjeta (margin-top: auto) */
+.enlace-maps {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  align-self: flex-start;
+  font-weight: 700;
+  font-size: .88rem;
+  color: var(--color-marca-claro);
+  text-decoration: none;
+}
+/* Flechita que se mueve al pasar el mouse */
+.enlace-maps::after { content: "\2192"; transition: transform var(--transicion); }
 .enlace-maps:hover { color: #b9f5b8; }
+.enlace-maps:hover::after { transform: translateX(3px); }
 
 /* ---------- Listas de consejos ---------- */
-.lista-consejos { margin: 0; padding-left: 22px; line-height: 1.55; font-size: .92rem; }
-.lista-consejos li + li { margin-top: 10px; }
-.lista-consejos li::marker { color: #59bd68; }
-#ayuda p { margin-top: 0; }
+.lista-consejos { margin: 0; padding: 0; list-style: none; line-height: 1.55; font-size: .92rem; }
+.lista-consejos li {
+  position: relative;
+  padding-left: 26px;
+  color: #d3ddd8;
+}
+.lista-consejos li + li { margin-top: 12px; }
+/* Viñeta propia: un circulito verde con un check */
+.lista-consejos li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: .2em;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='%234ade80' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% no-repeat,
+    rgba(74, 222, 128, .12);
+}
+#ayuda p { margin-top: 0; color: var(--color-texto-secundario); font-size: .92rem; }
+
+/* La tarjeta de emergencias se distingue con un toque rojo */
+#ayuda { border-color: rgba(248, 113, 113, .22); }
+#ayuda > h2::before { background: linear-gradient(#fca5a5, #ef4444); }
+#ayuda .lista-consejos li::before {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='2.5' fill='%23fca5a5'/%3E%3C/svg%3E") center / 100% no-repeat,
+    rgba(248, 113, 113, .14);
+}
+/* Los números de emergencia se ven grandes y fáciles de leer */
+#ayuda strong {
+  display: inline-block;
+  padding: 0 8px;
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+  background: rgba(248, 113, 113, .16);
+  border-radius: 6px;
+}
 
 /* ---------- Distribución ----------
    Celular: una columna. Computadora: consejos a la izquierda
@@ -80,7 +164,7 @@
 
 @media (min-width: 1024px) {
   .contenido {
-    grid-template-columns: 320px minmax(0, 1fr);
+    grid-template-columns: 340px minmax(0, 1fr);
     grid-template-rows: auto auto 1fr;
     align-items: start;
   }
@@ -88,4 +172,8 @@
   #consejos    { grid-column: 1; grid-row: 1; }
   #convivencia { grid-column: 1; grid-row: 2; }
   #ayuda       { grid-column: 1; grid-row: 3; }
+}
+
+@media (min-width: 1280px) {
+  .cuadricula-puntos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }

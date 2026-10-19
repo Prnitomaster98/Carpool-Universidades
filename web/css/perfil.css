@@ -1,5 +1,6 @@
 /* ==========================================================
-   perfil.css — estilos de "Mi perfil" y "Coincidencias" (Fase 4)
+   perfil.css — estilos de "Mi perfil", "Coincidencias",
+   "Viajes" y "Solicitudes" (Fases 4 y 5).
    Va en un archivo aparte para no chocar con los cambios del mapa
    en estilos.css. Usa las mismas variables de :root de estilos.css.
    ========================================================== */
@@ -7,23 +8,43 @@
 .perfil-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
-/* fieldset = grupo de campos con un título (legend) */
+/* fieldset = grupo de campos con un título (legend).
+   Le quitamos el borde clásico y lo dejamos como una sección limpia. */
 .perfil-form fieldset {
   margin: 0;
-  padding: 12px;
-  border: 1px solid var(--color-bordes);
-  border-radius: 8px;
+  padding: 0;
+  border: none;
   min-width: 0;                    /* evita que la tabla estire la tarjeta en celular */
 }
 
-.perfil-form legend,
+/* Los títulos de cada grupo van como "etiqueta" pequeña en mayúsculas */
+.perfil-form legend {
+  margin-bottom: 10px;
+  padding: 0;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-texto-secundario);
+}
+
 .etiqueta-campo {
-  padding: 0 4px;
+  display: block;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  color: var(--color-texto-secundario);
+}
+
+/* Dentro del formulario de viajes las etiquetas van encima de cada campo */
+.perfil-form fieldset .etiqueta-campo {
+  margin: 12px 0 6px;
+}
+
+.perfil-form fieldset .etiqueta-campo:first-of-type {
+  margin-top: 0;
 }
 
 /* Opciones (rol y zonas) como "pastillas" que se pueden tocar fácil en celular */
@@ -36,28 +57,50 @@
 .opcion {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   min-height: 44px;                /* tamaño cómodo para el dedo */
-  padding: 6px 12px;
-  border: 1px solid var(--color-bordes);
-  border-radius: 999px;
+  padding: 8px 14px 8px 12px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.3;
+  background-color: var(--color-fondo-elevado);
+  border: 1.5px solid var(--color-bordes);
+  border-radius: 14px;
   cursor: pointer;
+  user-select: none;               /* no se selecciona el texto al tocar varias veces */
+  transition: border-color var(--transicion), background var(--transicion), transform var(--transicion);
+}
+
+.opcion:hover {
+  border-color: #3a4a43;
 }
 
 /* :has() = "si adentro hay un input marcado" → se pinta la pastilla */
 .opcion:has(input:checked) {
   border-color: var(--color-enlaces-y-menu);
-  background: rgba(24, 155, 94, 0.15);
+  background-color: rgba(34, 164, 99, 0.14);
+  color: #ffffff;
+}
+
+/* Si el input tiene el foco por teclado, se marca la pastilla completa */
+.opcion:has(input:focus-visible) {
+  outline: 3px solid rgba(74, 222, 128, 0.6);
+  outline-offset: 2px;
 }
 
 .opcion input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex: none;
   accent-color: var(--color-enlaces-y-menu);   /* color del check/radio */
 }
 
 /* ---------- Tabla del horario ---------- */
 .tabla-horario {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0 6px;           /* espacio entre filas */
   table-layout: fixed;             /* columnas fijas: la tabla no se sale en celular */
 }
 
@@ -67,33 +110,64 @@
 
 .tabla-horario th,
 .tabla-horario td {
-  padding: 4px;
+  padding: 0 3px;
   text-align: left;
 }
 
 .tabla-horario thead th {
-  font-size: 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--color-texto-secundario);
 }
 
-/* Inputs de hora y el select, con el tema oscuro */
+.tabla-horario tbody th {
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+/* Inputs de hora y los select, con el tema oscuro */
 .perfil-form input[type="time"],
 .perfil-form select,
 .coincidencias-filtros select {
   width: 100%;
   min-height: 44px;
-  padding: 8px;
+  padding: 8px 12px;
   font: inherit;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
   color: inherit;
-  background: var(--color-fondo-tarjetas);
+  background-color: var(--color-fondo-elevado);
   border: 1px solid var(--color-bordes);
-  border-radius: 8px;
+  border-radius: var(--radio-controles);
   color-scheme: dark;              /* el reloj y la lista del navegador salen oscuros */
   min-width: 0;                    /* deja que el reloj se encoja en pantallas chicas */
+  transition: border-color var(--transicion), box-shadow var(--transicion);
 }
 
 .perfil-form input[type="time"] {
-  padding: 6px 4px;
+  padding: 6px 8px;
+}
+
+.perfil-form input[type="time"]:hover,
+.perfil-form select:hover,
+.coincidencias-filtros select:hover {
+  border-color: #34433d;
+}
+
+.perfil-form input[type="time"]:focus,
+.perfil-form select:focus,
+.coincidencias-filtros select:focus {
+  outline: none;
+  border-color: var(--color-enlaces-y-menu);
+  box-shadow: 0 0 0 4px rgba(34, 164, 99, 0.18);
+}
+
+/* El reloj del input de hora un poco más tenue */
+.perfil-form input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0.55;
+  cursor: pointer;
 }
 
 /* En celular (menos de 480px) la tabla no cabe con los relojes en formato
@@ -108,8 +182,8 @@
   .tabla-horario tr {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4px;
-    margin-bottom: 8px;
+    gap: 6px;
+    margin-bottom: 10px;
   }
   .tabla-horario th:first-child {
     width: auto;
@@ -124,74 +198,168 @@
   }
 }
 
+/* Mensajes (cargando, guardado, error) */
 .mensaje-perfil {
   min-height: 1.5em;
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--color-texto-secundario);
 }
-.mensaje-perfil.error { color: #f87171; }
-.mensaje-perfil.exito { color: #4ade80; }
+
+/* Cuando el mensaje está vacío no deja un hueco */
+.mensaje-perfil:empty {
+  min-height: 0;
+}
+
+.mensaje-perfil.error,
+.mensaje-perfil.exito {
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.mensaje-perfil.error {
+  color: #fca5a5;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+.mensaje-perfil.exito {
+  color: #86efac;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+}
 
 /* ---------- Coincidencias ---------- */
 .coincidencias-filtros {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
 .coincidencias-filtros label {
   display: flex;
   flex-direction: column;
   flex: 1 1 140px;
-  gap: 4px;
+  gap: 6px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  color: var(--color-texto-secundario);
 }
 
+.coincidencias-filtros select {
+  color: var(--color-texto-principal);
+}
+
+/* Esta lista se usa en Coincidencias, Viajes y Solicitudes */
 .lista-coincidencias {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+.lista-coincidencias:not(:empty) {
+  margin-top: 4px;
+}
+
+/* Cada resultado es una mini-tarjeta con una línea verde a la izquierda */
 .coincidencia {
-  padding: 12px;
+  position: relative;
+  padding: 14px 16px 14px 18px;
+  background-color: var(--color-fondo-elevado);
   border: 1px solid var(--color-bordes);
-  border-radius: 8px;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color var(--transicion), transform var(--transicion), box-shadow var(--transicion);
+}
+
+.coincidencia::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;               /* arriba, derecha, abajo, izquierda */
+  width: 3px;
+  background: linear-gradient(var(--color-marca-claro), var(--color-enlaces-y-menu));
+  opacity: 0.7;
+}
+
+.coincidencia:hover {
+  border-color: #33433c;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px -16px rgba(0, 0, 0, 0.8);
 }
 
 .coincidencia-encabezado {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
 }
 
-.coincidencia-nombre {
+/* Este h3 está dentro de .tarjeta: le quitamos el estilo de subtítulo
+   en mayúsculas que tienen los demás h3 de la tarjeta. */
+.tarjeta .coincidencia-nombre {
   margin: 0;
   font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--color-texto-principal);
 }
 
+/* Puntaje / lugares / estado como pastilla verde a la derecha */
 .coincidencia-puntaje {
-  font-weight: 700;
-  color: #4ade80;
+  flex: none;
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #86efac;
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  border-radius: 999px;
   white-space: nowrap;
 }
 
 /* El botón "Punto sugerido" alineado a la izquierda, como el resto del texto */
 .coincidencia .boton-enlace {
-  margin-top: 4px;
+  margin-top: 6px;
   padding: 4px 0;
   text-align: left;
 }
 
+/* Botones dentro de un viaje o una solicitud */
+.coincidencia .boton {
+  margin-top: 12px;
+  margin-right: 8px;
+  min-height: 40px;
+  font-size: 0.92rem;
+}
+
+.coincidencia .boton + .boton-enlace {
+  margin-left: 4px;
+}
+
 .coincidencia-detalle {
-  margin: 4px 0 0;
-  font-size: 0.9rem;
+  margin: 2px 0 0;
+  font-size: 0.88rem;
   color: var(--color-texto-secundario);
+}
+
+/* Cuando la lista dice "no hay nada", se ve como caja punteada */
+.lista-coincidencias > li.coincidencia-detalle {
+  padding: 14px;
+  text-align: center;
+  border: 1px dashed var(--color-bordes);
+  border-radius: 14px;
+}
+
+/* El formulario de viajes queda separado de la lista de viajes */
+#form-viaje {
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--color-bordes);
 }
