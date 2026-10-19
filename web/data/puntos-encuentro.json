@@ -7,7 +7,7 @@
     "lng": -90.4857,
     "nivel": "recomendado",
     "notaSeguridad": "Ciudad Cayalá tiene su propia red de más de 2,000 cámaras con lectura de placas y personal de seguridad privado. Está a 600 m de la UVG.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-uvg-oakland",
@@ -17,7 +17,7 @@
     "lng": -90.5076,
     "nivel": "recomendado",
     "notaSeguridad": "Parqueo cerrado con lectura de placas en la entrada y cámara en cada espacio. Es de los centros comerciales con más movimiento de zona 10.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-uvg-fontabella",
@@ -27,7 +27,7 @@
     "lng": -90.5122,
     "nivel": "recomendado",
     "notaSeguridad": "Plaza con seguridad privada, rodeada de hotel y oficinas. No encontré incidentes reportados ahí entre 2023 y 2026.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-norte-portales",
@@ -37,7 +37,7 @@
     "lng": -90.4818,
     "nivel": "recomendado",
     "notaSeguridad": "Centro comercial grande con parqueo propio. No encontré incidentes reportados dentro entre 2023 y 2026. Esperar en la entrada principal o dentro del parqueo, no a la orilla de la carretera.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-norte-mega6",
@@ -47,7 +47,7 @@
     "lng": -90.4953,
     "nivel": "precaucion",
     "notaSeguridad": "Parqueo controlado (con cobro) y supermercado. No encontré incidentes dentro, pero la zona alrededor es más insegura: esperar siempre dentro del parqueo, nunca en la calle.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-norte-metronorte",
@@ -57,7 +57,7 @@
     "lng": -90.4771,
     "nivel": "recomendado",
     "notaSeguridad": "Centro comercial grande con parqueo propio y gratuito, al lado de Portales. Hay guardias en las entradas. No encontré incidentes reportados dentro entre 2023 y 2026.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-occidente-miraflores",
@@ -67,7 +67,7 @@
     "lng": -90.5521,
     "nivel": "recomendado",
     "notaSeguridad": "Parqueo muy amplio y cerrado. No encontré incidentes reportados dentro entre 2023 y 2026.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-occidente-majadas",
@@ -77,7 +77,7 @@
     "lng": -90.5617,
     "nivel": "recomendado",
     "notaSeguridad": "Plaza con guardias y parqueo propio.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-occidente-naranjo",
@@ -87,7 +87,7 @@
     "lng": -90.5426,
     "nivel": "recomendado",
     "notaSeguridad": "Parqueo en superficie, no subterráneo. Sin incidentes reportados dentro, pero ha habido asaltos en el bulevar El Naranjo: esperar dentro del parqueo, no afuera.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-sur-metrocentro",
@@ -97,7 +97,7 @@
     "lng": -90.5772,
     "nivel": "precaucion",
     "notaSeguridad": "En septiembre de 2026 mataron a un conductor en el parqueo de un centro comercial del km 17.5 en Bárcenas, Villa Nueva (no se publicó cuál y parece un ataque dirigido). Esperar en un área iluminada, cerca de los guardias.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-sur-plaza-vn",
@@ -107,7 +107,7 @@
     "lng": -90.5851,
     "nivel": "precaucion",
     "notaSeguridad": "Centro comercial con parqueo propio. Villa Nueva tiene más incidentes que el resto de las rutas: esperar dentro del parqueo, en un área iluminada.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-sur-san-diego",
@@ -117,7 +117,7 @@
     "lng": -90.5713,
     "nivel": "precaucion",
     "notaSeguridad": "Plaza con una sola entrada y salida y guardia en el parqueo. Villa Nueva tiene más incidentes que el resto de las rutas: esperar dentro del parqueo, en un área iluminada.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-oriente-pradera",
@@ -127,7 +127,7 @@
     "lng": -90.4538,
     "nivel": "recomendado",
     "notaSeguridad": "Centro comercial grande y moderno, junto a Condado Concepción. No encontré incidentes reportados dentro entre 2023 y 2026.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-oriente-metroplaza",
@@ -137,7 +137,7 @@
     "lng": -90.4719,
     "nivel": "recomendado",
     "notaSeguridad": "Plaza pequeña con parqueo propio, cerca de la entrada de la carretera. No encontré incidentes reportados dentro entre 2023 y 2026.",
-    "esDemo": true
+    "esDemo": false
   },
   {
     "id": "punto-oriente-pinula",
@@ -147,6 +147,6 @@
     "lng": -90.4488,
     "nivel": "recomendado",
     "notaSeguridad": "Plaza con supermercado La Torre y parqueo propio y gratuito. No encontré incidentes reportados dentro entre 2023 y 2026.",
-    "esDemo": true
+    "esDemo": false
   }
 ]

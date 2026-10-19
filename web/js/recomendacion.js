@@ -1,3 +1,4 @@
+
 // ==========================================================
 // recomendacion.js — qué punto de encuentro le queda más cerca al usuario
 //
@@ -26,37 +27,31 @@
 // puntosConDistancia       Copia de cada punto con su campo nuevo "distanciaKm".
 // ==========================================================
 
-const RADIO_TIERRA_KM = 6371;
-export const CANTIDAD_RECOMENDACIONES = 3;
+const RADIO_TIERRA_KM = 6371
+export const CANTIDAD_RECOMENDACIONES = 3
 
 function gradosARadianes(grados) {
-  return (grados * Math.PI) / 180;
+  return (grados * Math.PI) / 180
 }
 
-/**
- * Distancia en kilómetros entre dos puntos de la Tierra, en línea recta
- * (como volando), con la fórmula de Haversine. Tiene en cuenta que la
- * Tierra es redonda. No es la distancia por calle.
+/** Calculo para sacar distancia entre cada punto.
  * @param {{lat:number, lng:number}} origen
  * @param {{lat:number, lng:number}} destino
  * @returns {number} kilómetros
  */
 export function distanciaKm(origen, destino) {
-  const diferenciaLatitud = gradosARadianes(destino.lat - origen.lat);
-  const diferenciaLongitud = gradosARadianes(destino.lng - origen.lng);
+  const diferenciaLatitud = gradosARadianes(destino.lat - origen.lat)
+  const diferenciaLongitud = gradosARadianes(destino.lng - origen.lng)
   const a =
     Math.sin(diferenciaLatitud / 2) ** 2 +
     Math.cos(gradosARadianes(origen.lat)) *
       Math.cos(gradosARadianes(destino.lat)) *
-      Math.sin(diferenciaLongitud / 2) ** 2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return RADIO_TIERRA_KM * c;
+      Math.sin(diferenciaLongitud / 2) ** 2
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return RADIO_TIERRA_KM * c
 }
 
-/**
- * Ordena los puntos del más cercano al más lejano y devuelve los primeros.
- * El de la posición 0 es la recomendación; los demás, alternativas.
- * No modifica la lista original: devuelve copias con "distanciaKm".
+/**Calcula y ordena los puntos
  * @param {{lat:number, lng:number}} origen - casa o ubicación actual
  * @param {Array<object>} listaPuntos - puntos de puntos-encuentro.json
  * @param {number} cantidad - cuántos devolver (3 por defecto)
@@ -64,21 +59,19 @@ export function distanciaKm(origen, destino) {
  */
 export function puntosMasCercanos(origen, listaPuntos, cantidad = CANTIDAD_RECOMENDACIONES) {
   const puntosConDistancia = listaPuntos.map((punto) => ({
-    ...punto,                                  // copia todos los campos del punto
+    ...punto,                                  // copia datos y agrega la distancia
     distanciaKm: distanciaKm(origen, punto),
-  }));
-  // sort con (a, b) => a - b ordena de menor a mayor
-  puntosConDistancia.sort((puntoA, puntoB) => puntoA.distanciaKm - puntoB.distanciaKm);
-  return puntosConDistancia.slice(0, cantidad);
+  }))
+  // Se utiliza sort para ordenar las distancias de menor a mayor
+  puntosConDistancia.sort((puntoA, puntoB) => puntoA.distanciaKm - puntoB.distanciaKm)
+  return puntosConDistancia.slice(0, cantidad)
 }
 
-/**
- * Convierte kilómetros en un texto fácil de leer:
- * 0.35 → "350 m"   ·   2.456 → "2.5 km"
+/**Convierte kilometros en metros para que no salga en decimales menores a 1
  */
 export function formatearDistancia(kilometros) {
   if (kilometros < 1) {
-    return `${Math.round(kilometros * 1000)} m`;
+    return `${Math.round(kilometros * 1000)} m`
   }
-  return `${kilometros.toFixed(1)} km`;
+  return `${kilometros.toFixed(1)} km`
 }
