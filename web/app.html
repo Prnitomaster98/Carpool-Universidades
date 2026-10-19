@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <!-- Codificación de caracteres: permite tildes y ñ -->
   <meta charset="UTF-8">
@@ -11,16 +12,15 @@
        "integrity" es una huella digital: si alguien cambia el archivo en la CDN,
        el navegador se niega a usarlo. "crossorigin" es necesario para que esa
        comprobación funcione con archivos de otro dominio. -->
-  <link rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-        crossorigin="">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
   <!-- Nuestros estilos van DESPUÉS, para poder ajustar los de Leaflet si hace falta -->
   <link rel="stylesheet" href="css/estilos.css">
   <!-- Estilos de "Mi perfil" y "Coincidencias" (Fase 4), en archivo aparte -->
   <link rel="stylesheet" href="css/perfil.css">
 </head>
+
 <body class="cargando">
 
   <!-- ===== Menú superior ===== -->
@@ -67,7 +67,11 @@
           <legend>Horario (deja vacío el día que no vas)</legend>
           <table class="tabla-horario">
             <thead>
-              <tr><th scope="col">Día</th><th scope="col">Entrada</th><th scope="col">Salida</th></tr>
+              <tr>
+                <th scope="col">Día</th>
+                <th scope="col">Entrada</th>
+                <th scope="col">Salida</th>
+              </tr>
             </thead>
             <tbody id="perfil-horario"></tbody>
           </table>
@@ -107,6 +111,56 @@
       <ul id="lista-coincidencias" class="lista-coincidencias"></ul>
     </section>
 
+    <!--Viajes disponibles y crear viaje-->
+    <section id="viajes" class="tarjeta" aria-labelledby="titulo-viajes">
+      <h2 id="titulo-viajes">Viajes</h2>
+
+      <form id="form-viaje" class="perfil-form" novalidate>
+        <fieldset>
+          <legend>publicar un viaje</legend>
+          <label for="viaje-zona" class="etiqueta-campo">Ruta</label>
+          <select id="viaje-zona"></select>
+
+          <label for="viaje-punto" class="etiqueta-campo">Punto de encuentro</label>
+          <select id="viaje-punto"></select>
+
+          <label for="viaje-dia" class="etiqueta-campo">Día</label>
+          <select id="viaje-dia"></select>
+
+          <label for="viaje-tramo" class="etiqueta-campo">Viaje</label>
+          <select id="viaje-tramo">
+            <option value="ida">Ida a la UVG</option>
+            <option value="regreso">Regreso a casa</option>
+          </select>
+
+          <label for="viaje-hora" class="etiqueta-campo">Hora</label>
+          <input type="time" id="viaje-hora">
+
+          <label for="viaje-cupos" class="etiqueta-campo">Lugares Libres</label>
+          <select id="viaje-cupos"></select>
+        </fieldset>
+
+        <p id="viaje-mensaje" class="mensaje-perfil" role="status" aria-live="polite"></p>
+        <button type="submit" id="viaje-publicar" class="boton boton-principal" disabled>Publicar viaje</button>
+      </form>
+
+      <h3>Viajes publicados</h3>
+      <p id="viajes-mensaje" class="mensaje-perfil" role="status" aria-live="polite"></p>
+      <ul id="lista-viajes" class="lista-coincidencias"></ul>
+    </section>
+    
+        <!-- ===== Sección: Solicitudes (Fase 5) ===== -->
+    <section id="solicitudes" class="tarjeta" aria-labelledby="titulo-solicitudes">
+      <h2 id="titulo-solicitudes">Solicitudes</h2>
+      <p id="solicitudes-mensaje" class="mensaje-perfil" role="status" aria-live="polite"></p>
+
+      <h3>Solicitudes que recibí (mis viajes)</h3>
+      <ul id="lista-recibidas" class="lista-coincidencias"></ul>
+
+      <h3>Solicitudes que envié</h3>
+      <ul id="lista-enviadas" class="lista-coincidencias"></ul>
+    </section>
+
     <!-- ===== Sección 3: Mapa ===== -->
     <section id="mapa-seccion" class="tarjeta tarjeta-mapa" aria-labelledby="titulo-mapa">
       <h2 id="titulo-mapa">Mapa de zonas y puntos de encuentro</h2>
@@ -120,7 +174,7 @@
       </div>
 
       <!-- Mensajes del mapa (errores o "esta zona no tiene puntos").
-           aria-live="polite" hace que un lector de pantalla los lea cuando cambian. -->
+          aria-live="polite" hace que un lector de pantalla los lea cuando cambian. -->
       <p id="mensaje-mapa" class="mensaje-mapa" aria-live="polite"></p>
 
       <!-- ===== Punto de encuentro más cercano (lo maneja cercanos.js) ===== -->
@@ -128,15 +182,17 @@
         <h3 id="titulo-cercanos">¿Cuál punto me queda más cerca?</h3>
         <div class="cercanos-botones">
           <!-- disabled hasta que el mapa termine de cargar -->
-          <button type="button" id="boton-mi-ubicacion" class="boton boton-cercanos" disabled>Usar mi ubicación actual</button>
-          <button type="button" id="boton-marcar-en-mapa" class="boton boton-secundario" disabled>Marcar mi casa en el mapa</button>
+          <button type="button" id="boton-mi-ubicacion" class="boton boton-cercanos" disabled>Usar mi ubicación
+            actual</button>
+          <button type="button" id="boton-marcar-en-mapa" class="boton boton-secundario" disabled>Marcar mi casa en el
+            mapa</button>
         </div>
-        <p id="mensaje-cercanos" class="mensaje-mapa" aria-live="polite">Tu ubicación no se guarda: solo se usa en esta pantalla para medir distancias.</p>
-        <!-- ol = lista numerada: 1 recomendado + 2 alternativas -->
+        <p id="mensaje-cercanos" class="mensaje-mapa" aria-live="polite">Tu ubicación no se guarda: solo se usa en esta
+          pantalla para medir distancias.</p>
+
         <ol id="lista-cercanos" class="lista-cercanos" aria-live="polite"></ol>
       </div>
 
-      <!-- Aquí Leaflet dibuja el mapa. NECESITA una altura en el CSS o no se ve. -->
       <div id="mapa" class="mapa"></div>
 
       <!-- Leyenda de colores -->
@@ -154,13 +210,15 @@
 
   <!-- Leaflet como script clásico: crea la variable global "L" que usa mapa.js -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-          crossorigin=""></script>
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <script type="module" src="js/mapa.js"></script>
   <script type="module" src="js/cercanos.js"></script>
   <script type="module" src="js/perfil.js"></script>
   <script type="module" src="js/coincidencias.js"></script>
+  <script type="module" src="js/viajes.js"></script>
   <script type="module" src="js/panel.js"></script>
+  <script type="module" src="js/solicitudes.js"></script>
 </body>
+
 </html>

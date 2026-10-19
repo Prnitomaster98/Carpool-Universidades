@@ -1,5 +1,5 @@
 
-//Lo primero que corre app.html
+//Lo primero que corre app.html y recomendaciones.html
 
 import { protegerPagina, cerrarSesion } from "./sesion.js";
 

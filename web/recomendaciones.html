@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carpool por zonas — Recomendaciones</title>
+  <!-- Estilo para mantener en toda la pagina -->
+  <link rel="stylesheet" href="css/estilos.css">
+  <!-- Estilos solo de esta página -->
+  <link rel="stylesheet" href="css/recomendaciones.css">
+</head>
+<body class="cargando">
+  <!-- Identifica si el usuario es verificado o no -->
+  <header class="barra-superior">
+    <a class="marca" href="app.html">Carpool por zonas</a>
+    <nav aria-label="Menú principal">
+      <ul class="menu">
+        <li><a href="app.html">Mi panel</a></li>
+        <li><a href="recomendaciones.html" aria-current="page">Recomendaciones</a></li>
+      </ul>
+    </nav>
+    <div class="sesion">
+      <span id="saludo" class="saludo"></span>
+      <button type="button" id="boton-salir" class="boton-enlace">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="contenido">
+    <section id="puntos" class="tarjeta" aria-labelledby="titulo-puntos">
+      <h2 id="titulo-puntos">Puntos de encuentro recomendados</h2>
+      <p class="descripcion">Consulta los puntos disponibles de cada ruta. Confirma siempre el lugar y la seguridad antes de reunirte.</p>
+      <div class="filtro">
+        <label for="filtro-ruta">Ver ruta:</label>
+        <select id="filtro-ruta">
+          <option value="todas">Todas las rutas</option>
+        </select>
+      </div>
+      <!-- Mensajes que notifiquen sobre algun error o cuando carguen datos -->
+      <p id="mensaje-puntos" class="mensaje-puntos" aria-live="polite">Cargando puntos de encuentro…</p>
+      <div id="lista-rutas"></div>
+    </section>
+
+    <section id="consejos" class="tarjeta" aria-labelledby="titulo-consejos">
+      <h2 id="titulo-consejos">Consejos de seguridad</h2>
+      <ul class="lista-consejos">
+        <li>Viaja solo con estudiantes verificados en la app con correo @uvg.edu.gt.</li>
+        <li>Reúnete en puntos públicos y no compartas la dirección de tu casa.</li>
+        <li>Antes de subir, confirma el nombre del conductor y las características del vehículo.</li>
+        <li>Avisa a una persona de confianza con quién viajas y cuándo sales.</li>
+        <li>Si algo te incomoda, no subas. No necesitas dar explicaciones.</li>
+        <li>No compartas tu teléfono ni tus redes sociales si no quieres. La app no los solicita.</li>
+      </ul>
+    </section>
+
+    <section id="convivencia" class="tarjeta" aria-labelledby="titulo-convivencia">
+      <h2 id="titulo-convivencia">Normas de convivencia</h2>
+      <ul class="lista-consejos">
+        <li>Llega a tiempo y respeta la tolerancia de espera acordada.</li>
+        <li>Si no vas a viajar, avisa con anticipación.</li>
+        <li>Si compartirán los gastos de gasolina, acuerden el monto antes del viaje.</li>
+        <li>Todos deben utilizar cinturón de seguridad y el conductor no debe usar el celular al manejar.</li>
+      </ul>
+    </section>
+
+    <section id="ayuda" class="tarjeta" aria-labelledby="titulo-ayuda">
+      <h2 id="titulo-ayuda">Si algo sale mal</h2>
+      <p>Ante una emergencia, busca un lugar seguro y contacta a los servicios correspondientes.</p>
+      <ul class="lista-consejos">
+        <li>Policía Nacional Civil (PNC): <strong>110</strong>.</li>
+        <li>Bomberos Voluntarios: <strong>122</strong>.</li>
+        <li>Bomberos Municipales: <strong>123</strong>.</li>
+        <li>Seguridad del Campus Central UVG: número oficial pendiente de confirmar con la UVG.</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Se reutiliza archivo para evitar duplicar el codigo -->
+  <script type="module" src="js/panel.js"></script>
+  <!-- Carga los datos y los demuestra en la pagina -->
+  <script type="module" src="js/recomendaciones.js"></script>
+</body>
+</html>

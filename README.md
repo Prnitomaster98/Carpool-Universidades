@@ -89,7 +89,8 @@ Los archivos generados quedan en `python/salida/` (ignorada por Git).
 **Opción A – GitHub Pages**
 1. Crea un repositorio en GitHub y sube el proyecto (`git remote add origin ...`, `git push`).
 2. En el repositorio: *Settings → Pages → Deploy from a branch*, rama `main`, carpeta `/ (root)`.
-3. La app quedará en `https://TU_USUARIO.github.io/TU_REPO/web/index.html`.
+3. La app quedará en <https://prnitomaster98.github.io/Carpooling-and-traveling/>
+   (el `index.html` de la raíz manda a `web/index.html`).
 4. Agrega ese dominio en Firebase: *Authentication → Settings → Authorized domains*.
 
 **Opción B – Firebase Hosting**
@@ -111,7 +112,7 @@ Las reglas de seguridad se publican con `firebase deploy --only firestore:rules`
 - [x] Registrar una app web y pegar su configuración en `web/js/firebase-config.js`.
 - [x] Poner `DOMINIO_UNIVERSIDAD = "uvg.edu.gt"` en `web/js/auth.js` **y** en `firebase/firestore.rules`.
 - [ ] Publicar las reglas de `firebase/firestore.rules` **cada vez que cambian**
-      (la última vez: Fase 4, función `perfilValido()`).
+      (la última vez: Fase 5, colecciones `viajes` y `solicitudes`).
 - [ ] Antes de la feria: quitar el dominio de prueba (`gmail.com`) marcado con
       **"QUITAR ANTES DE LA DEMO"** en `auth.js` **y** en las reglas, y volver a publicarlas.
 - [x] Zonas reales: 5 rutas sacadas de la encuesta en `web/data/zonas.geojson` (límites **aproximados**:
@@ -132,7 +133,7 @@ Las reglas de seguridad se publican con `firebase deploy --only firestore:rules`
 | 2 | Mapa: HTML base, estilos, mapa.js, zonas.geojson | Hecho |
 | 3 | Autenticación: firebase-config.js, auth.js, firestore.rules | Hecho |
 | 4 | Perfil y matching: perfil.js, matching.js, coincidencias.js, pruebas | Hecho |
-| 5 | Solicitudes y recomendaciones | Pendiente |
+| 5 | Viajes, solicitudes y recomendaciones | Hecho |
 | 6 | Python: análisis de encuesta y datos demo | Hecho |
 | 7 | Modo demo sin internet, checklist y guion de la demo | Pendiente |
 

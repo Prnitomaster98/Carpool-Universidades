@@ -4,12 +4,14 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ---------- Funciones de ayuda ----------
+    // Van aquí arriba, FUERA de cualquier "match /coleccion", para que todas las colecciones las puedan usar.
 
     // ¿Hay sesión y el correo es de un dominio permitido?
     // [.] significa "un punto de verdad" (en regex, un punto solo significa "cualquier letra")
     function correoPermitido() {
       return request.auth != null
         && (request.auth.token.email.matches('.*@uvg[.]edu[.]gt$')
+            || request.auth.token.email.matches('.*@suizoamericano[.]edu[.]gt$')
             || request.auth.token.email.matches('.*@gmail[.]com$'));  // QUITAR ANTES DE LA DEMO
     }
 
@@ -33,6 +35,41 @@ service cloud.firestore {
         && (!('horario' in d) || (d.horario is map
               && d.horario.keys().hasOnly(['lunes', 'martes', 'miercoles', 'jueves', 'viernes'])))
         && (!('tolerancia' in d) || d.tolerancia in [10, 20, 30]);
+    }
+
+    // ¿El viaje (Fase 5) tiene solo nuestros campos y valores válidos?
+    function viajeValido() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['conductorUid', 'conductorNombre', 'zonaId', 'puntoId',
+                               'dia', 'tramo', 'hora', 'cupos', 'creado', 'esDemo'])
+        && d.conductorUid == request.auth.uid
+        && d.conductorNombre is string && d.conductorNombre.size() <= 60
+        && d.zonaId is string && d.zonaId.size() <= 40
+        && d.puntoId is string && d.puntoId.size() <= 60
+        && d.dia in ['lunes', 'martes', 'miercoles', 'jueves', 'viernes']
+        && d.tramo in ['ida', 'regreso']
+        && d.hora is string && d.hora.matches('^[0-2][0-9]:[0-5][0-9]$')
+        && d.cupos is int && d.cupos >= 1 && d.cupos <= 4
+        && d.creado == request.time
+        && d.esDemo == false;
+    }
+
+    // ¿La solicitud (Fase 5) es válida?
+    // get(...) lee el viaje para comprobar que el conductor sea el de verdad.
+    function solicitudValida(solicitudId) {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['viajeId', 'conductorUid', 'conductorNombre', 'pasajeroUid',
+                               'pasajeroNombre', 'dia', 'tramo', 'hora', 'puntoId',
+                               'estado', 'creado', 'esDemo'])
+        && solicitudId == d.viajeId + '_' + request.auth.uid
+        && d.pasajeroUid == request.auth.uid
+        && d.conductorUid != request.auth.uid
+        && d.conductorUid == get(/databases/$(database)/documents/viajes/$(d.viajeId)).data.conductorUid
+        && d.pasajeroNombre is string && d.pasajeroNombre.size() <= 60
+        && d.conductorNombre is string && d.conductorNombre.size() <= 60
+        && d.estado == 'pendiente'
+        && d.creado == request.time
+        && d.esDemo == false;
     }
 
     // ---------- Colección usuarios ----------
@@ -64,6 +101,41 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Cualquier otra colección: cerrada hasta que escribamos sus reglas (Fase 5)
+    // ---------- Colección viajes (Fase 5) ----------
+    match /viajes/{viajeId} {
+      // Ver viajes: cualquier estudiante verificado
+      allow read: if verificado();
+
+      // Publicar: solo a tu nombre y con datos válidos
+      allow create: if verificado() && viajeValido();
+
+      // Editar: nadie (si te equivocas, lo borras y publicas otro)
+      allow update: if false;
+
+      // Borrar: solo el conductor que lo publicó
+      allow delete: if verificado() && resource.data.conductorUid == request.auth.uid;
+    }
+
+    // ---------- Colección solicitudes (Fase 5) ----------
+    match /solicitudes/{solicitudId} {
+      // Leer: solo el pasajero que la mandó o el conductor que la recibió
+      allow read: if verificado()
+        && (resource.data.pasajeroUid == request.auth.uid
+            || resource.data.conductorUid == request.auth.uid);
+
+      // Crear: el pasajero, para sí mismo, siempre "pendiente"
+      allow create: if verificado() && solicitudValida(solicitudId);
+
+      // Responder: solo el conductor, y SOLO puede cambiar "estado"
+      allow update: if verificado()
+        && resource.data.conductorUid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estado'])
+        && request.resource.data.estado in ['aceptada', 'rechazada'];
+
+      // Cancelar: solo el pasajero que la mandó
+      allow delete: if verificado() && resource.data.pasajeroUid == request.auth.uid;
+    }
+
+    // Cualquier otra colección: cerrada hasta que escribamos sus reglas
   }
 }

@@ -1,0 +1,91 @@
+/* ==========================================================
+   recomendaciones.css — estilos SOLO de recomendaciones.html
+   Lo general (menú, tarjetas, colores, botones) viene de
+   estilos.css, igual que en "Mi panel". Aquí solo va lo nuevo.
+   ========================================================== */
+
+#puntos, #consejos, #convivencia, #ayuda { min-width: 0; }
+
+.descripcion {
+  margin: 0 0 16px;
+  color: var(--color-texto-secundario);
+  font-size: .94rem;
+  line-height: 1.55;
+}
+
+/* Filtro de ruta: etiqueta arriba, selector a lo ancho */
+.filtro { display: grid; gap: 7px; }
+.filtro label { font-size: .9rem; font-weight: 700; }
+.filtro select { width: 100%; min-height: 42px; color: #1b1d1f; }
+
+.mensaje-puntos { color: var(--color-texto-secundario); margin: 12px 0; }
+.mensaje-puntos:empty { display: none; }
+.mensaje-puntos.error { color: #ffb4a9; font-weight: 600; }
+
+/* ---------- Bloque de cada ruta ---------- */
+.bloque-ruta {
+  margin-top: 18px;
+  padding-top: 17px;
+  border-top: 1px solid var(--color-bordes);
+}
+.cabecera-ruta { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
+/* El color de cada ruta lo pone recomendaciones.js leyendo zonas.geojson */
+.barra-color-ruta {
+  display: inline-block;
+  width: 5px; height: 28px; flex: 0 0 5px;
+  border-radius: 4px;
+  background: var(--color-bordes);
+}
+.nombre-ruta { margin: 0; font-size: 1rem; overflow-wrap: anywhere; }
+
+/* ---------- Tarjetas de puntos ---------- */
+.cuadricula-puntos { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.tarjeta-punto {
+  min-width: 0;
+  padding: 16px;
+  background: #24282a;
+  border: 1px solid #384043;
+  border-radius: 9px;
+  overflow-wrap: anywhere;
+}
+.tarjeta-punto:hover { border-color: #557765; }
+.nombre-punto { margin: 0 0 10px; font-size: 1rem; line-height: 1.4; }
+.etiquetas-punto { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; }
+.etiqueta-nivel { display: inline-block; padding: 3px 9px; border-radius: 6px; font-size: .82rem; font-weight: 700; }
+.etiqueta-recomendada { background: #d1fae5; color: #065f46; }
+.etiqueta-precaucion  { background: #fef3c7; color: #92400e; }
+.etiqueta-pendiente   { background: var(--color-bordes); color: var(--color-texto-principal); }
+.etiquetas-punto .etiqueta-demo { margin-top: 0; }
+.nota-seguridad { margin: 0 0 12px; font-size: .9rem; color: #d1d9d5; line-height: 1.55; }
+.fecha-observacion { color: var(--color-texto-secundario); font-size: .88rem; margin: 0 0 10px; }
+.enlace-maps { display: inline-block; font-weight: 600; font-size: .9rem; color: #76da80; text-underline-offset: 3px; }
+.enlace-maps:hover { color: #b9f5b8; }
+
+/* ---------- Listas de consejos ---------- */
+.lista-consejos { margin: 0; padding-left: 22px; line-height: 1.55; font-size: .92rem; }
+.lista-consejos li + li { margin-top: 10px; }
+.lista-consejos li::marker { color: #59bd68; }
+#ayuda p { margin-top: 0; }
+
+/* ---------- Distribución ----------
+   Celular: una columna. Computadora: consejos a la izquierda
+   y los puntos de encuentro grandes a la derecha (como el mapa en Mi panel). */
+@media (min-width: 768px) {
+  .cuadricula-puntos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .contenido { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .contenido {
+    grid-template-columns: 320px minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    align-items: start;
+  }
+  #puntos      { grid-column: 2; grid-row: 1 / span 3; }
+  #consejos    { grid-column: 1; grid-row: 1; }
+  #convivencia { grid-column: 1; grid-row: 2; }
+  #ayuda       { grid-column: 1; grid-row: 3; }
+}

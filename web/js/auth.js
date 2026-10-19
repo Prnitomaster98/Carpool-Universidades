@@ -14,8 +14,9 @@ import {doc, setDoc} from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-f
 
 const DOMINIO_UNIVERSIDAD = "uvg.edu.gt"
 const DOMINIO_PRUEBA = "gmail.com"
+const DOMINIO_COLEGIO = "suizoamericano.edu.gt"
 
-const DOMINIOS_PERMITIDOS = [DOMINIO_PRUEBA, DOMINIO_UNIVERSIDAD]
+const DOMINIOS_PERMITIDOS = [DOMINIO_PRUEBA, DOMINIO_UNIVERSIDAD, DOMINIO_COLEGIO]
 
 
 const LARGO_MINIMO_CLAVE = 6;
