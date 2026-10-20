@@ -72,7 +72,7 @@ service cloud.firestore {
         && d.conductorUid == get(/databases/$(database)/documents/viajes/$(d.viajeId)).data.conductorUid
         && d.pasajeroNombre is string && d.pasajeroNombre.size() <= 60
         && d.conductorNombre is string && d.conductorNombre.size() <= 60
-        && (!('pasajeroTelefono' in d) || telefonoValido(d.pasajeroTelefono))
+        && telefonoValido(d.pasajeroTelefono)   // obligatorio: 8 dígitos sí o sí
         && d.estado == 'pendiente'
         && d.creado == request.time
         && d.esDemo == false;
@@ -132,25 +132,31 @@ service cloud.firestore {
       // Crear: el pasajero, para sí mismo, siempre "pendiente"
       allow create: if verificado() && solicitudValida(solicitudId);
 
-      // Responder: solo el conductor, y SOLO puede cambiar "estado"
+      // Responder: solo el conductor, y SOLO puede cambiar "estado" (y su teléfono)
+      // Si acepta, su teléfono es obligatorio. Si rechaza, no hace falta.
       allow update: if verificado()
         && resource.data.conductorUid == request.auth.uid
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estado', 'conductorTelefono'])
         && request.resource.data.estado in ['aceptada', 'rechazada']
-        && (!('conductorTelefono' in request.resource.data)
+        && (request.resource.data.estado != 'aceptada'
             || telefonoValido(request.resource.data.conductorTelefono));
 
       // Cancelar: solo el pasajero que la mandó
       allow delete: if verificado() && resource.data.pasajeroUid == request.auth.uid;
     }
 
-    // ---------- Colección contactos (tu WhatsApp, privado) ----------
+    // ---------- Colección contactos (tu WhatsApp) ----------
+    // compartir = true  -> cualquier estudiante verificado puede leerlo (coincidencias)
+    // compartir = false -> solo tú
     match /contactos/{uid} {
-      allow read: if verificado() && request.auth.uid == uid;
+      allow read: if verificado()
+        && (request.auth.uid == uid || resource.data.compartir == true);
       allow create, update: if verificado() && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['telefono'])
-        && telefonoValido(request.resource.data.telefono);
+        && request.resource.data.keys().hasOnly(['telefono', 'compartir'])
+        && telefonoValido(request.resource.data.telefono)
+        && request.resource.data.compartir is bool;
       allow delete: if false;
+    }
     }
 
     // Cualquier otra colección: cerrada hasta que escribamos sus reglas

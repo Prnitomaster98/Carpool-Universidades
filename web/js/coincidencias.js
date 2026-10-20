@@ -13,27 +13,28 @@
 // se recalcula sola.
 // ==========================================================
 
-import { db } from './firebase-config.js';
-import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
-import { DIAS, buscarCoincidencias } from './matching.js';
-import { resaltarPunto } from './mapa.js';
+import { db } from './firebase-config.js'
+import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js'
+import { DIAS, buscarCoincidencias } from './matching.js'
+import { resaltarPunto } from './mapa.js'
+import { botonContacto } from './whatsapp.js'
 
-const MAXIMO_RESULTADOS = 10;   // para no llenar la pantalla
+const MAXIMO_RESULTADOS = 10   // para no llenar la pantalla
 
-const NOMBRES_ROL = { conductor: 'Conductor', pasajero: 'Pasajero', ambos: 'Conductor o pasajero' };
+const NOMBRES_ROL = { conductor: 'Conductor', pasajero: 'Pasajero', ambos: 'Conductor o pasajero' }
 
 // ---------- Elementos de la página ----------
-const selectDia = document.getElementById('coincidencias-dia');
-const selectTramo = document.getElementById('coincidencias-tramo');
-const mensaje = document.getElementById('coincidencias-mensaje');
-const lista = document.getElementById('lista-coincidencias');
+const selectDia = document.getElementById('coincidencias-dia')
+const selectTramo = document.getElementById('coincidencias-tramo')
+const mensaje = document.getElementById('coincidencias-mensaje')
+const lista = document.getElementById('lista-coincidencias')
 
 // ---------- Datos (se llenan al cargar) ----------
-let miPerfil = null;          // llega con el evento "perfil-listo"
-let otrosPerfiles = [];       // Firestore + demo
-let puntos = [];              // puntos-encuentro.json
-let nombresZonas = {};        // { "ruta-norte": "Norte (zonas 1, 2...)" }
-let datosListos = false;      // true cuando ya llegaron Firestore + demo + puntos
+let miPerfil = null          // llega con el evento "perfil-listo"
+let otrosPerfiles = []       // Firestore + demo
+let puntos = []              // puntos-encuentro.json
+let nombresZonas = {}        // { "ruta-norte": "Norte (zonas 1, 2...)" }
+let datosListos = false      // true cuando ya llegaron Firestore + demo + puntos
 
 
 // ----------------------------------------------------------
@@ -123,7 +124,7 @@ function crear(etiqueta, clase, texto) {
 //   Punto sugerido: Portales (toca para verlo en el mapa)
 //   [Dato de prueba]
 // ----------------------------------------------------------
-function dibujarCoincidencia(resultado, tramo) {
+function dibujarCoincidencia(resultado, tramo, nombreDia) {
   const elemento = crear('li', 'coincidencia');
 
   const encabezado = crear('div', 'coincidencia-encabezado');
@@ -158,6 +159,12 @@ function dibujarCoincidencia(resultado, tramo) {
     elemento.append(boton);
   } else {
     elemento.append(crear('p', 'coincidencia-detalle', 'Sin punto de encuentro sugerido en esas zonas.'));
+  }
+
+  if (!resultado.esDemo){
+    const viaje = tramo === 'ida' ? 'ida a la UVG' : 'regreso a casa'
+    const texto = `Carpool UVG: hola ${resultado.nombre}, la app dice que coincidimos el ${nombreDia} (${viaje}). ¿Te interesa compartir viaje?`
+    elemento.append(botonContacto({uid:resultado.uid, nombre: resultado.nombre, texto}))
   }
 
   if (resultado.esDemo) {
@@ -200,7 +207,7 @@ function mostrarCoincidencias() {
     ? `${resultados.length} compañeros coinciden contigo. Estos son los ${MAXIMO_RESULTADOS} mejores:`
     : `${resultados.length} compañero(s) coinciden contigo:`;
   for (const resultado of mostrados) {
-    lista.append(dibujarCoincidencia(resultado, tramo));
+    lista.append(dibujarCoincidencia(resultado, tramo, nombreDia));
   }
 }
 

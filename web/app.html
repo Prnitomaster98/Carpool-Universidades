@@ -9,9 +9,9 @@
   <title>Carpool por zonas — Mi panel</title>
 
   <!-- Estilos de Leaflet (versión fijada 1.9.4).
-       "integrity" es una huella digital: si alguien cambia el archivo en la CDN,
-       el navegador se niega a usarlo. "crossorigin" es necesario para que esa
-       comprobación funcione con archivos de otro dominio. -->
+      "integrity" es una huella digital: si alguien cambia el archivo en la CDN,
+      el navegador se niega a usarlo. "crossorigin" es necesario para que esa
+      steacomprobación funcione con archivos de otro dominio. -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
@@ -152,10 +152,13 @@
         <!-- ===== Sección: Solicitudes (Fase 5) ===== -->
     <section id="solicitudes" class="tarjeta" aria-labelledby="titulo-solicitudes">
       <h2 id="titulo-solicitudes">Solicitudes</h2>
-            <!-- Whatsapp solo lo puede ver el que te acepta el viaje -->
+            <!-- Whatsapp solo lo puede ver el que te acepta el viaje y tus coincidencias si decides aceptarlo. -->
       <form id="form-whatsapp" class="perfil-form" novalidate>
-        <label for="mi-whatsapp" class="etiqueta-campo">Tu número de WhatsApp (8 dígitos)</label>
+        <label for="mi-whatsapp" class="etiqueta-campo">Tu número de WhatsApp (8 dígitos, obligatorio para pedir o aceptar viajes)</label>
         <input type="tel" id="mi-whatsapp" inputmode="numeric" maxlength="15" placeholder="5555 1234" autocomplete="tel-national">
+        <label class = "etiqueta-campo">
+          <input type="checkbox" id="compartir-whatsapp">Mostrar mi número a mis coincidencias. (si no, solo lo ve quien comparta un viaje conmigo)
+        </label>
         <button type="submit" id="whatsapp-guardar" class="boton boton-secundario" disabled>Guardar número</button>
       </form>
       <p id="solicitudes-mensaje" class="mensaje-perfil" role="status" aria-live="polite"></p>
