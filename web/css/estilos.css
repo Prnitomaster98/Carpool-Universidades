@@ -1114,3 +1114,49 @@ body.cargando .sesion {
 ::-webkit-scrollbar-thumb:hover {
   background: #33423c;
 }
+
+
+/* ---------- Botón para mostrar/ocultar la contraseña ---------- */
+.campo-clave {
+  position: relative;
+}
+
+.campo-clave input {
+  padding-right: 52px; /* deja espacio para el ojo */
+}
+
+.boton-ver-clave {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--radio-controles);
+  color: var(--color-texto-secundario);
+  cursor: pointer;
+  transition: color var(--transicion), background var(--transicion);
+}
+
+.boton-ver-clave svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.boton-ver-clave:hover {
+  color: var(--color-texto-principal);
+}
+
+.boton-ver-clave:focus-visible {
+  outline: 2px solid var(--color-enlaces-y-menu);
+  outline-offset: 2px;
+}

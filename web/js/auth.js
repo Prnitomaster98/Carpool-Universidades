@@ -209,3 +209,22 @@ onAuthStateChanged(auth, (usuario) => {
         window.location.replace("app.html")
     } //Te cambia de pestaña solo sí estas verificado
 })
+
+
+// ---------- Mostrar / ocultar contraseña ----------
+// Cada botón con la clase "boton-ver-clave" controla el input cuyo id está en data-para.
+document.querySelectorAll(".boton-ver-clave").forEach((boton) => {
+    const campo = document.getElementById(boton.dataset.para)
+    const ojo = boton.querySelector(".icono-ojo")
+    const ojoTachado = boton.querySelector(".icono-ojo-tachado")
+
+    boton.addEventListener("click", () => {
+        const mostrar = campo.type === "password" //Si está oculta, la vamos a mostrar
+        campo.type = mostrar ? "text" : "password"
+        ojo.hidden = mostrar
+        ojoTachado.hidden = !mostrar
+        boton.setAttribute("aria-pressed", mostrar)
+        boton.setAttribute("aria-label", mostrar ? "Ocultar contraseña" : "Mostrar contraseña")
+        campo.focus() //Regresa el cursor al campo para seguir escribiendo
+    })
+})
