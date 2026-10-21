@@ -21,8 +21,10 @@ import {
 
 import { DIAS } from "./matching.js";
 import { escucharResenas, dibujarRating } from "./calificaciones.js"; //Estrellas del conductor
+import { dibujarGrupos } from "./agrupar.js"; //Cajas por estado
 
 const NOMBRES_TRAMO = { ida: "Ida a la UVG", regreso: "Regreso a casa" };
+const NOMBRES_ESTADO = { pendiente: "Pendiente", aceptada: "Aceptada", rechazada: "Rechazada" };
 const MAXIMO_CUPOS = 4;
 
 const formulario = document.getElementById("form-viaje");
@@ -42,6 +44,8 @@ let zonas = [];
 let puntos = [];
 let viajes = [];
 let resenas = []; //Calificaciones de todos (llegan en tiempo real)
+let estadoDeMisSolicitudes = new Map(); //viajeId -> "pendiente" / "aceptada" / "rechazada" (lo manda solicitudes.js)
+let viajesCargados = false;
 
 //Crea el elemento con su clase y su texto.
 function crear(etiqueta, clase, texto) {
@@ -208,6 +212,7 @@ async function cargarViajes() {
     lista.replaceChildren();
     return;
   }
+  viajesCargados = true;
 
   const ordenDia = (idDia) => DIAS.findIndex((dia) => dia.id === idDia);
   viajes.sort(
@@ -270,6 +275,11 @@ function dibujarViaje(viaje) {
     botonBorrar.addEventListener("click", () => borrarViaje(viaje));
 
     elemento.append(botonWhatsApp, botonBorrar);
+  } else if (estadoDeMisSolicitudes.has(viaje.id)) {
+    const estado = estadoDeMisSolicitudes.get(viaje.id);
+    elemento.append(
+      crear("p", "coincidencia-detalle", `Tu solicitud: ${NOMBRES_ESTADO[estado] ?? estado}`),
+    );
   } else {
     const botonSolicitar = crear(
       "button",
@@ -289,10 +299,11 @@ function dibujarViaje(viaje) {
   return elemento;
 }
 
-//Muestra los viajes qeu existen actualmente
+//Muestra los viajes que existen, separados en cajas para que no se acumulen:
+// los tuyos, los que pediste (por estado) y los que siguen disponibles.
 function mostrarViajes() {
-  lista.replaceChildren();
   if (viajes.length === 0) {
+    lista.replaceChildren();
     mensajeLista.textContent = "Todavía no hay viajes publicados.";
     return;
   }
@@ -300,9 +311,26 @@ function mostrarViajes() {
     viajes.length === 1
       ? "1 viaje publicado:"
       : `${viajes.length} viajes publicados:`;
-  for (const viaje of viajes) {
-    lista.append(dibujarViaje(viaje));
-  }
+
+  const miUid = auth.currentUser?.uid;
+  const mios = viajes.filter((viaje) => viaje.conductorUid === miUid);
+  const deOtros = viajes.filter((viaje) => viaje.conductorUid !== miUid);
+  const conEstado = (estado) =>
+    deOtros.filter((viaje) => estadoDeMisSolicitudes.get(viaje.id) === estado);
+
+  const grupos = [
+    { id: "mios", titulo: "Mis viajes", elementos: mios, abierto: true },
+    { id: "aceptada", titulo: "Me aceptaron", elementos: conEstado("aceptada"), abierto: true },
+    { id: "pendiente", titulo: "Esperando respuesta", elementos: conEstado("pendiente"), abierto: true },
+    { id: "rechazada", titulo: "Rechazados", elementos: conEstado("rechazada"), abierto: false },
+    {
+      id: "disponibles",
+      titulo: "Disponibles",
+      elementos: deOtros.filter((viaje) => !estadoDeMisSolicitudes.has(viaje.id)),
+      abierto: true,
+    },
+  ];
+  dibujarGrupos(lista, grupos, dibujarViaje, "Todavía no hay viajes publicados.");
 }
 
 //Función para compartir un viaje por Whats
@@ -334,6 +362,14 @@ async function borrarViaje(viaje) {
 //Funciones que comienzan todo
 
 prepararFormulario();
+
+// solicitudes.js nos manda tus solicitudes cada vez que las carga
+document.addEventListener("mis-solicitudes", (evento) => {
+  estadoDeMisSolicitudes = new Map(
+    evento.detail.map((solicitud) => [solicitud.viajeId, solicitud.estado]),
+  );
+  if (viajesCargados) mostrarViajes();
+});
 
 document.addEventListener("perfil-listo", (evento) => {
   miPerfil = evento.detail;
