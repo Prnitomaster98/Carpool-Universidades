@@ -1,0 +1,513 @@
+/* ==========================================================
+   seguridad.css — lo nuevo de seguridad y perfiles:
+     1. Aviso "Tu próximo viaje" (arriba de las tarjetas)
+     2. Sección Seguridad de app.html
+     3. Cuadritos de aviso (toasts)
+     4. Botón SOS y su panel
+     5. Estrellas (mostrar y elegir)
+     6. Página de Perfiles
+   Usa las variables de :root de estilos.css.
+   ========================================================== */
+
+/* ---------- 1. Aviso "Tu próximo viaje" ---------- */
+.aviso-viaje {
+  max-width: 1320px;
+  margin: var(--espacio-margen-base) var(--espacio-margen-base) 0;
+  padding: calc(var(--espacio-margen-base) * 1.25);
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.14), rgba(74, 222, 128, 0.03)),
+    var(--color-fondo-tarjetas);
+  border: 1px solid rgba(74, 222, 128, 0.45);
+  border-radius: var(--radio-esquinas-redondeadas);
+  box-shadow: var(--sombra-tarjeta);
+}
+
+/* En curso se pone azul, para que se note que ya vas en camino */
+.aviso-viaje.en-curso {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(37, 99, 235, 0.04)),
+    var(--color-fondo-tarjetas);
+  border-color: rgba(96, 165, 250, 0.55);
+}
+
+/* hidden tiene que ganar al display de arriba */
+.aviso-viaje[hidden] {
+  display: none;
+}
+
+.aviso-viaje-encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.aviso-viaje h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.aviso-viaje-cuenta {
+  font-size: 1.4rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-marca-claro);
+}
+
+.aviso-viaje.en-curso .aviso-viaje-cuenta {
+  color: #93c5fd;
+}
+
+.aviso-viaje-detalle {
+  margin: 6px 0 0;
+  color: var(--color-texto-secundario);
+  overflow-wrap: anywhere;      /* el link del mapa es largo: que no rompa el celular */
+}
+
+.aviso-viaje-detalle:empty {
+  display: none;
+}
+
+.aviso-viaje-botones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 12px;
+}
+
+.aviso-viaje-botones .boton-principal {
+  width: auto;
+  margin-top: 0;
+}
+
+/* En pantallas grandes se centra igual que .contenido */
+@media (min-width: 768px) {
+  .aviso-viaje {
+    margin: 24px 24px 0;
+  }
+}
+
+@media (min-width: 1368px) {
+  .aviso-viaje {
+    margin: 24px auto 0;
+  }
+}
+
+
+/* ---------- 2. Sección Seguridad ---------- */
+.seguridad-columnas {
+  display: grid;
+  gap: 20px;
+}
+
+.perfil-form input[type="text"] {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  font: inherit;
+  font-weight: 600;
+  color: inherit;
+  background-color: var(--color-fondo-elevado);
+  border: 1px solid var(--color-bordes);
+  border-radius: var(--radio-controles);
+}
+
+#form-emergencia .etiqueta-campo {
+  margin-top: 10px;
+}
+
+#activar-avisos {
+  margin-top: 12px;
+}
+
+/* Link "Ver perfil de ..." dentro de las mini-tarjetas */
+.enlace-perfil {
+  display: inline-block;
+  margin: 8px 14px 0 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-marca-claro);
+}
+
+/* En computadora: la sección ocupa todo el ancho, en la fila 4,
+   con el formulario y los viajes lado a lado */
+@media (min-width: 768px) {
+  #seguridad {
+    grid-column: 1 / -1;
+  }
+
+  .seguridad-columnas {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+@media (min-width: 1024px) {
+  #seguridad {
+    grid-row: 4;
+  }
+}
+
+
+/* ---------- 3. Cuadritos de aviso (toasts) ---------- */
+.avisos-en-vivo {
+  position: fixed;
+  left: 16px;
+  right: 96px;            /* deja libre el botón SOS */
+  bottom: 16px;
+  z-index: 1500;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;   /* los clicks pasan a lo de atrás */
+}
+
+.toast {
+  max-width: 420px;
+  margin: 0;
+  padding: 12px 16px;
+  font-weight: 600;
+  background: var(--color-fondo-elevado);
+  border: 1px solid rgba(74, 222, 128, 0.45);
+  border-radius: 12px;
+  box-shadow: 0 12px 28px -12px rgba(0, 0, 0, 0.9);
+  animation: aparecer 240ms ease-out;
+}
+
+
+/* ---------- 4. Botón SOS y su panel ---------- */
+.boton-sos {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2000;          /* encima del mapa de Leaflet (que usa hasta 1000) */
+  width: 64px;
+  height: 64px;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  background: radial-gradient(circle at 35% 30%, #f87171, #dc2626 60%, #b91c1c);
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  box-shadow: 0 10px 24px -6px rgba(220, 38, 38, 0.8);
+  cursor: pointer;
+  transition: transform var(--transicion);
+}
+
+.boton-sos:hover {
+  transform: scale(1.06);
+}
+
+.boton-sos:focus-visible {
+  outline: 3px solid #fecaca;
+  outline-offset: 3px;
+}
+
+.panel-sos {
+  width: min(420px, calc(100% - 32px));
+  padding: 0;             /* el relleno lo lleva .sos-interior */
+  color: var(--color-texto-principal);
+  background: var(--color-fondo-tarjetas);
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  border-radius: var(--radio-esquinas-redondeadas);
+}
+
+/* ::backdrop = lo oscuro detrás del panel */
+.panel-sos::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.sos-interior {
+  padding: 20px;
+}
+
+.panel-sos h2 {
+  margin: 0 0 4px;
+  color: #fca5a5;
+}
+
+.panel-sos h3 {
+  margin: 18px 0 6px;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-texto-secundario);
+}
+
+.sos-ubicacion,
+.sos-nota {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-texto-secundario);
+}
+
+.sos-nota:empty {
+  display: none;
+}
+
+.sos-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.sos-acciones .boton {
+  width: 100%;
+  text-decoration: none;
+}
+
+.sos-acciones .boton[hidden] {
+  display: none;
+}
+
+.boton-sos-llamar {
+  color: #ffffff;
+  background: #dc2626;
+}
+
+.boton-sos-llamar:hover {
+  filter: brightness(1.1);
+}
+
+.boton-sos-contacto {
+  color: #ffffff;
+  background: var(--color-enlaces-y-menu);
+}
+
+.sos-otros {
+  margin: 0 0 12px;
+  padding-left: 18px;
+}
+
+.sos-otros a {
+  color: var(--color-texto-principal);
+  font-weight: 600;
+}
+
+
+/* ---------- 5. Estrellas ---------- */
+.rating {
+  flex: none;
+  font-size: 0.85rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: #fcd34d;
+}
+
+.rating-estrellas {
+  letter-spacing: 0.08em;
+}
+
+.rating-vacio {
+  font-weight: 600;
+  color: var(--color-texto-secundario);
+}
+
+.detalle-rating .rating {
+  font-size: 1.3rem;
+}
+
+/* Elegir estrellas: radios ocultos, se ven solo las ★.
+   row-reverse las voltea: en el HTML van 5,4,3,2,1 pero se ven 1,2,3,4,5. */
+.estrellas-input {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 2px;
+  margin: 10px 0 6px;
+  padding: 0;
+  border: none;
+}
+
+.estrellas-input legend {
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+/* Escondido para la vista, pero el teclado y el lector de pantalla sí lo usan */
+.estrellas-input input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.estrellas-input label {
+  font-size: 1.8rem;
+  line-height: 1;
+  color: #3f4b46;
+  cursor: pointer;
+  transition: color var(--transicion), transform var(--transicion);
+}
+
+/* ~ = "los que vienen después". Como están volteados, son los de la izquierda */
+.estrellas-input input:checked ~ label,
+.estrellas-input label:hover,
+.estrellas-input label:hover ~ label {
+  color: #fcd34d;
+}
+
+.estrellas-input label:hover {
+  transform: scale(1.12);
+}
+
+.estrellas-input input:focus-visible + label {
+  outline: 2px solid var(--color-marca-claro);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.form-resena textarea,
+.buscador {
+  width: 100%;
+  padding: 8px 12px;
+  font: inherit;
+  color: inherit;
+  background-color: var(--color-fondo-tarjetas);
+  border: 1px solid var(--color-bordes);
+  border-radius: var(--radio-controles);
+  resize: vertical;
+}
+
+.buscador {
+  min-height: 44px;
+  margin: 6px 0 4px;
+  background-color: var(--color-fondo-elevado);
+}
+
+.comentario {
+  margin: 6px 0 2px;
+  white-space: pre-line;    /* respeta los saltos de línea del comentario */
+  overflow-wrap: anywhere;
+}
+
+
+/* ---------- 6. Página de Perfiles ---------- */
+.coincidencia.elegido {
+  border-color: rgba(74, 222, 128, 0.6);
+}
+
+@media (min-width: 1024px) {
+  /* Perfil elegido a la izquierda (alto), calificar y lista a la derecha */
+  .pagina-perfiles .contenido {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .pagina-perfiles #perfil-detalle {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+}
+
+/* La etiqueta "Dato de prueba" no pegada al botón "Ver perfil" */
+.coincidencia .boton-enlace + .etiqueta-demo {
+  margin-left: 10px;
+}
+
+
+/* ---------- 7. Menú con tres pestañas en celular ----------
+   Con "Perfiles" ya son tres: menos relleno y sin partir el texto en dos líneas */
+@media (max-width: 640px) {
+  .menu li {
+    flex: auto;
+  }
+
+  .menu a {
+    padding: 7px 10px;
+    white-space: nowrap;
+  }
+}
+
+.aviso-viaje-botones a.boton {
+  text-decoration: none;
+}
+
+/* ---------- 8. Sugerencia de ubicación en tiempo real ---------- */
+.sugerencia-ubicacion {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(147, 197, 253, 0.5);
+  border-radius: 12px;
+}
+
+.sugerencia-ubicacion[hidden] {
+  display: none;
+}
+
+.sugerencia-ubicacion p {
+  margin: 0;
+}
+
+.sugerencia-ubicacion .aviso-viaje-botones {
+  margin-top: 8px;
+}
+
+
+/* ---------- 9. SOS: opciones ---------- */
+.sos-pregunta {
+  margin: 0 0 4px;
+  font-weight: 700;
+}
+
+.boton-sos-ambas {
+  color: #ffffff;
+  background: #b45309;
+}
+
+.boton-sos-ambas:hover,
+.boton-sos-contacto:hover {
+  filter: brightness(1.1);
+}
+
+.sos-acciones .boton-enlace[hidden],
+.sos-paso[hidden] {
+  display: none;
+}
+
+.sos-acciones .boton-enlace {
+  align-self: center;
+}
+
+/* Paso 2 de "Las dos": aviso arriba y el botón de llamar latiendo */
+.sos-paso {
+  margin: 0;
+  padding: 10px 12px;
+  font-weight: 700;
+  background: rgba(220, 38, 38, 0.12);
+  border-radius: 10px;
+}
+
+.boton-sos-llamar.resaltado {
+  outline: 3px solid #fecaca;
+  outline-offset: 2px;
+  animation: latido 1.2s ease-in-out infinite;
+}
+
+@keyframes latido {
+  50% { transform: scale(1.03); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boton-sos-llamar.resaltado {
+    animation: none;
+  }
+}
+
+/* ---------- 10. Estrellas del conductor en cada viaje ---------- */
+.viaje-conductor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  margin: 2px 0 4px;
+}
+
+.viaje-conductor .enlace-perfil {
+  margin: 0;
+}

@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="css/estilos.css">
   <!-- Estilos solo de esta página -->
   <link rel="stylesheet" href="css/recomendaciones.css">
+  <!-- Para el botón SOS -->
+  <link rel="stylesheet" href="css/seguridad.css">
 </head>
 <body class="cargando">
   <!-- Identifica si el usuario es verificado o no -->
@@ -17,6 +19,7 @@
     <nav aria-label="Menú principal">
       <ul class="menu">
         <li><a href="app.html">Mi panel</a></li>
+        <li><a href="perfiles.html">Perfiles</a></li>
         <li><a href="recomendaciones.html" aria-current="page">Recomendaciones</a></li>
       </ul>
     </nav>
@@ -65,7 +68,9 @@
 
     <section id="ayuda" class="tarjeta" aria-labelledby="titulo-ayuda">
       <h2 id="titulo-ayuda">Si algo sale mal</h2>
-      <p>Ante una emergencia, busca un lugar seguro y contacta a los servicios correspondientes.</p>
+      <p>Ante una emergencia, busca un lugar seguro y contacta a los servicios correspondientes.
+        El botón rojo <strong>SOS</strong> (abajo a la derecha) le manda tu ubicación a tu contacto de emergencia
+        y te deja llamar a la PNC. Guatemala no tiene 911: cada servicio tiene su número.</p>
       <ul class="lista-consejos">
         <li>Policía Nacional Civil (PNC): <strong>110</strong>.</li>
         <li>Bomberos Voluntarios: <strong>122</strong>.</li>
@@ -79,5 +84,7 @@
   <script type="module" src="js/panel.js"></script>
   <!-- Carga los datos y los demuestra en la pagina -->
   <script type="module" src="js/recomendaciones.js"></script>
+  <!-- Botón SOS -->
+  <script type="module" src="js/sos.js"></script>
 </body>
 </html>

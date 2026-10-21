@@ -78,6 +78,32 @@ service cloud.firestore {
         && d.esDemo == false;
     }
 
+    // ¿La reseña es válida? (pestaña Perfiles)
+    // Lee la solicitud con get(...) para comprobar que de verdad viajaron juntos:
+    // la solicitud tiene que estar aceptada y tú tienes que ser el conductor o el pasajero.
+    // paraUid tiene que ser LA OTRA persona de ese viaje (no te puedes calificar a ti).
+    function resenaValida(resenaId) {
+      let d = request.resource.data;
+      let s = get(/databases/$(database)/documents/solicitudes/$(d.solicitudId)).data;
+      return d.keys().hasOnly(['solicitudId', 'autorUid', 'autorNombre', 'paraUid',
+                               'estrellas', 'comentario', 'creado', 'esDemo'])
+        && resenaId == d.solicitudId + '_' + request.auth.uid
+        && d.autorUid == request.auth.uid
+        && s.estado == 'aceptada'
+        && ((s.pasajeroUid == request.auth.uid && d.paraUid == s.conductorUid)
+            || (s.conductorUid == request.auth.uid && d.paraUid == s.pasajeroUid))
+        && d.autorNombre is string && d.autorNombre.size() <= 60
+        && estrellasYComentarioValidos(d)
+        && d.creado == request.time
+        && d.esDemo == false;
+    }
+
+    // De 1 a 5 estrellas (número entero) y comentario de máximo 300 letras
+    function estrellasYComentarioValidos(d) {
+      return d.estrellas is int && d.estrellas >= 1 && d.estrellas <= 5
+        && d.comentario is string && d.comentario.size() <= 300;
+    }
+
     // ---------- Colección usuarios ----------
     match /usuarios/{uid} {
 
@@ -157,6 +183,36 @@ service cloud.firestore {
         && request.resource.data.compartir is bool;
       allow delete: if false;
     }
+
+    // ---------- Colección emergencia (contacto de emergencia) ----------
+    // SOLO el dueño lo lee y lo escribe. Nadie más ve a tu contacto.
+    match /emergencia/{uid} {
+      allow read: if verificado() && request.auth.uid == uid;
+      allow create, update: if verificado() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['nombre', 'telefono'])
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() >= 1
+        && request.resource.data.nombre.size() <= 60
+        && telefonoValido(request.resource.data.telefono);
+      allow delete: if verificado() && request.auth.uid == uid;
+    }
+
+    // ---------- Colección resenas (estrellas y comentarios) ----------
+    match /resenas/{resenaId} {
+      // Leer: cualquier estudiante verificado (son públicas, como en Uber)
+      allow read: if verificado();
+
+      // Crear: solo si viajaste con esa persona (ver resenaValida arriba)
+      allow create: if verificado() && resenaValida(resenaId);
+
+      // Editar: solo el autor, y solo estrellas y comentario
+      allow update: if verificado()
+        && resource.data.autorUid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estrellas', 'comentario'])
+        && estrellasYComentarioValidos(request.resource.data);
+
+      // Borrar: solo el autor
+      allow delete: if verificado() && resource.data.autorUid == request.auth.uid;
     }
 
     // Cualquier otra colección: cerrada hasta que escribamos sus reglas

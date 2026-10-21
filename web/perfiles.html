@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carpool por zonas — Perfiles</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <!-- perfil.css trae el estilo de las mini-tarjetas (.coincidencia) -->
+  <link rel="stylesheet" href="css/perfil.css">
+  <!-- Estrellas, SOS y lo nuevo de seguridad -->
+  <link rel="stylesheet" href="css/seguridad.css">
+</head>
+
+<!-- "pagina-perfiles" le da a esta página su propia grilla en seguridad.css -->
+<body class="cargando pagina-perfiles">
+
+  <header class="barra-superior">
+    <a class="marca" href="app.html">Carpool por zonas</a>
+    <nav aria-label="Menú principal">
+      <ul class="menu">
+        <li><a href="app.html">Mi panel</a></li>
+        <li><a href="perfiles.html" aria-current="page">Perfiles</a></li>
+        <li><a href="recomendaciones.html">Recomendaciones</a></li>
+      </ul>
+    </nav>
+    <div class="sesion">
+      <span id="saludo" class="saludo"></span>
+      <button type="button" id="boton-salir" class="boton-enlace">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="contenido">
+
+    <!-- ===== Perfil elegido (lo llena perfiles.js) ===== -->
+    <section id="perfil-detalle" class="tarjeta" aria-labelledby="detalle-nombre">
+      <h2 id="detalle-nombre">Cargando perfil...</h2>
+      <p id="detalle-datos" class="descripcion"></p>
+      <div id="detalle-rating" class="detalle-rating"></div>
+
+      <h3>Comentarios</h3>
+      <ul id="lista-comentarios" class="lista-coincidencias"></ul>
+
+      <h3>Viajes publicados</h3>
+      <ul id="lista-viajes-perfil" class="lista-coincidencias"></ul>
+    </section>
+
+    <!-- ===== Calificar a quienes viajaron contigo ===== -->
+    <section id="calificar" class="tarjeta" aria-labelledby="titulo-calificar">
+      <h2 id="titulo-calificar">Califica tus viajes</h2>
+      <p id="calificar-mensaje" class="mensaje-perfil" role="status" aria-live="polite"></p>
+      <ul id="lista-calificar" class="lista-coincidencias"></ul>
+    </section>
+
+    <!-- ===== Todos los perfiles ===== -->
+    <section id="perfiles-lista" class="tarjeta" aria-labelledby="titulo-perfiles">
+      <h2 id="titulo-perfiles">Estudiantes</h2>
+      <label for="buscar-perfil" class="etiqueta-campo">Buscar por nombre o carrera</label>
+      <input type="search" id="buscar-perfil" class="buscador" placeholder="Ej. Ana o Ingeniería" autocomplete="off">
+      <p id="perfiles-mensaje" class="mensaje-perfil" role="status" aria-live="polite"></p>
+      <ul id="lista-perfiles" class="lista-coincidencias"></ul>
+    </section>
+
+  </main>
+
+  <script type="module" src="js/panel.js"></script>
+  <script type="module" src="js/perfiles.js"></script>
+  <script type="module" src="js/sos.js"></script>
+</body>
+
+</html>

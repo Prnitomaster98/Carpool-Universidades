@@ -19,6 +19,8 @@
   <link rel="stylesheet" href="css/estilos.css">
   <!-- Estilos de "Mi perfil" y "Coincidencias" (Fase 4), en archivo aparte -->
   <link rel="stylesheet" href="css/perfil.css">
+  <!-- Seguridad, aviso de viaje, SOS y estrellas -->
+  <link rel="stylesheet" href="css/seguridad.css">
 </head>
 
 <body class="cargando">
@@ -30,6 +32,7 @@
       <ul class="menu">
         <!-- aria-current="page" le dice a los lectores de pantalla en qué página estás -->
         <li><a href="app.html" aria-current="page">Mi panel</a></li>
+        <li><a href="perfiles.html">Perfiles</a></li>
         <li><a href="recomendaciones.html">Recomendaciones</a></li>
       </ul>
     </nav>
@@ -38,6 +41,25 @@
       <button type="button" id="boton-salir" class="boton-enlace">Cerrar sesión</button>
     </div>
   </header>
+
+  <!-- ===== Aviso "Tu próximo viaje" (lo maneja seguridad.js) =====
+       Va FUERA de <main> para no mover la grilla de las tarjetas.
+       hidden = escondido hasta que falten 30 min o menos para un viaje. -->
+  <section id="proximo-viaje" class="aviso-viaje" aria-labelledby="proximo-titulo" hidden>
+    <div class="aviso-viaje-encabezado">
+      <h2 id="proximo-titulo">Tu próximo viaje</h2>
+      <span id="proximo-cuenta" class="aviso-viaje-cuenta"></span>
+    </div>
+    <p id="proximo-detalle" class="aviso-viaje-detalle"></p>
+    <p id="proximo-mensaje" class="aviso-viaje-detalle"></p>
+    <div id="proximo-botones" class="aviso-viaje-botones"></div>
+
+    <!-- Sugerencia de compartir ubicación en tiempo real (sale al iniciar el viaje) -->
+    <div id="sugerencia-ubicacion" class="sugerencia-ubicacion" hidden>
+      <p id="sugerencia-texto"></p>
+      <div id="sugerencia-botones" class="aviso-viaje-botones"></div>
+    </div>
+  </section>
 
   <main class="contenido">
 
@@ -170,6 +192,34 @@
       <ul id="lista-enviadas" class="lista-coincidencias"></ul>
     </section>
 
+    <!-- ===== Sección: Seguridad (lo maneja seguridad.js) ===== -->
+    <section id="seguridad" class="tarjeta" aria-labelledby="titulo-seguridad">
+      <h2 id="titulo-seguridad">Seguridad</h2>
+
+      <div class="seguridad-columnas">
+        <form id="form-emergencia" class="perfil-form" novalidate>
+          <fieldset>
+            <legend>Contacto de emergencia</legend>
+            <p class="coincidencia-detalle">Le avisas antes de cada viaje y recibe tu SOS. Solo tú puedes ver este dato.</p>
+            <label for="emergencia-nombre" class="etiqueta-campo">Nombre</label>
+            <input type="text" id="emergencia-nombre" maxlength="60" placeholder="Ej. Mamá" autocomplete="off">
+            <label for="emergencia-telefono" class="etiqueta-campo">Teléfono (8 dígitos)</label>
+            <input type="tel" id="emergencia-telefono" inputmode="numeric" maxlength="15" placeholder="5555 1234" autocomplete="off">
+          </fieldset>
+          <button type="submit" id="emergencia-guardar" class="boton boton-secundario" disabled>Guardar contacto</button>
+          <p id="seguridad-mensaje" class="mensaje-perfil" role="status" aria-live="polite"></p>
+        </form>
+
+        <div>
+          <h3>Mis próximos viajes</h3>
+          <!-- Se actualiza solo (en tiempo real) cuando te aceptan o publicas un viaje -->
+          <ul id="lista-proximos" class="lista-coincidencias"></ul>
+          <button type="button" id="activar-avisos" class="boton boton-secundario">Activar avisos del navegador</button>
+          <p class="coincidencia-detalle">Los avisos llegan mientras la página esté abierta (aunque sea en otra pestaña).</p>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== Sección 3: Mapa ===== -->
     <section id="mapa-seccion" class="tarjeta tarjeta-mapa" aria-labelledby="titulo-mapa">
       <h2 id="titulo-mapa">Mapa de zonas y puntos de encuentro</h2>
@@ -228,6 +278,11 @@
   <script type="module" src="js/viajes.js"></script>
   <script type="module" src="js/panel.js"></script>
   <script type="module" src="js/solicitudes.js"></script>
+  <script type="module" src="js/seguridad.js"></script>
+  <script type="module" src="js/sos.js"></script>
+
+  <!-- Cuadritos de aviso que salen abajo ("te aceptaron", "tu viaje empieza pronto") -->
+  <div id="avisos-en-vivo" class="avisos-en-vivo" aria-live="polite"></div>
 </body>
 
 </html>
