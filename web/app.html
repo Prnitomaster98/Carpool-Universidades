@@ -18,9 +18,9 @@
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
   <!-- Nuestros estilos van DESPUÉS, para poder ajustar los de Leaflet si hace falta -->
-  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/estilos.css?v=costo1">
   <!-- Estilos de "Mi perfil" y "Coincidencias" (Fase 4), en archivo aparte -->
-  <link rel="stylesheet" href="css/perfil.css">
+  <link rel="stylesheet" href="css/perfil.css?v=costo1">
   <!-- Seguridad, aviso de viaje, SOS y estrellas -->
   <link rel="stylesheet" href="css/seguridad.css">
 </head>
@@ -162,6 +162,10 @@
 
           <label for="viaje-cupos" class="etiqueta-campo">Lugares Libres</label>
           <select id="viaje-cupos"></select>
+
+          <label for="viaje-costo" class="etiqueta-campo">Costo por pasajero (Q)</label>
+          <input type="number" id="viaje-costo" min="0" max="200" step="1" value="0" inputmode="numeric">
+          <p class="coincidencia-detalle">Pon 0 si es gratis. El pasajero te paga directo a ti (efectivo o transferencia).</p>
         </fieldset>
 
         <p id="viaje-mensaje" class="mensaje-perfil" role="status" aria-live="polite"></p>
@@ -277,9 +281,9 @@
   <script type="module" src="js/cercanos.js"></script>
   <script type="module" src="js/perfil.js"></script>
   <script type="module" src="js/coincidencias.js"></script>
-  <script type="module" src="js/viajes.js"></script>
+  <script type="module" src="js/viajes.js?v=costo1"></script>
   <script type="module" src="js/panel.js"></script>
-  <script type="module" src="js/solicitudes.js"></script>
+  <script type="module" src="js/solicitudes.js?v=costo1"></script>
   <script type="module" src="js/seguridad.js"></script>
   <script type="module" src="js/sos.js"></script>
 

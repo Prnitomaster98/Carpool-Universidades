@@ -60,6 +60,11 @@ async function leerJSON(ruta, porDefecto) {
   }
 }
 
+//Igual que en viajes.js: sin costo guardado = gratis
+function textoCosto(costo) {
+  return costo > 0 ? `Q${costo} por pasajero` : "Gratis";
+}
+
 function nombreDia(idDia) {
   return DIAS.find((dia) => dia.id === idDia)?.nombre ?? idDia;
 }
@@ -101,6 +106,8 @@ async function solicitar(viaje) {
     esDemo: false,
     pasajeroTelefono: miTelefono,
   };
+  //Copiamos el costo del viaje para que los dos vean lo mismo (las reglas revisan que sea igual)
+  if (viaje.costo > 0) solicitud.costo = viaje.costo;
 
   mensaje.textContent = "Enviando solicitud...";
   try {
@@ -216,6 +223,11 @@ function dibujarBase(solicitud, nombre) {
       "coincidencia-detalle",
       `Punto: ${nombrePunto(solicitud.puntoId)}`,
     ),
+    crear(
+      "p",
+      "coincidencia-detalle viaje-costo",
+      `Costo: ${textoCosto(solicitud.costo)}`,
+    ),
   );
   return elemento;
 }
@@ -284,7 +296,8 @@ function botonWhatsApp(solicitud, soyConductor) {
   const detalle =
     `${nombreDia(solicitud.dia).toLowerCase()} ` + //Toma la información de día, horario y punto de encuentro.
     `(${(NOMBRES_TRAMO[solicitud.tramo] ?? solicitud.tramo).toLowerCase()}) a las ${solicitud.hora}, ` +
-    `punto de encuentro: ${nombrePunto(solicitud.puntoId)}.`;
+    `punto de encuentro: ${nombrePunto(solicitud.puntoId)}.` +
+    (solicitud.costo > 0 ? ` Costo: Q${solicitud.costo}, se paga directo al conductor.` : "");
 
   const texto = soyConductor
     ? `Carpool UVG: hola ${solicitud.pasajeroNombre}, te acepté en mi viaje del ${detalle}`

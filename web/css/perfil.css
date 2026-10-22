@@ -131,6 +131,7 @@
 /* Inputs de hora y los select, con el tema oscuro */
 .perfil-form input[type="time"],
 .perfil-form input[type="tel"],
+.perfil-form input[type="number"],
 .perfil-form select,
 .coincidencias-filtros select {
   width: 100%;
@@ -153,12 +154,14 @@
 }
 
 .perfil-form input[type="time"]:hover,
+.perfil-form input[type="number"]:hover,
 .perfil-form select:hover,
 .coincidencias-filtros select:hover {
   border-color: #34433d;
 }
 
 .perfil-form input[type="time"]:focus,
+.perfil-form input[type="number"]:focus,
 .perfil-form select:focus,
 .coincidencias-filtros select:focus {
   outline: none;

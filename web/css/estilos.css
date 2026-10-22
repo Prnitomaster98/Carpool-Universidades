@@ -625,7 +625,7 @@ select {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-auto-flow: column;
-    grid-template-rows: repeat(6, auto);
+    grid-template-rows: repeat(8, auto); /* 4 campos por columna (etiqueta + control) */
     column-gap: 16px;
   }
 
@@ -633,8 +633,8 @@ select {
     grid-column: 1 / -1;
   }
 
-  /* "Viaje" es el primer campo de la segunda columna: sin margen arriba */
-  #form-viaje .etiqueta-campo:nth-of-type(4) {
+  /* "Hora" es el primer campo de la segunda columna: sin margen arriba */
+  #form-viaje .etiqueta-campo:nth-of-type(5) {
     margin-top: 0;
   }
 

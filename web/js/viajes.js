@@ -7,6 +7,7 @@
 //   viajes/{id automático} = {
 //     conductorUid, conductorNombre, zonaId, puntoId,
 //     dia: 'lunes', tramo: 'ida', hora: '07:15', cupos: 3,
+//     costo: 15 (quetzales por pasajero; si es gratis no se guarda),
 //     creado: (fecha del servidor), esDemo: false
 
 import { auth, db } from "./firebase-config.js";
@@ -26,6 +27,7 @@ import { dibujarGrupos } from "./agrupar.js"; //Cajas por estado
 const NOMBRES_TRAMO = { ida: "Ida a la UVG", regreso: "Regreso a casa" };
 const NOMBRES_ESTADO = { pendiente: "Pendiente", aceptada: "Aceptada", rechazada: "Rechazada" };
 const MAXIMO_CUPOS = 4;
+const MAXIMO_COSTO = 200; //Quetzales por pasajero (igual que en firestore.rules)
 
 const formulario = document.getElementById("form-viaje");
 const selectZona = document.getElementById("viaje-zona");
@@ -34,6 +36,7 @@ const selectDia = document.getElementById("viaje-dia"); //Toma todos los datos/ 
 const selectTramo = document.getElementById("viaje-tramo");
 const inputHora = document.getElementById("viaje-hora");
 const selectCupos = document.getElementById("viaje-cupos");
+const inputCosto = document.getElementById("viaje-costo");
 const mensajeFormulario = document.getElementById("viaje-mensaje");
 const botonPublicar = document.getElementById("viaje-publicar");
 const mensajeLista = document.getElementById("viajes-mensaje");
@@ -83,6 +86,11 @@ function nombreDia(idDia) {
 
 function nombreZona(idZona) {
   return zonas.find((zona) => zona.id === idZona)?.nombre ?? idZona;
+}
+
+//Texto del costo: los viajes viejos no tienen costo, así que cuentan como gratis
+function textoCosto(costo) {
+  return costo > 0 ? `Q${costo} por pasajero` : "Gratis";
 }
 
 function nombrePunto(idPunto) {
@@ -154,6 +162,9 @@ function aplicarRol() {
 function validar(viaje) {
   if (!viaje.puntoId) return "Elige un punto de encuentro (esta ruta no tiene)";
   if (!viaje.hora) return "Pon la hora del viaje";
+  const costo = viaje.costo ?? 0;
+  if (!Number.isInteger(costo) || costo < 0 || costo > MAXIMO_COSTO)
+    return `El costo tiene que ser un número entero de 0 a ${MAXIMO_COSTO} quetzales`;
   return null;
 }
 //Guarda los viajes en la base de datos con todos sus datos después de validarlos
@@ -173,6 +184,9 @@ async function publicar(evento) {
     creado: serverTimestamp(),
     esDemo: false,
   };
+  //El costo solo se guarda si no es gratis (así los viajes gratis funcionan igual que antes)
+  const costo = Number(inputCosto.value || 0);
+  if (costo !== 0) viaje.costo = costo;
 
   const error = validar(viaje);
   if (error) {
@@ -260,6 +274,7 @@ function dibujarViaje(viaje) {
     ),
     crear("p", "coincidencia-detalle", `Ruta: ${nombreZona(viaje.zonaId)}`),
     crear("p", "coincidencia-detalle", `Punto: ${nombrePunto(viaje.puntoId)}`),
+    crear("p", "coincidencia-detalle viaje-costo", `Costo: ${textoCosto(viaje.costo)}`),
   );
   if (esMio) {
     const botonWhatsApp = crear(
@@ -339,7 +354,7 @@ function compartirPorWhatsApp(viaje) {
     `Carpool UVG: el ${nombreDia(viaje.dia).toLowerCase()} ` +
     `(${NOMBRES_TRAMO[viaje.tramo].toLowerCase()}) a las ${viaje.hora}. ` +
     `Ruta ${nombreZona(viaje.zonaId)}, punto de encuentro: ${nombrePunto(viaje.puntoId)}. ` +
-    `Me quedan ${viaje.cupos} lugar(es). Pídelo en la app.`;
+    `Me quedan ${viaje.cupos} lugar(es). ${viaje.costo > 0 ? `Costo: Q${viaje.costo} por pasajero` : "Es gratis"}. Pídelo en la app.`;
   window.open(
     `https://wa.me/?text=${encodeURIComponent(texto)}`,
     "_blank",
