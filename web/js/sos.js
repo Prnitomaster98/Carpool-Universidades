@@ -28,7 +28,9 @@ const OTROS_NUMEROS = [
     { numero: '125', nombre: 'Cruz Roja' },
 ]
 
-const ESPERA_UBICACION = 6000   // si tocas "Escribir" antes de tenerla, la esperamos hasta 6 s
+// Si tocas "Escribir" antes de tenerla, la esperamos hasta 4 s. No más: después
+// de ~5 s el navegador ya no cuenta el toque y bloquearía la pestaña nueva.
+const ESPERA_UBICACION = 4000
 
 let ubicacion = null
 let errorUbicacion = null       // por qué no se pudo (si no se pudo)
@@ -129,7 +131,7 @@ function escribirAlContacto() {
         window.open(enlaceWhatsApp(contacto.telefono, textoSOS()), '_blank', 'noopener')
         return
     }
-    // Todavía no llega: abrimos la pestaña ya y le ponemos el link al tenerla
+    // Todavía no llega: la esperamos un poco y luego abrimos WhatsApp
     if (errorUbicacion === null) estadoUbicacion.textContent = 'Esperando tu ubicación para ponerla en el mensaje...'
     abrirConEspera(esperarUbicacion().then(() => enlaceWhatsApp(contacto.telefono, textoSOS())))
 }

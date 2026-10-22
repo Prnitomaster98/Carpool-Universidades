@@ -11,7 +11,7 @@
 //   vigilarUbicacion(f)   Busca tu ubicación y llama a f cada vez que mejora.
 //   explicarErrorUbicacion(e) Por qué no se pudo, en español.
 //   obtenerUbicacion()    Tu ubicación actual (una vez), o null si no se pudo.
-//   abrirConEspera(p)     Abre una pestaña YA y le pone el link cuando esté listo.
+//   abrirConEspera(p)     Espera el link (p es una promesa) y lo abre.
 //   estado.viajeEnCurso   El viaje que estás haciendo ahora (lo llena seguridad.js).
 //
 // Forma en Firestore (las reglas dejan que SOLO tú lo leas):
@@ -156,14 +156,29 @@ export function obtenerUbicacion(esperaMaxima = 10000) {
 }
 
 
-// Los navegadores bloquean window.open si NO pasa justo al tocar un botón.
-// Si primero esperamos la ubicación (await) y DESPUÉS abrimos, lo bloquean.
-// Truco: abrimos la pestaña vacía al instante y le ponemos el link cuando esté listo.
-export function abrirConEspera(promesaDelLink) {
-    const ventana = window.open('', '_blank')
+// Los navegadores bloquean window.open si NO pasa justo al tocar un botón,
+// pero dan unos segundos de gracia (Chrome ~5 s; Safari y Firefox, menos).
+//
+// ANTES abríamos una pestaña vacía al instante y le poníamos el link después.
+// Problema: la pestaña nueva tapa nuestra página, el celular la "congela"
+// (y apaga el GPS de las páginas que no se ven), así que el link nunca
+// llegaba y la pestaña se quedaba en about:blank.
+//
+// AHORA: esperamos el link con nuestra página todavía a la vista y lo abrimos.
+// Si el navegador bloquea la pestaña nueva, lo abrimos aquí mismo
+// (eso nunca se bloquea; en el celular abre la app de WhatsApp).
+export async function abrirConEspera(promesaDelLink) {
+    let link
+    try {
+        link = await promesaDelLink
+    } catch (problema) {
+        console.warn('No se pudo preparar el mensaje', problema)
+        return
+    }
+    if (!link) return
+    // Sin 'noopener' para que window.open nos diga si la bloquearon (con
+    // 'noopener' siempre devuelve null); por eso quitamos opener a mano.
+    const ventana = window.open(link, '_blank')
     if (ventana) ventana.opener = null   // la pestaña nueva no puede tocar nuestra página
-    promesaDelLink.then((link) => {
-        if (ventana) ventana.location.href = link
-        else window.location.href = link   // si igual la bloquearon, lo abrimos aquí mismo
-    })
+    else window.location.href = link
 }

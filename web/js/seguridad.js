@@ -336,7 +336,8 @@ function guardarProgreso(claveSemana, valor) {
 function avisarSalida(viaje) {
     const nombre = auth.currentUser.displayName ?? 'Tu contacto'
     // obtenerUbicacion es async: abrirConEspera abre WhatsApp cuando ya la tengamos
-    abrirConEspera(obtenerUbicacion().then((ubicacion) => {
+    // 4 s como máximo: después el navegador bloquearía la pestaña nueva
+    abrirConEspera(obtenerUbicacion(4000).then((ubicacion) => {
         const texto = `Carpool UVG: ${nombre} va a salir en carpool. ${textoViaje(viaje)}`
             + (ubicacion ? ` Ubicación ahora: ${enlaceMapa(ubicacion)} .` : '')
             + ' Te voy a compartir mi ubicación en tiempo real por aquí. Te aviso cuando llegue.'
